@@ -1,0 +1,16 @@
+/* This will make the design and colors consistent */
+
+:root {
+    --main-color: #BA4B2F;
+    --secondary-color: blue;
+    --tertiary-color: violet;
+    --warning-color: red;
+    --sucess-color: green;
+    
+    --light-text: white;
+    --dark-text: black;
+    --gray-text: grey;
+
+    --max-width: 1400px;
+    --content-max-width: 1200px;
+}

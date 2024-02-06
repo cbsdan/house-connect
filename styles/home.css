@@ -1,0 +1,44 @@
+main.home {
+    min-height: 100vh;
+    background-image: url('../img/home-bg.jpg');
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+    padding: 8rem 1rem;
+    position: relative;
+}
+
+main.home .container {
+    max-width: var(--content-max-width);
+    margin: auto;
+    height: 100%;
+}
+
+main.home .content {
+    max-width: 65rem;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-60%);
+}
+main.home .content h1 {
+    font-size: 5rem;
+    font-weight: 600;
+    line-height: 1.2;
+    overflow: hidden;
+}
+main.home .orange {
+    color: var(--main-color);
+    margin-right: 2rem;
+    /* display: inline-block; */
+}
+main.home .content p {
+    margin-top: 1rem;
+    font-size: 1.6rem;
+}
+main.home .content button {
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    border: 0.2rem var(--dark-text) solid;
+    color: var(--dark-text);
+    font-weight: 600;
+}

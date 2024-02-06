@@ -1,0 +1,43 @@
+header {
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+}
+header .content{
+    margin: auto;
+    max-width: var(--max-width);
+    background: transparent;
+    height: 70px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    font-size: 1.4rem;
+    position: relative;
+}
+
+header .logo-container a {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+header #logo {
+    height: 3rem;
+    width: 3rem;
+}
+
+
+header .navigation-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+header .navigation-container nav {
+    display: flex;
+    gap: 2.5rem;
+}
+
+header .navigation-container nav a:hover {
+    text-decoration: underline;
+}
