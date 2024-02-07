@@ -1,0 +1,33 @@
+@media screen and (max-width: 800px) {
+    main.registration {
+        background-image: url('../img/registration-bg.jpg');
+    }
+    main.login {
+        background-image: url('../img/login-bg.png');
+    }
+    main.registration, main.login {
+        background-size: cover;
+        background-position: top;
+        background-repeat: no-repeat;
+    }
+    main.registration .bg-container, main.login .bg-container {
+        display: none;
+        position: relative;
+    }
+    main.registration .container, main.login .container {
+        background-color: var(--light-background-blur);
+    }
+    main.registration .content-container, main.login .content-container {
+        position: static;
+        padding: 3rem 1rem;
+        max-width: unset;
+        width: 90%;
+        margin: 0 auto;
+    }
+    main.registration .content-container .content, main.login .content-container .content {
+        margin: 0 auto;
+    }
+    /* main.registration .content-container .content .logo-container, main.login .content-container .content .logo-container {
+        display: none;
+    } */
+}

@@ -7,7 +7,10 @@
     --warning-color: red;
     --sucess-color: green;
     
-    --light-text: white;
+    --light-background: #f2f0f1;
+    --light-background-blur: #f2f0f17c;
+
+    --light-text: #F2F0F1;
     --dark-text: black;
     --gray-text: grey;
 

@@ -1,17 +1,8 @@
 main.home {
-    min-height: 100vh;
     background-image: url('../img/home-bg.jpg');
     background-size: cover;
     background-position: top;
     background-repeat: no-repeat;
-    padding: 8rem 1rem;
-    position: relative;
-}
-
-main.home .container {
-    max-width: var(--content-max-width);
-    margin: auto;
-    height: 100%;
 }
 
 main.home .content {

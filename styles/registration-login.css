@@ -1,0 +1,88 @@
+header {
+    background-color: var(--light-background);
+}
+main.registration, main.login {
+    display: flex;
+    padding: 7rem 0 0;
+    min-height: calc(100vh - 7rem);
+    position: relative;
+}
+main.registration .container, main.login .container {
+    display: flex;
+    flex: 1;
+    max-width: var(--max-width);
+    height: calc(100vh - 7rem);
+}
+
+main.registration .bg-container, main.login .bg-container {
+    overflow: hidden;
+    position: fixed;
+    top: 7rem;
+    left: 0;
+    bottom: 0;
+    right: 50%;
+}
+main.registration .bg-container img, main.login .bg-container img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+main.registration .content-container,  main.login .content-container{
+    position: absolute;
+    left: 50%;
+    padding: 3rem 1rem;
+    width: 50%;
+    min-height: calc(100vh - 7rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+main.registration .content-container .content, main.login .content-container .content {
+    min-width: 40rem;
+    max-width: 60rem;
+    overflow: auto;
+}
+main.registration .content-container::-webkit-scrollbar, main.login .content-container::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+main.registration .content h2, main.login .content h2 {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+main.registration .content .logo-container, main.registration .content form, main.login .content .logo-container, main.login .content form{
+    display: flex;
+    justify-content: center;
+}
+main.registration .content form, main.login .content form {
+    flex-direction: column;
+}
+main.registration .content form .input-container, main.login .content form .input-container{
+    padding: 1rem 3rem;
+}
+main.registration .content form .input-container .input, main.login .content form .input-container .input {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+}
+
+main.registration .content form .input-container .input input, main.login .content form .input-container .input input {
+    margin-top: 1rem;
+    border: 0.15rem var(--dark-text) solid;
+    border-radius: 0.8rem;
+    padding: 0.5rem 1rem;
+}
+main.registration .content form button, main.login .content form button {
+    margin: 1.2rem auto 0;
+}
+main.registration .content form a, main.login .content form .label  {
+    text-align: center;
+    margin-top: 0.8rem;
+    font-size: 1.2rem;
+}
