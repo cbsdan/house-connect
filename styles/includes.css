@@ -4,6 +4,9 @@ header {
     z-index: 100;
     background: var(--light-background-blur);
 }
+header.content.logged-in {
+    background: var(--)
+}
 header .content{
     margin: auto;
     max-width: var(--max-width);
@@ -15,22 +18,57 @@ header .content{
     position: relative;
 }
 
-header .logo-container a {
+/* Change the layout when a user is logged in */
+header .content.logged-in {
+    flex-direction: column;
+    align-items: start;
+    height: 80px;
+    padding: 0;
+    font-size: 1.6rem;
+}   
+header .top, header .bottom {
+    overflow-y: hidden;
+    padding: 1.5rem 1rem;
+    width: 100%;
+}
+header .bottom {
+    padding: 0.75rem 1rem;
+}
+header .logo-container a, header .top a {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
+
 header #logo {
     height: 3rem;
     width: 3rem;
 }
 
+header .top #logo {
+    height: 2.3rem;
+    width: 2.3rem;
+}
 
 header .navigation-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+header .bottom {
+    background-color: var(--main-color);
+    font-size: 1.2rem;
+    color: var(--light-text) !important;
+    min-height: 3rem;
+}
+header .bottom .navigation-container {
+    padding: 0 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    position: static;
+    transform: none;
 }
 
 header .navigation-container nav {

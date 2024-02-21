@@ -19,15 +19,22 @@
     }
     main.registration .content-container, main.login .content-container {
         position: static;
-        padding: 3rem 1rem;
+        display: block;
         max-width: unset;
         width: 90%;
         margin: 0 auto;
+        padding: 1
     }
     main.registration .content-container .content, main.login .content-container .content {
         margin: 0 auto;
     }
-    /* main.registration .content-container .content .logo-container, main.login .content-container .content .logo-container {
-        display: none;
-    } */
+    main.registration .content form .input-container, main.login .content form .input-container {
+        padding: 1rem;
+    }
+}
+
+@media screen and (max-width: 560px) {
+    html {
+        font-size: 52.5%;
+    }
 }

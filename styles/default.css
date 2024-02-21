@@ -48,7 +48,7 @@ img {
 
 main {
     min-height: 100vh;
-    padding: 8rem 1rem;
+    padding: 8rem 1rem 0;
     position: relative;
 }
 
@@ -58,6 +58,14 @@ main .container {
     height: 100%;
 }
 
+main.worker .container {
+    max-width: var(--max-width);
+}
+
+/* Colors */
+.c-light {
+    color: var(--light-text);
+}
 
 /* Buttons */
 button {
@@ -72,4 +80,20 @@ button {
 .orange-text {
     color: var(--main-color);
 
+}
+
+/* Display */
+.hidden {
+    display: none !important;
+}
+
+/* Margin, Padding, Border, Height */
+.m-r-auto {
+    margin-right: auto;
+}
+.m-l-auto {
+    margin-left: auto;
+}
+.w-100 {
+    width: 100%;
 }

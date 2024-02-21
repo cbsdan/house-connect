@@ -2,11 +2,11 @@
 
 :root {
     --main-color: #BA4B2F;
-    --secondary-color: blue;
     --tertiary-color: violet;
     --warning-color: red;
     --sucess-color: green;
     
+    --pale-main-color: #BF715D;
     --light-background: #f2f0f1;
     --light-background-blur: #f2f0f17c;
 

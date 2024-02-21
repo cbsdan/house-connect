@@ -1,0 +1,5 @@
+main.worker .container.application {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

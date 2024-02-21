@@ -16,7 +16,21 @@
                     <div class='input-container'>
                         <div class='input'>
                             <label>Full Name</label>
-                            <input type='text' name='full-name' required> 
+                            <div class='two-inputs'>
+                                <input type='text' name='fname' placeholder='First Name' required> 
+                                <input type='text' name='lname' placeholder='Last Name' required> 
+                            </div>
+                        </div>
+                        <div class='input'>
+                            <label>Sex</label>
+                            <div class='two-inputs'>
+                                <label><input type='radio' name='sex' value='Male' checked required> Male</label>
+                                <label><input type='radio' name='sex' value='Female' required> Female</label>
+                            </div>
+                        </div>
+                        <div class='input'>
+                            <label>Birthdate</label>
+                            <input type='date' name='birthdate' required> 
                         </div>
                         <div class='input'>
                             <label>Contact Number</label>
@@ -33,6 +47,13 @@
                         <div class='input'>
                             <label>Password</label>
                             <input type='password' name='password' required> 
+                        </div>
+                        <div class='input'>
+                            <label>User Type</label>
+                            <div class='two-inputs'>
+                                <label><input type='radio' name='sex' value='Worker' checked required> Worker</label>
+                                <label><input type='radio' name='sex' value='Employer' required> Employer</label>
+                            </div>
                         </div>
                     </div>
                     <button class='orange-white-btn' type='submit' name='submit' value='1'>Register Account</button>
