@@ -2,4 +2,31 @@
     include_once('./includes/header.php');
     include_once('./php_files/registration.php');
     include_once('./includes/footer.php');
+    include_once('./database/connect.php');
+
+    if(isset($_POST['submit'])) {
+        
+        // Retrieve form data
+        $userType = $_POST['userType'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        $fname = $_POST['fname'];
+        $lname = $_POST['lname'];
+        $sex = $_POST['sex'];
+        $birthdate = $_POST['birthdate'];
+        $address = $_POST['address'];
+        $contactNo = $_POST['contact-no'];
+    
+        // Insert data into the database
+        $sql = "INSERT INTO user (userType, email, password, fname, lname, sex, birthdate, address, contactNo) 
+                VALUES ('$userType', '$email', '$password', '$fname', '$lname', '$sex', '$birthdate', '$address', '$contactNo')";
+    
+        if ($conn->query($sql) === TRUE) {
+            echo "<script>alert('Registration successful!');</script>";
+            echo "<script>window.location.href = 'login.php';</script>";
+            exit; // Exit PHP to prevent further execution
+        } else {
+            echo "<script>. $sql . '<br>' . $conn->error</script>";
+        }
+    }
 ?>

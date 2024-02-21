@@ -12,7 +12,7 @@
                     </a>
                 </div>
                 <h2>Welcome to House Connect!</h2>
-                <form action='' method='POST'>
+                <form action='./registration.php' method='POST'>
                     <div class='input-container'>
                         <div class='input'>
                             <label>Full Name</label>
@@ -51,8 +51,8 @@
                         <div class='input'>
                             <label>User Type</label>
                             <div class='two-inputs'>
-                                <label><input type='radio' name='sex' value='Worker' checked required> Worker</label>
-                                <label><input type='radio' name='sex' value='Employer' required> Employer</label>
+                                <label><input type='radio' name='userType' value='Worker' required> Worker</label>
+                                <label><input type='radio' name='userType' value='Employer' required> Employer</label>
                             </div>
                         </div>
                     </div>
