@@ -18,7 +18,7 @@ USE `house_connect` ;
 -- Table `house_connect`.`user`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`user` (
-  `idUser` INT NOT NULL,
+  `idUser` INT NOT NULL AUTO_INCREMENT,
   `userType` VARCHAR(30) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(45) NOT NULL,
@@ -191,7 +191,7 @@ ENGINE = InnoDB;
 -- Table `house_connect`.`admin_message`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`admin_message` (
-  `idMessage` INT NOT NULL,
+  `idMessage` INT NOT NULL AUTO_INCREMENT,
   `subject` VARCHAR(100) NOT NULL,
   `message` VARCHAR(1000) NOT NULL,
   `isRead` TINYINT(1) NOT NULL,
@@ -210,7 +210,7 @@ ENGINE = InnoDB;
 -- Table `house_connect`.`rating`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`rating` (
-  `idRating` INT NOT NULL,
+  `idRating` INT NOT NULL AUTO_INCREMENT,
   `rate` INT NULL,
   `comment` VARCHAR(45) NULL,
   `idContract` INT NOT NULL,
@@ -228,7 +228,7 @@ ENGINE = InnoDB;
 -- Table `house_connect`.`worker_salary`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`worker_salary` (
-  `idWorkerSalary` INT NOT NULL,
+  `idWorkerSalary` INT NOT NULL AUTO_INCREMENT,
   `paypalEmail` VARCHAR(45) NOT NULL,
   `amount` DECIMAL(2) NOT NULL,
   `status` VARCHAR(45) NOT NULL,
