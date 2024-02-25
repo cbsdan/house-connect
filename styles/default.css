@@ -62,6 +62,11 @@ main.worker .container {
     max-width: var(--max-width);
 }
 
+/* Fonts */
+.f-italic {
+    font-style: italic;
+}
+
 /* Colors */
 .c-light {
     color: var(--light-text);

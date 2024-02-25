@@ -16,13 +16,9 @@
                         <p>Step 3</p>
                         <span class='label'>Documents Verification</span>
                     </div>
-                    <div class="step 4">
-                        <p>Step 4</p>
-                        <span class='label'>Payment</span>
-                    </div>
                 </div>
             </div>
-            <div class='form-container'>
+            <div class='form-container step1'>
                 <div class='title'>
                     <img src='./img/user-icon.png'>
                     <h3>Personal Information</h3>
@@ -49,12 +45,63 @@
                         </div>  
                         <div class='input-container'>
                             <label for="imageUpload">Choose an image to upload</label>
-                            <input type="file" id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg" >
+                            <input type="file" id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg" required>
                         </div>  
                     </div>
-                    <button class='right' type='submit'>NEXT</button>
+                    <button class='right next1' name='step1done'>NEXT</button>
+                </form>
+            </div>
+
+            <div class='form-container step2 hidden'>
+                <div class='title'>
+                    <img src='./img/documents-icon.png'>
+                    <h3>Required Documents</h3>
+                </div>
+                <form action="" method="POST" enctype="multipart/form-data">
+                    <div class='left'>
+                        <div class='input-container'>
+                            <label for="uploadCV">Curriculum Vitae</label>
+                            <input type="file" id="uploadCV" name="curriculumVitae" accept="image/jpeg, image/png, image/jpg" >
+                        </div>  
+                        <div class='input-container'>
+                            <label for="uploadValidID">One (1) Valid ID</label>
+                            <input type="file" id="uploadValidID" name="validID" accept="image/jpeg, image/png, image/jpg" required>
+                        </div>  
+                        <div class='input-container'>
+                            <label for="uploadNBI">NBI Clearance</label>
+                            <input type="file" id="uploadNBI" name="nbi" accept="image/jpeg, image/png, image/jpg" required>
+                        </div>  
+                        <div class='input-container'>
+                            <label for="uploadMedical">Medical</label>
+                            <input type="file" id="uploadMedical" name="medical" accept="image/jpeg, image/png, image/jpg" required>
+                        </div>  
+                        <div class='input-container'>
+                            <label for="uploadCertifications">Certifications [optional]</label>
+                            <input type="file" id="uploadCertifications" name="certifications" accept="image/jpeg, image/png, image/jpg" >
+                        </div>  
+                    </div>
+
+                    <button class='right next2' name='step2done'>NEXT</button>
+                </form>
+            </div>
+
+            <div class='form-container step3 hidden'>
+                <div class='title'>
+                    <img src='./img/documents-icon.png'>
+                    <h3>Documents Verification</h3>
+                </div>
+                <form action="" method="POST">
+                    <div class='left'>
+                        <div class='input-container'>
+                            <label for="documentStatus">Status</label>
+                            <input type="text" id="documentStatus" name="documentStatus" accept="image/jpeg, image/png, image/jpg" >
+                        </div>  
+                        <span class='f-italic'>Approval might take more than 24 hours or more. Thank you for your patience!</span>
+                    </div>
+                    <button class='right next3' name='step3done'>SUBMIT</button>
                 </form>
             </div>
         </div>
     </div>
 </main>
+

@@ -16,6 +16,9 @@
     <link rel="stylesheet" href="./styles/worker_styles/application.css">
     <link rel="stylesheet" href="./styles/worker_styles/default.css">
 
+    <!-- JavaScript -->
+    <script src='./scripts/worker.js' defer></script>
+
 </head>
 <body>
     <header class='logged-in'>
