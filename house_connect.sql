@@ -37,7 +37,7 @@ ENGINE = InnoDB;
 -- Table `house_connect`.`worker_documents`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`worker_documents` (
-  `idWorkerDocuments` INT NOT NULL,
+  `idWorkerDocuments` INT NOT NULL AUTO_INCREMENT,
   `curriculumVitae` MEDIUMBLOB NOT NULL,
   `validID` MEDIUMBLOB NOT NULL,
   `nbi` MEDIUMBLOB NOT NULL,
@@ -176,6 +176,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`meeting` (
   `meetDate` DATETIME NOT NULL,
   `platform` VARCHAR(45) NOT NULL,
   `link` VARCHAR(255) NOT NULL,
+  `employerMessage` VARCHAR(150) NOT NULL,
   `contract_idContract` INT NOT NULL,
   PRIMARY KEY (`idMeeting`),
   INDEX `fk_meeting_contract1_idx` (`contract_idContract` ASC) ,
