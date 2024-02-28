@@ -70,22 +70,25 @@ main.worker .container {
     font-style: italic;
 }
 .fs-extra-small {
-    font-size: 1.2rem
+    font-size: 1.2rem !important;
 }
 .fs-small {
-    font-size: 1.2rem
+    font-size: 1.2rem !important;
 }
 .fs-medium {
-    font-size: 1.4rem;
+    font-size: 1.4rem !important;
 }
 .fs-large {
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
 }
 .fs-extra-large {
-    font-size: 1.8rem;
+    font-size: 1.8rem !important;
 }
 .t-align-center {
     text-align: center;
+}
+.t-underline {
+    text-decoration: underline;
 }
 
 /* Colors */
@@ -133,19 +136,25 @@ button {
 }
 
 /* Table */
-main.worker .info table {
+main.worker .info table, main.employer .info table {
     width: 100%;
     border-collapse: collapse;
 }
-main.worker .info table thead {
+main.worker .info table thead, main.employer .info table thead {
     font-size: 1.4rem;
 }
-main.worker .info table th, td {
+main.worker .info table th, main.worker .info table td, main.employer .info table th, main.employer .info table td {
     border: 1px solid black;
     padding: 0.8rem;
 }
-main.worker .info table tbody td {
+main.worker .info table tbody td, main.employer .info table tbody td {
     font-size: 1.4rem;
+}
+
+/* Select(Dropdown) */
+select {
+    border: 1px solid black;
+    padding: 0.5rem 1rem
 }
 
 /* Image Preview */
@@ -160,7 +169,7 @@ main.worker .info table tbody td {
     justify-content: center;
     overflow: hidden;
     cursor: pointer;
-    z-index: 100;
+    z-index: 200;
     flex-direction: column;
     background-color: var(--black-opacity);
     color: var(--light-text);
@@ -170,5 +179,5 @@ main.worker .info table tbody td {
     max-height: unset !important;
     max-width: unset !important;
     height: 85vh !important;
-    width: 100% !important;
+    width: 95% !important;
 }

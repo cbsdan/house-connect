@@ -30,7 +30,8 @@ const imageEl = document.querySelector('.image-preview img');
 
 if (imagePreviews) {
     imagePreviews.forEach((imagePreviewEl)=>{
-        imagePreviewEl.addEventListener('click', ()=>{
+        imagePreviewEl.addEventListener('click', (event)=>{
+            event.stopPropagation();
             imagePreviewEl.classList.contains('active') ? imagePreviewEl.classList.remove('active') : imagePreviewEl.classList.add('active');
         })
     })
@@ -47,16 +48,38 @@ const saveBtn = document.querySelector('.save-changes');
 const viewOnlyProfile = document.querySelector('.info.view-only');
 const editableProfile = document.querySelector('.info.editable');
 
-editBtn.addEventListener('click', ()=>{
-    editBtn.classList.add('hidden');
-    saveBtn.classList.remove('hidden');
-    viewOnlyProfile.classList.add('hidden');
-    editableProfile.classList.remove('hidden');
-})
-saveBtn.addEventListener('click', ()=>{
-    saveBtn.classList.add('hidden');
-    editBtn.classList.remove('hidden');
-    editableProfile.classList.add('hidden');
-    viewOnlyProfile.classList.remove('hidden');
-})
+if (editBtn) {
+    editBtn.addEventListener('click', ()=>{
+        editBtn.classList.add('hidden');
+        saveBtn.classList.remove('hidden');
+        viewOnlyProfile.classList.add('hidden');
+        editableProfile.classList.remove('hidden');
+    })
+}
 
+if (saveBtn) {
+    saveBtn.addEventListener('click', ()=>{
+        saveBtn.classList.add('hidden');
+        editBtn.classList.remove('hidden');
+        editableProfile.classList.add('hidden');
+        viewOnlyProfile.classList.remove('hidden');
+    })
+}
+
+const detailPreviewBtns = document.querySelectorAll('.open-detail-preview');
+const detailPreview = document.querySelector('.details-preview');
+
+console.log(detailPreviewBtns);
+
+if (detailPreview && detailPreviewBtns) {
+
+    detailPreviewBtns.forEach((detailPreviewBtn)=>{
+        detailPreviewBtn.addEventListener('click', ()=>{
+            detailPreview.classList.remove('hidden');
+        })    
+    });
+
+    detailPreview.addEventListener('click', ()=>{
+        detailPreview.classList.add('hidden');
+    })
+}

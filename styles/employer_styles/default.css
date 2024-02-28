@@ -36,3 +36,6 @@ main.employer .title h3 {
     text-align: center;
     font-size: 1.4rem;
 }
+table {
+    border-collapse: collapse;
+}
