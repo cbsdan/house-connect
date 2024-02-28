@@ -3,7 +3,7 @@
 :root {
     --main-color: #BA4B2F;
     --tertiary-color: violet;
-    --warning-color: red;
+    --warning-color: rgb(224, 85, 85);
     --sucess-color: green;
     
     --pale-main-color: #BF715D;
@@ -13,7 +13,10 @@
     --light-text: #F2F0F1;
     --dark-text: black;
     --gray-text: grey;
-
+    --red-text: #BF715D;
+    --yellow-text: #D4B92C;
+    --green-text: #20B638;
+    --black-opacity: rgba(0, 0, 0, 0.6);
     --max-width: 1400px;
     --content-max-width: 1200px;
 }

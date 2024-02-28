@@ -1,0 +1,56 @@
+
+main.worker .content .title {
+    justify-content: space-between;
+    padding-bottom: 0;
+}
+main.worker .content .title .left{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+main.worker .content .title .left .user-profile {
+    width: 4rem;
+    height: 4rem;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+main.worker .content .title .right{
+    padding: 2rem;
+}
+main.worker .content .title .right img {
+    height: 2.3em;
+    width: 2.3em;
+    cursor: pointer;
+}
+main.worker .content .title .right .save-changes {
+    background-color: var(--main-color);
+    color: var(--light-text);
+    padding: 0.5rem 1rem;
+    border-radius: unset;
+}
+main.worker .info {
+    padding: 2rem;
+    padding-top: 0;
+    font-size: 1.4rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+
+}
+
+main.worker .info .left,  main.worker .info .right{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+main.worker .info .left .label, main.worker .info .right .label {
+    font-weight: 600;
+}
+main.worker .info .left .text-box, main.worker .info .right .text-box {
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    margin-bottom: 1rem;
+}

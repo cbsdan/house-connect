@@ -1,0 +1,71 @@
+main.employer .content .title {
+    justify-content: space-between;
+}
+
+main.employer .content .title .left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+main.employer .content .title .right {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+main.employer .content .title .right button {
+    background-color: var(--main-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: unset;
+}
+
+main.employer .content .info {
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+    flex: 1;
+    font-size: 1.4rem;
+}
+
+main.employer .info .bottom {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+main.employer .info .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+main.employer .info .top .image-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+main.employer .info .top .image-preview  img {
+    width: 9rem;
+    height: 9rem;
+}
+main.employer .info .left,  main.employer .info .right{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+main.employer .info .left .label, main.employer .info .right .label {
+    font-weight: 600;
+}
+main.employer .info .left .text-box, main.employer .info .right .text-box {
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    margin-bottom: 1rem;
+}
+
+.flex-column {
+    flex-direction: column !important;
+}

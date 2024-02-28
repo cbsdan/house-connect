@@ -1,0 +1,56 @@
+
+main.employer .content .title {
+    justify-content: space-between;
+    padding-bottom: 0;
+}
+main.employer .content .title .left{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+main.employer .content .title .left .user-profile {
+    width: 4rem;
+    height: 4rem;
+    padding: 2px;
+    border: 1px solid black;
+    border-radius: 50%;
+}
+main.employer .content .title .right{
+    padding: 2rem;
+}
+main.employer .content .title .right img {
+    height: 2.3em;
+    width: 2.3em;
+    cursor: pointer;
+}
+main.employer .content .title .right .save-changes {
+    background-color: var(--main-color);
+    color: var(--light-text);
+    padding: 0.5rem 1rem;
+    border-radius: unset;
+}
+main.employer .info {
+    padding: 2rem;
+    padding-top: 0;
+    font-size: 1.4rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+
+}
+
+main.employer .info .left,  main.employer .info .right{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+main.employer .info .left .label, main.employer .info .right .label {
+    font-weight: 600;
+}
+main.employer .info .left .text-box, main.employer .info .right .text-box {
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    margin-bottom: 1rem;
+}

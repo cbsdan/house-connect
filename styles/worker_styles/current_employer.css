@@ -1,0 +1,44 @@
+
+main.worker .info {
+    padding: 2rem;
+    padding-top: 0;
+    font-size: 1.4rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+}
+
+main.worker .info .left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+main.worker .info .right {
+    flex: 1;
+}
+
+main.worker .info .left .label {
+    font-weight: 600;
+}
+main.worker .info .left .text-box {
+    padding: 0.5rem 1rem;
+    border: 1px solid black;
+    margin-bottom: 1rem;
+}
+
+main.worker .info .right {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+main.worker .info .right .contract-container img {
+    max-width: 20rem;
+    max-height: 20rem;
+    height: 100%;
+    width: 100%;
+    border: 1px solid black;
+    cursor: pointer;
+}

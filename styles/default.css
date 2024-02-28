@@ -63,15 +63,44 @@ main.worker .container {
 }
 
 /* Fonts */
+.fw-bold {
+    font-weight: 600;
+}
 .f-italic {
     font-style: italic;
+}
+.fs-extra-small {
+    font-size: 1.2rem
+}
+.fs-small {
+    font-size: 1.2rem
+}
+.fs-medium {
+    font-size: 1.4rem;
+}
+.fs-large {
+    font-size: 1.6rem;
+}
+.fs-extra-large {
+    font-size: 1.8rem;
+}
+.t-align-center {
+    text-align: center;
 }
 
 /* Colors */
 .c-light {
     color: var(--light-text);
 }
-
+.c-green {
+    color: var(--green-text);
+}
+.c-red {
+    color: var(--red-text);
+}
+.c-yellow{
+    color: var(--yellow-text);
+}
 /* Buttons */
 button {
     width: fit-content;
@@ -101,4 +130,45 @@ button {
 }
 .w-100 {
     width: 100%;
+}
+
+/* Table */
+main.worker .info table {
+    width: 100%;
+    border-collapse: collapse;
+}
+main.worker .info table thead {
+    font-size: 1.4rem;
+}
+main.worker .info table th, td {
+    border: 1px solid black;
+    padding: 0.8rem;
+}
+main.worker .info table tbody td {
+    font-size: 1.4rem;
+}
+
+/* Image Preview */
+.image-preview.active {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 100;
+    flex-direction: column;
+    background-color: var(--black-opacity);
+    color: var(--light-text);
+}
+.image-preview.active img {
+    border: none !important;
+    max-height: unset !important;
+    max-width: unset !important;
+    height: 85vh !important;
+    width: 100% !important;
 }

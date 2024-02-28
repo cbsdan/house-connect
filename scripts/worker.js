@@ -18,10 +18,45 @@ formContainers.forEach((formContainer, i)=>{
         } else if (formContainer.classList.contains('step2')) {
             formContainers[i+1].classList.remove('hidden');
             stepsIndicators[i+1].classList.add('active');
-        } else if (formContainer.classList.contains('step3')) {
-            formContainers[i+1].classList.remove('hidden');
-            stepsIndicators[i+1].classList.add('active');
         } 
     })
+})
+
+
+
+const imagePreviewEl = document.querySelector('.image-preview');
+const imagePreviews = document.querySelectorAll('.image-preview');
+const imageEl = document.querySelector('.image-preview img');
+
+if (imagePreviews) {
+    imagePreviews.forEach((imagePreviewEl)=>{
+        imagePreviewEl.addEventListener('click', ()=>{
+            imagePreviewEl.classList.contains('active') ? imagePreviewEl.classList.remove('active') : imagePreviewEl.classList.add('active');
+        })
+    })
+} else if (imagePreviewEl) {
+    imagePreviewEl.addEventListener('click', ()=>{
+        imagePreviewEl.classList.contains('active') ? imagePreviewEl.classList.remove('active') : imagePreviewEl.classList.add('active');
+    })
+}
+
+
+const editBtn = document.querySelector('.edit-profile');
+const saveBtn = document.querySelector('.save-changes');
+
+const viewOnlyProfile = document.querySelector('.info.view-only');
+const editableProfile = document.querySelector('.info.editable');
+
+editBtn.addEventListener('click', ()=>{
+    editBtn.classList.add('hidden');
+    saveBtn.classList.remove('hidden');
+    viewOnlyProfile.classList.add('hidden');
+    editableProfile.classList.remove('hidden');
+})
+saveBtn.addEventListener('click', ()=>{
+    saveBtn.classList.add('hidden');
+    editBtn.classList.remove('hidden');
+    editableProfile.classList.add('hidden');
+    viewOnlyProfile.classList.remove('hidden');
 })
 

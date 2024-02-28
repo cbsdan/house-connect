@@ -1,16 +1,16 @@
-main.worker .container {
+main.employer .container {
     min-height: calc(100vh - 8rem);
     padding-top: 1rem;
 }
-main.worker .container.application {
+main.employer .container.application {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-main.worker .content{
+main.employer .content{
     width: 1200px;
 }
-main.worker .title {
+main.employer .title {
     display: flex;
     gap: 1rem;
     align-items: center;
@@ -18,11 +18,11 @@ main.worker .title {
     border-bottom: 0.3rem solid black;
     margin-bottom: 2rem;
 }
-main.worker .title img {
+main.employer .title img {
     height: 3rem;
     width: 3rem;
 }
-main.worker .title h3 {
+main.employer .title h3 {
     font-size: 1.6rem;
 }
 
