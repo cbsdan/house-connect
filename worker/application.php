@@ -1,3 +1,13 @@
+<?php
+    //Check first if the user is logged in
+    include_once('../functions/user_authenticate.php');
+
+    if ($_SESSION['userType'] == 'Employer') {
+        header('Location: ../employer/account_profile.php');
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +42,7 @@
             <div class='bottom empty'>
                 <div class="navigation-container">
                     <nav class='w-100'>
-                        <a href='../login.php' class='c-light m-l-auto'>LOG OUT</a>
+                        <a href='../logout.php' class='c-light m-l-auto'>LOG OUT</a>
                     </nav>
                 </div>
             </div>
