@@ -5,7 +5,7 @@
         if ($_SESSION['userType'] == 'Worker') {
             header('Location: ./worker/application.php');
         } else if ($_SESSION['userType'] == 'Employer') {
-            header('Location: ./employer/find_a_worker.php');
+            header('Location: ./employer/account_profile.php');
         }
         exit();
     }
