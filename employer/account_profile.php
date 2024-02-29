@@ -1,15 +1,24 @@
 <?php
-    //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
+include_once('../database/connect.php');
+include_once('../functions/user_authenticate.php');
 
-    if ($_SESSION['userType'] == 'Worker') {
-        header('Location: ../worker/application.php');
-        exit();
-    }
+// Check if the user is logged in
+if (!isset($_SESSION['idUser'])) {
+    header('Location: ../login.php'); // Redirect to login if not logged in
+    exit();
+}
+
+$userData = fetchUserData($_SESSION['idUser']);
+
+if ($_SESSION['userType'] == 'Worker') {
+    header('Location: ../worker/application.php');
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -27,8 +36,13 @@
 
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
-
+    <script>
+        function redirectToEditProfile() {
+            window.location.href = 'edit_profile.php?id=<?php echo $_SESSION['idUser']; ?>';
+        }
+    </script>
 </head>
+
 <body>
     <header class='logged-in'>
         <div class='content logged-in'>
@@ -40,7 +54,7 @@
             </div>
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
-                    <nav >
+                    <nav>
                         <a href='./find_a_worker.php' class='c-light'>FIND A WORKER</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light fw-bold'>ACCOUNT PROFILE</a>
@@ -59,70 +73,43 @@
                 <div class='title'>
                     <div class='left'>
                         <img class='user-profile' src='../img/user-icon.png' placeholder='profile'>
-                        <h3>Account Profile</h3>   
+                        <h3>Account Profile</h3>
                     </div>
                     <div class='right'>
-                        <img class='edit-profile' src='../img/edit-icon.png' placeholder>
-                        <button class='save-changes hidden'>Save Changes</button>
+                        <img class='edit-profile' src='../img/edit-icon.png' placeholder onclick="redirectToEditProfile()">
+                        <button class='save-changes hidden' onclick="toggleEditMode()">Save Changes</button>
                     </div>
                 </div>
                 <div class='info view-only'>
                     <div class='left'>
+                        <!-- Display fetched user information -->
                         <p class='label'>Email Address</p>
-                        <p class='text-box'>[email address]</p>
+                        <p class='text-box'><?php echo $userData['email']; ?></p>
                         <p class='label'>First Name</p>
-                        <p class='text-box'>[First Name]</p>
+                        <p class='text-box'><?php echo $userData['fname']; ?></p>
                         <p class='label'>Last Name</p>
-                        <p class='text-box'>[Last Name]</p>
+                        <p class='text-box'><?php echo $userData['lname']; ?></p>
                         <p class='label'>Sex</p>
-                        <p class='text-box'>[Sex]</p>
+                        <p class='text-box'><?php echo $userData['sex']; ?></p>
                         <p class='label'>Birthdate</p>
-                        <p class='text-box'>[Birthdate]</p>
+                        <p class='text-box'><?php echo $userData['birthdate']; ?></p>
                     </div>
                     <div class='right'>
+                        <!-- Display other fetched user information -->
                         <p class='label'>Verification Status</p>
-                        <p class='text-box'>[Verification Status]</p>
-                        <p class='label'>Valid ID</p>
-                        <p class='text-box'>[Click Edit to upload or Click to view]</p>
+                        <p class='text-box'><?php echo $userData['verification_status']; ?></p>
+                        <!-- Omitted Valid ID for security reasons -->
                         <p class='label'>Address</p>
-                        <p class='text-box'>[Address]</p>
+                        <p class='text-box'><?php echo $userData['address']; ?></p>
                         <p class='label'>Contact Number</p>
-                        <p class='text-box'>[Contact Number]</p>
+                        <p class='text-box'><?php echo $userData['contactNo']; ?></p>
                         <p class='label'>User Type</p>
-                        <p class='text-box'>[User Type]</p>
+                        <p class='text-box'><?php echo $userData['userType']; ?></p>
                     </div>
                 </div>
-
-                <form class='info editable hidden' action='' method='POST' enctype="multipart/form-data">
-                    <div class='left'>
-                        <label class='label'>Email Address</label>
-                        <input class='text-box' readonly placeholder="[email address]">
-                        <label class='label'>First Name</label>
-                        <input class='text-box' placeholder="[First Name]">
-                        <label class='label'>Last Name</label>
-                        <input class='text-box' placeholder="[Last Name]">
-                        <label class='label'>Sex</label>
-                        <input class='text-box' placeholder="[Sex]">
-                        <label class='label'>Birthdate</label>
-                        <input class='text-box' type='date'>
-                    </div>
-                    <div class='right'>
-                        <label class='label'>Verification Status</label>
-                        <input class='text-box' placeholder="Not Verified" read-only>
-                        <label class='label'>Upload a Valid ID</label>
-                        <input class='text-box' type="file" id="file" name="valid id" accept="image/png, image/jpeg, image/jpg">
-                        <label class='label'>Address</label>
-                        <input class='text-box' placeholder="[Address]">
-                        <label class='label'>Contact Number</label>
-                        <input class='text-box' placeholder="[Contact Number]">
-                        <label class='label'>User Type</label>
-                        <input class='text-box' placeholder="[User Type]">
-                    </div>
-                </form>
             </div>
         </div>
     </main>
-
-
 </body>
+
 </html>

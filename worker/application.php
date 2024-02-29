@@ -1,11 +1,37 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
         header('Location: ../employer/account_profile.php');
         exit();
     }
+    if ($_SESSION['userType'] == 'Admin') {
+        header('Location: ../admin/dashboard.php');
+        exit();
+    }
+    $sql = "SELECT idWorker FROM worker WHERE idUser = " . $_SESSION['idUser'] . " AND verifyStatus = 'Verified'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows == 1) {
+        header('Location: ./current_employer.php');
+        exit();
+    } 
+
+    if (isset($_POST['workType']) == true && isset($_POST['yearsOfExperience']) == true && isset($_POST['height']) == true) {
+        $stepNumber = 2; 
+    } else {
+        $stepNumber = 1; 
+    }
+
+    $sql = "SELECT idWorker, verifyStatus FROM worker WHERE idUser = " . $_SESSION['idUser'] . " AND verifyStatus = 'Not Verified'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows == 1) {
+        $stepNumber = 3;
+        $user = $result->fetch_assoc();
+    } 
 ?>
 
 <!DOCTYPE html>
@@ -55,26 +81,26 @@
                 <div class='steps-container'>
                     <div class='guideline'></div>
                     <div class='steps'>
-                        <div class="step 1 active">
+                        <div class="step 1 <?php echo (($stepNumber == 1) ? 'active' : '')?>">
                             <p>Step 1</p>
                             <span class='label'>Personal Information</span>
                         </div>
-                        <div class="step 2">
+                        <div class="step 2 <?php echo (($stepNumber == 2) ? 'active' : '')?>">
                             <p>Step 2</p>
                             <span class='label'>Documents Submission</span>
                         </div>
-                        <div class="step 3">
+                        <div class="step 3 <?php echo (($stepNumber == 3) ? 'active' : '')?>">
                             <p>Step 3</p>
                             <span class='label'>Documents Verification</span>
                         </div>
                     </div>
                 </div>
-                <div class='form-container step1'>
+                <div class='form-container step1 <?php echo (($stepNumber == 1) ? '' : 'hidden')?>'>
                     <div class='title'>
                         <img src='../img/user-icon.png'>
                         <h3>Personal Information</h3>
                     </div>
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="./application.php" method="POST" enctype="multipart/form-data">
                         <div class='left'>
                             <div class='input-container'>
                                 <label for="selectWorkType">Select Work Type</label>
@@ -94,22 +120,26 @@
                                 <label for="inputHeight">Height (cm)</label>
                                 <input id='inputHeight' name='height' type="number" min=0 max=1000 required>
                             </div>  
-                            <div class='input-container'>
-                                <label for="imageUpload">Choose an image to upload</label>
-                                <input type="file" id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg" required>
-                            </div>  
                         </div>
-                        <button class='right next1' name='step1done'>NEXT</button>
+                        <button type='submit' class='right next1' name='step1done'>NEXT</button>
                     </form>
                 </div>
-
-                <div class='form-container step2 hidden'>
+                
+                <div class='form-container step2 <?php echo (($stepNumber == 2) ? '' : 'hidden')?>'>
                     <div class='title'>
                         <img src='../img/documents-icon.png'>
                         <h3>Required Documents</h3>
                     </div>
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="../database/submit_application.php" method="POST" enctype="multipart/form-data">
+                        <!-- Store also the data from step1 form -->
+                        <input type='hidden' name = 'workType' value='<?php echo (isset($_POST['workType']) ? $_POST['workType'] : '')?>'>
+                        <input type='hidden' name = 'yearsOfExperience' value='<?php echo (isset($_POST['yearsOfExperience']) ? $_POST['yearsOfExperience'] : '')?>'>
+                        <input type='hidden' name = 'height' value='<?php echo (isset($_POST['height']) ? $_POST['height'] : '')?>'>
                         <div class='left'>
+                            <div class='input-container'>
+                                <label for="imageUpload">Choose an image to upload</label>
+                                <input type="file" id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg" required>
+                            </div>  
                             <div class='input-container'>
                                 <label for="uploadCV">Curriculum Vitae</label>
                                 <input type="file" id="uploadCV" name="curriculumVitae" accept="image/jpeg, image/png, image/jpg" >
@@ -132,24 +162,23 @@
                             </div>  
                         </div>
 
-                        <button class='right next2' name='step2done'>NEXT</button>
+                        <button type='submit' class='right next2' name='step2done'>NEXT</button>
                     </form>
                 </div>
 
-                <div class='form-container step3 hidden'>
+                <div class='form-container step3 <?php echo (($stepNumber == 3) ? '' : 'hidden')?>'>
                     <div class='title'>
                         <img src='../img/documents-icon.png'>
                         <h3>Documents Verification</h3>
                     </div>
-                    <form action="../database/" method="POST">
+                    <div class='info'>
                         <div class='left'>
                             <div class='input-container'>
-                                <label for="documentStatus">Status</label>
-                                <input type="text" id="documentStatus" name="documentStatus" accept="image/jpeg, image/png, image/jpg" >
+                                <label for="documentStatus" class='label m-b-2'>Status</label>
+                                <input type="text" id="documentStatus" name="documentStatus" class='text-box c-red' value='<?php echo $user['verifyStatus'];?>'>
                             </div>  
-                            <span class='f-italic'>Approval might take more than 24 hours or more. Thank you for your patience!</span>
+                            <span class='f-italic '>Approval might take more than 24 hours or more. Thank you for your patience!</span>
                         </div>
-                        <button class='right next3' name='step3done'><a class='c-light' href='./current_employer.php'>SUBMIT</a></button>
                     </form>
                 </div>
             </div>

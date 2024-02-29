@@ -1,0 +1,41 @@
+main.admin .container {
+    min-height: calc(100vh - 8rem);
+    padding-top: 1rem;
+}
+main.admin .container.application {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+main.admin .content{
+    width: 1200px;
+}
+main.admin .title {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.3rem solid black;
+    margin-bottom: 2rem;
+}
+main.admin .title img {
+    height: 3rem;
+    width: 3rem;
+}
+main.admin .title h3 {
+    font-size: 1.6rem;
+}
+
+.no-record-label  {
+    margin: 2rem;
+    padding: 2rem 3.5rem;
+    color: var(--light-text);
+    background-color: var(--main-color);
+}
+.no-record-label  p {
+    text-align: center;
+    font-size: 1.4rem;
+}
+table {
+    border-collapse: collapse;
+}

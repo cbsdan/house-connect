@@ -88,19 +88,19 @@ main.worker .form-container form {
     display: flex;
     gap: 1rem;
 }
-main.worker .form-container form .left {
+main.worker .form-container form .left, main.worker .form-container .left {
     display: flex;
     flex-direction: column;
     flex: 1;
     max-width: 50%;
     gap: 1rem;
 }
-main.worker .form-container form .left .input-container {
+main.worker .form-container form .left .input-container, main.worker .form-container .left .input-container {
     font-size: 1.4rem;
     display: flex;
     flex-direction: column;
 }
-main.worker .form-container form .left .input-container label {
+main.worker .form-container form .left .input-container label, main.worker .form-container .left .input-container label {
     font-weight: 600;
 }
 main.worker .form-container form .left .input-container select, main.worker .form-container form .left .input-container input {

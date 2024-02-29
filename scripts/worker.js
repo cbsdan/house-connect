@@ -2,28 +2,6 @@ const stepsIndicators = document.querySelectorAll('.steps .step');
 const formContainers = document.querySelectorAll('.form-container');
 const nextStepBtns = document.querySelectorAll('.form-container button')
 
-formContainers.forEach((formContainer, i)=>{
-    const nextBtn = formContainer.querySelector('button');
-
-    nextBtn.addEventListener('click', ()=>{
-        !formContainer.classList.contains('hidden') ? formContainer.classList.add('hidden') : '';
-        
-        stepsIndicators.forEach((stepsIndicator)=>{
-            stepsIndicator.classList.remove('active');
-        })
-
-        if (formContainer.classList.contains('step1')) {
-            formContainers[i+1].classList.remove('hidden');
-            stepsIndicators[i+1].classList.add('active');
-        } else if (formContainer.classList.contains('step2')) {
-            formContainers[i+1].classList.remove('hidden');
-            stepsIndicators[i+1].classList.add('active');
-        } 
-    })
-})
-
-
-
 const imagePreviewEl = document.querySelector('.image-preview');
 const imagePreviews = document.querySelectorAll('.image-preview');
 const imageEl = document.querySelector('.image-preview img');
@@ -69,10 +47,8 @@ if (saveBtn) {
 const detailPreviewBtns = document.querySelectorAll('.open-detail-preview');
 const detailPreview = document.querySelector('.details-preview');
 
-console.log(detailPreviewBtns);
 
 if (detailPreview && detailPreviewBtns) {
-
     detailPreviewBtns.forEach((detailPreviewBtn)=>{
         detailPreviewBtn.addEventListener('click', ()=>{
             detailPreview.classList.remove('hidden');
@@ -81,5 +57,30 @@ if (detailPreview && detailPreviewBtns) {
 
     detailPreview.addEventListener('click', ()=>{
         detailPreview.classList.add('hidden');
+    })
+}
+
+
+const displayUsersBtn = document.querySelector('.nav.display-users');
+const verifyUsersBtn = document.querySelector('.nav.verify-users');
+
+const userAccounts = document.querySelector('.table-result.user-accounts')
+const verifyAccounts = document.querySelector('.table-result.verify-users')
+
+if (displayUsersBtn) {
+    displayUsersBtn.addEventListener('click', ()=>{
+        displayUsersBtn.classList.add('fw-bold');
+        verifyUsersBtn.classList.remove('fw-bold');
+        userAccounts.classList.remove('hidden');
+        verifyAccounts.classList.add('hidden');
+    })
+}
+
+if (verifyUsersBtn) {
+    verifyUsersBtn.addEventListener('click', ()=>{
+        verifyUsersBtn.classList.add('fw-bold');
+        displayUsersBtn.classList.remove('fw-bold');
+        verifyAccounts.classList.remove('hidden');
+        userAccounts.classList.add('hidden');
     })
 }

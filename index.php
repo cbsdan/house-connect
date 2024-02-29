@@ -6,6 +6,9 @@
             header('Location: ./worker/application.php');
         } else if ($_SESSION['userType'] == 'Employer') {
             header('Location: ./employer/account_profile.php');
+        } else {
+            header('Location: ./admin/dashboard.php');
+
         }
         exit();
     }

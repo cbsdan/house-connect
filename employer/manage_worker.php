@@ -6,6 +6,10 @@
         header('Location: ../worker/application.php');
         exit();
     }
+    if ($_SESSION['userType'] == 'Admin') {
+        header('Location: ../admin/dashboard.php');
+        exit();
+    }
 ?>
 
 <!DOCTYPE html>
@@ -221,7 +225,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <button class='pay-worker-btn'>Pay Worker Salary</button>
+                            <button class='pay-worker-btn'><a href='./salary_payment.php' class='c-light'>Pay Worker Salary</a></button>
 
                         </div>
                         

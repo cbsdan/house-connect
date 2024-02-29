@@ -6,6 +6,10 @@
         header('Location: ../employer/account_profile.php');
         exit();
     }
+    if ($_SESSION['userType'] == 'Admin') {
+        header('Location: ../admin/dashboard.php');
+        exit();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
