@@ -60,27 +60,29 @@ if (detailPreview && detailPreviewBtns) {
     })
 }
 
+const viewBtns = document.querySelectorAll('.view-btn');
+console.log(viewBtns);
 
-const displayUsersBtn = document.querySelector('.nav.display-users');
-const verifyUsersBtn = document.querySelector('.nav.verify-users');
-
-const userAccounts = document.querySelector('.table-result.user-accounts')
-const verifyAccounts = document.querySelector('.table-result.verify-users')
-
-if (displayUsersBtn) {
-    displayUsersBtn.addEventListener('click', ()=>{
-        displayUsersBtn.classList.add('fw-bold');
-        verifyUsersBtn.classList.remove('fw-bold');
-        userAccounts.classList.remove('hidden');
-        verifyAccounts.classList.add('hidden');
-    })
-}
-
-if (verifyUsersBtn) {
-    verifyUsersBtn.addEventListener('click', ()=>{
-        verifyUsersBtn.classList.add('fw-bold');
-        displayUsersBtn.classList.remove('fw-bold');
-        verifyAccounts.classList.remove('hidden');
-        userAccounts.classList.add('hidden');
+if (viewBtns) {
+    viewBtns.forEach((viewBtn)=>{
+        const id = viewBtn.querySelector('.idUser').textContent;
+        const postData = {
+            idUser: id 
+        }
+        viewBtn.addEventListener('click', ()=>{
+            $.ajax({
+                url: '../database/fetch_user_info.php', // Path to your PHP script
+                type: 'POST',
+                data: postData,
+                dataType: 'json',
+                success: function(data) {
+                    console.log(data); // Output data to console for testing
+                },
+                error: function(xhr, status, error) {
+                    // Handle errors
+                    console.error(xhr.responseText);
+                }
+            });
+        })
     })
 }

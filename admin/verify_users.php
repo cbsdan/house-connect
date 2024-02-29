@@ -2,7 +2,7 @@
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
-    
+
     if ($_SESSION['userType'] == 'Worker') {
         header('Location: ../worker/application.php');
         exit();
@@ -12,6 +12,7 @@
         exit();
     }
 
+    
     $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
                 TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
                 u.email, u.userType,
@@ -28,7 +29,9 @@
             FROM user AS u
             LEFT JOIN worker AS w ON u.idUser = w.idUser
             LEFT JOIN employer AS e ON u.idUser = e.idUser
-            WHERE u.userType = 'Worker' OR u.userType = 'Employer';";
+            WHERE (u.userType = 'Worker' OR u.userType = 'Employer') 
+                AND ((u.userType = 'Worker' AND w.verifyStatus = 'Not Verified') 
+                  OR (u.userType = 'Employer' AND e.verifyStatus = 'Not Verified'));";
 
     $result = $conn -> query($sql);
     
@@ -101,16 +104,16 @@
                         <h3>User Accounts</h3>  
                     </div>
                     <div class="right">
-                        <a class='nav display-users fw-bold' href='./user_accounts.php'>
+                        <a class='nav display-users' href='./user_accounts.php'>
                             Display Users
                         </a>
-                        <a class='nav verify-users' href='./verify_users.php'>
+                        <a class='nav verify-users fw-bold' href='./verify_users.php'>
                             Verify Users
                         </a>
                     </div>
                 </div>
                 <div class='info'>
-                    <div class='table-result user-accounts <?php echo (isset($users) ? '' : 'hidden') ?>'>
+                    <div class='table-result verify-users <?php echo (isset($users) ? '' : 'hidden') ?>'>
                         <table>
                             <thead>
                                 <tr>
@@ -120,9 +123,10 @@
                                     <th>Age</th>
                                     <th>Sex</th>
                                     <th>Email</th>
-                                    <th>Status</th>
                                     <th>User Type</th>
                                     <th>View</th>
+                                    <th>Approve</th>
+                                    <th>Decline</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -133,27 +137,21 @@
                                         } else {
                                             $profile = '../img/user-icon.png';
                                         }
-                                        
-                                        if (isset($user['verifyStatus'])) {
-                                            $verifyStaus = $user['verifyStatus'];
-                                        } else {
-                                            $verifyStaus = 'Not Verified';
-                                        }
 
                                         echo "<tr>
                                                 <td>". $user['idUser']."</td>
                                                 <td class='t-align-center' ><img src='". $profile ."' alt='profile'></td>
                                                 <td>".$user['fname'] . " " . $user['lname']."</td>
-                                                <td class='t-align-center'>".$user['age']."</td>
+                                                <td>".$user['age']."</td>
                                                 <td>".$user['sex']."</td>
                                                 <td>".$user['email']."</td>
-                                                <td>".$verifyStaus."</td>
                                                 <td class='t-align-center'>".$user['userType']."</td>
-                                                <td class='t-align-center c-yellow view-btn'>[View]<span class='idUser hidden'>".$user['idUser']."</span></td>
+                                                <td class='t-align-center c-yellow view-btn'>[View]<span class='idUser'></span></td>
+                                                <td class='t-align-center'><button class='green-white-btn'>Approve</button></td>
+                                                <td class='t-align-center'><button class='red-white-btn'>Decline</button></td>
                                             </tr>";
                                     }
                                 ?>
-                                
                             </tbody>
                         </table>
                     </div>
@@ -162,7 +160,7 @@
                         <p>There are no found record!</p>
                     </div>
 
-                    <div class='detail-preview hidden'>
+                    <div class='detail-preview hidden user-info'>
                         <div class="preview">
                             <div class="detail">
                                 <div class="title">

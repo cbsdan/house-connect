@@ -1,0 +1,35 @@
+main.admin .info {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+main.admin .info .details {
+    flex: 1 0 calc(50% - 3rem);
+    background-color: var(--main-color);
+    color: var(--light-text);
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+main.admin .info .details .title {
+    font-size: 2rem;
+    padding-bottom: 1rem;
+    font-weight: 600;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    border-bottom: 3px solid var(--light-text);
+}
+main.admin .info .details .data {
+    font-size: 1.7rem;
+    display: flex;
+    gap: 1.5rem;
+}
+main.admin .info .details .data .label, main.admin .info .details .data .value {
+    flex: 1 0 calc(50% - 3rem);
+}
+main.admin .info .details .data .label{
+    font-weight: 600;
+}
