@@ -25,8 +25,8 @@
         echo "Error: " . mysqli_error($conn);
         }
 
-        $insertWorkerQuery = "INSERT INTO worker (workerType, yearsOfExperience, verifyStatus, height, idUser, profilePic, idWorkerDocuments) 
-                                VALUES ('$workType', '$yearsOfExperience', 'Not Verified', '$height', '$userId', '$profilePic', $lastInsertedId)";
+        $insertWorkerQuery = "INSERT INTO worker (workerType, workerStatus, yearsOfExperience, verifyStatus, height, idUser, profilePic, idWorkerDocuments) 
+                                VALUES ('$workType', 'Not Verified', '$yearsOfExperience', 'Not Verified', '$height', '$userId', '$profilePic', $lastInsertedId)";
         $result = mysqli_query($conn, $insertWorkerQuery);
     
     

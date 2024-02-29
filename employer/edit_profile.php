@@ -64,7 +64,7 @@ function updateProfileData($idUser, $email, $fname, $lname, $sex, $birthdate, $v
     <link rel="stylesheet" href="../styles/media_query.css">
     <link rel="stylesheet" href="../styles/default.css">
 
-    <link rel="stylesheet" href="../styles/employer_styles/account_profile.css">
+    <link rel="stylesheet" href="../styles/employer_styles/edit_profile.css">
     <link rel="stylesheet" href="../styles/employer_styles/default.css">
 </head>
 
@@ -96,39 +96,41 @@ function updateProfileData($idUser, $email, $fname, $lname, $sex, $birthdate, $v
         <div class='container application'>
             <div class='content'>
                 <div class='title'>
-                    <div class='left'>
+                    <div class='left m-b-2'>
                         <img class='user-profile' src='../img/user-icon.png' placeholder='profile'>
                         <h3>Account Profile</h3>
-                        </div>
+                    </div>
                 </div>
                 <div class='info view-only'>
-                    <div class='left'>
-                <form class='info editable' action='' method='POST'>
-                    <div class='left'>
-                        <label class='label'>Email Address</label>
-                        <input class='text-box' name='email' readonly value="<?php echo $editUserData['email']; ?>">
-                        <label class='label'>First Name</label>
-                        <input class='text-box' name='fname' readonly value="<?php echo $editUserData['fname']; ?>">
-                        <label class='label'>Last Name</label>
-                        <input class='text-box' name='lname' readonly value="<?php echo $editUserData['lname']; ?>">
-                        <label class='label'>Sex</label>
-                        <input class='text-box' name='sex' readonly value="<?php echo $editUserData['sex']; ?>">
-                        <label class='label'>Birthdate</label>
-                        <input class='text-box' name='birthdate' type='date' value="<?php echo $editUserData['birthdate']; ?>">
-                    </div>
-                    <div class='right'>
-                        <label class='label'>Verification Status</label>
-                        <input class='text-box' name='verification_status' readonly value="<?php echo 'Not Verified';//$editUserData['verification_status'] ?>">
-                        <!-- Omitted Valid ID for security reasons -->
-                        <label class='label'>Address</label>
-                        <input class='text-box' name='address' placeholder="[Address]" value="<?php echo $editUserData['address']; ?>">
-                        <label class='label'>Contact Number</label>
-                        <input class='text-box' name='contactNo' placeholder="[Contact Number]" value="<?php echo $editUserData['contactNo']; ?>">
-                        <label class='label'>User Type</label>
-                        <input class='text-box' name='userType' readonly value="<?php echo $editUserData['userType']; ?>">
-                        <button type='submit' class='orange-white-btn'>Save Changes</button>
-                    </div>
-                </form>
+                    <form class='info editable' action='' method='POST' enctype="multipart/form-data">
+                        <div class='left'>
+                            <label class='label'>Email Address</label>
+                            <input class='text-box' name='email' readonly value="<?php echo $editUserData['email']; ?>">
+                            <label class='label'>First Name</label>
+                            <input class='text-box' name='fname' readonly value="<?php echo $editUserData['fname']; ?>">
+                            <label class='label'>Last Name</label>
+                            <input class='text-box' name='lname' readonly value="<?php echo $editUserData['lname']; ?>">
+                            <label class='label'>Sex</label>
+                            <input class='text-box' name='sex' readonly value="<?php echo $editUserData['sex']; ?>">
+                            <label class='label'>Birthdate (Editable)</label>
+                            <input class='text-box' name='birthdate' type='date' value="<?php echo $editUserData['birthdate']; ?>">
+                        </div>
+                        <div class='right'>
+                            <label class='label'>Verification Status</label>
+                            <input class='text-box' name='verification_status' readonly value="<?php echo 'Not Verified';//$editUserData['verification_status'] ?>">
+                            <!-- Omitted Valid ID for security reasons -->
+                            <label class='label'>Address (Editable)</label>
+                            <input class='text-box' name='address' placeholder="[Address]" value="<?php echo $editUserData['address']; ?>">
+                            <label class='label'>Contact Number (Editable)</label>
+                            <input class='text-box' name='contactNo' placeholder="[Contact Number]" value="<?php echo $editUserData['contactNo']; ?>">
+                            <label for="imageUpload" class='label'>Choose an image to upload</label>
+                            <input type="file" class='text-box' id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg">
+                            <label class='label'>User Type</label>
+                            <input class='text-box' name='userType' readonly value="<?php echo $editUserData['userType']; ?>">
+                            <button type='submit' class='orange-white-btn m-t-auto'>Save Changes</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </main>

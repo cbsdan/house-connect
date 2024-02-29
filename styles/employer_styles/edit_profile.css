@@ -17,6 +17,7 @@ main.employer .content .title .left .user-profile {
 }
 main.employer .content .title .right{
     padding: 2rem;
+    height: 100%;
 }
 main.employer .content .title .right img {
     height: 2.3em;
@@ -36,10 +37,11 @@ main.employer .info {
     display: flex;
     gap: 2rem;
     align-items: start;
+    flex: 1;
 
 }
 
-main.employer .info .left,  main.employer .info .right{
+main.employer form.info .left,  main.employer form.info .right{
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -53,4 +55,8 @@ main.employer .info .left .text-box, main.employer .info .right .text-box {
     padding: 0.5rem 1rem;
     border: 1px solid black;
     margin-bottom: 1rem;
+}
+
+main.employer form .right button {
+    margin-left: auto;
 }

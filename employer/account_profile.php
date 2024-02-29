@@ -97,7 +97,7 @@ if ($_SESSION['userType'] == 'Worker') {
                     <div class='right'>
                         <!-- Display other fetched user information -->
                         <p class='label'>Verification Status</p>
-                        <p class='text-box'><?php echo $userData['verification_status']; ?></p>
+                        <p class='text-box'><?php echo 'Not Verify'//$userData['verification_status']; ?></p>
                         <!-- Omitted Valid ID for security reasons -->
                         <p class='label'>Address</p>
                         <p class='text-box'><?php echo $userData['address']; ?></p>
