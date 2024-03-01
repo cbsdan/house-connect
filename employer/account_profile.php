@@ -3,16 +3,22 @@ include_once('../database/connect.php');
 include_once('../functions/user_authenticate.php');
 
 // Check if the user is logged in
-if (!isset($_SESSION['idUser'])) {
-    header('Location: ../login.php'); // Redirect to login if not logged in
+if ($_SESSION['userType'] == 'Admin') {
+    header('Location: ../admin/dashboard.php');
     exit();
 }
-
-$userData = fetchUserData($_SESSION['idUser']);
 
 if ($_SESSION['userType'] == 'Worker') {
     header('Location: ../worker/application.php');
     exit();
+}
+
+$userData = fetchEmployerData($_SESSION['idUser']);
+
+if ($userData['profilePic']) {
+    $profilePic = getImageSrc($userData['profilePic']);
+} else {
+    $profilePic = '../img/user-icon.png';
 }
 ?>
 
@@ -72,13 +78,19 @@ if ($_SESSION['userType'] == 'Worker') {
             <div class='content'>
                 <div class='title'>
                     <div class='left'>
-                        <img class='user-profile' src='../img/user-icon.png' placeholder='profile'>
+                        <img class='user-profile' src='<?php echo $profilePic?>' placeholder='profile'>
                         <h3>Account Profile</h3>
                     </div>
                     <div class='right'>
                         <img class='edit-profile' src='../img/edit-icon.png' placeholder onclick="redirectToEditProfile()">
                         <button class='save-changes hidden' onclick="toggleEditMode()">Save Changes</button>
                     </div>
+                </div>
+                <div class='not-verified-label <?php echo (($userData['verifyStatus'] == 'Not Verified') && !(isset($userData['validId'])) ? '' : 'hidden' );?>'>
+                    <p class='fs-medium m-b-2 t-align-center f-italic c-main-color'>You are not verified, Please upload one valid id and wait for admin approval!</p>
+                </div>
+                <div class='wait-for-approval-label <?php echo (($userData['verifyStatus'] == 'Not Verified') && (isset($userData['validId'])) ? '' : 'hidden' );?>'>
+                    <p class='fs-medium m-b-2 t-align-center f-italic c-main-color'>Please wait for an approval of your valid id from administrator.</p>
                 </div>
                 <div class='info view-only'>
                     <div class='left'>
@@ -97,8 +109,7 @@ if ($_SESSION['userType'] == 'Worker') {
                     <div class='right'>
                         <!-- Display other fetched user information -->
                         <p class='label'>Verification Status</p>
-                        <p class='text-box'><?php echo 'Not Verify'//$userData['verification_status']; ?></p>
-                        <!-- Omitted Valid ID for security reasons -->
+                        <p class='text-box'><?php echo $userData['verifyStatus']; ?></p>
                         <p class='label'>Address</p>
                         <p class='text-box'><?php echo $userData['address']; ?></p>
                         <p class='label'>Contact Number</p>

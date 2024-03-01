@@ -2,16 +2,20 @@
 include_once('../database/connect.php');
 include_once('../functions/user_authenticate.php');
 
-// Check if the user is logged in
-if (!isset($_SESSION['idUser'])) {
-    header('Location: ../login.php'); // Redirect to login if not logged in
+if ($_SESSION['userType'] == 'Worker') {
+    header('Location: ../worker/application.php');
+    exit();
+}
+
+if ($_SESSION['userType'] == 'Admin') {
+    header('Location: ../admin/dashboard.php');
     exit();
 }
 
 // Fetch user data based on the provided user ID in the URL
 if (isset($_GET['id'])) {
     $editUserId = $_GET['id'];
-    $editUserData = fetchUserData($editUserId);
+    $editUserData = fetchEmployerData($editUserId);
 
     if (!$editUserData) {
         // Redirect if the user data is not found
@@ -30,23 +34,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $address = $_POST['address'];
     $contactNo = $_POST['contactNo'];
 
-    // Update the database with the new data
-    updateProfileData($editUserId, $editUserData['email'], $editUserData['fname'], $editUserData['lname'], $editUserData['sex'], $birthdate, $editUserData['verification_status'], $address, $contactNo, $editUserData['userType']);
+    if (isset($_FILES['profilePic']) && $_FILES["profilePic"]["error"] == 0) {
+        $profilePic = addslashes(file_get_contents($_FILES['profilePic']['tmp_name']));
+    } else {
+        $profilePic = '';
+    }
 
-    // Redirect back to the profile page or any other desired page
+    if (isset($_FILES['validId']) && $_FILES["validId"]["error"] == 0) {
+        $validId = addslashes(file_get_contents($_FILES['validId']['tmp_name']));
+    } else {
+        $validId = '';
+    }
+
+    // Update the database with the new data
+    updateProfileData($editUserId, $birthdate, $address, $contactNo, $profilePic, $validId);
+
+    //Redirect back to the profile page or any other desired page
     header('Location: account_profile.php');
     exit();
 }
 
-function updateProfileData($idUser, $email, $fname, $lname, $sex, $birthdate, $verification_status, $address, $contactNo, $userType) {
-    global $conn;  // Use the global connection
-
-    // Implement database update logic here using prepared statements to prevent SQL injection
-    $stmt = $conn->prepare("UPDATE user SET birthdate=?, address=?, contactNo=? WHERE idUser=?");
-    $stmt->bind_param("sssi", $birthdate, $address, $contactNo, $idUser);
-    $stmt->execute();
-    $stmt->close();
+//get user profile image source
+if (isset($editUserData['profilePic']) && !($editUserData['profilePic'] == '')) {
+    $profilePic = getImageSrc($editUserData['profilePic']);
+} else {
+    $profilePic = '../img/user-icon.png';
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -97,7 +111,7 @@ function updateProfileData($idUser, $email, $fname, $lname, $sex, $birthdate, $v
             <div class='content'>
                 <div class='title'>
                     <div class='left m-b-2'>
-                        <img class='user-profile' src='../img/user-icon.png' placeholder='profile'>
+                        <img class='user-profile' src='<?php echo $profilePic; ?>' placeholder='profile'>
                         <h3>Account Profile</h3>
                     </div>
                 </div>
@@ -117,16 +131,15 @@ function updateProfileData($idUser, $email, $fname, $lname, $sex, $birthdate, $v
                         </div>
                         <div class='right'>
                             <label class='label'>Verification Status</label>
-                            <input class='text-box' name='verification_status' readonly value="<?php echo 'Not Verified';//$editUserData['verification_status'] ?>">
-                            <!-- Omitted Valid ID for security reasons -->
+                            <input class='text-box' name='verification_status' readonly value="<?php echo $editUserData['verifyStatus']; ?>">
                             <label class='label'>Address (Editable)</label>
                             <input class='text-box' name='address' placeholder="[Address]" value="<?php echo $editUserData['address']; ?>">
                             <label class='label'>Contact Number (Editable)</label>
                             <input class='text-box' name='contactNo' placeholder="[Contact Number]" value="<?php echo $editUserData['contactNo']; ?>">
                             <label for="imageUpload" class='label'>Choose an image to upload</label>
                             <input type="file" class='text-box' id="imageUpload" name="profilePic" accept="image/jpeg, image/png, image/jpg">
-                            <label class='label'>User Type</label>
-                            <input class='text-box' name='userType' readonly value="<?php echo $editUserData['userType']; ?>">
+                            <label for="imageUpload" class='label'>Upload a valid ID</label>
+                            <input type="file" class='text-box' id="idUpload" name="validId" accept="image/jpeg, image/png, image/jpg">
                             <button type='submit' class='orange-white-btn m-t-auto'>Save Changes</button>
                         </div>
                     </form>

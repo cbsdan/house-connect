@@ -10,6 +10,39 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+
+    // Check if the confirm button is clicked
+    if (isset($_POST['confirm'])) {
+        // Get preferences from the form
+        $interviewPlatform = $_POST['interview_platform'];
+        $preferredSex = $_POST['sex_preferred'];
+        $preferredAge = $_POST['preferred_age'];
+        $preferredHeight = $_POST['preferred_height'];
+        $preferredExperience = $_POST['preferred_experience'];
+
+        // Build the SQL query to fetch a random worker based on preferences
+        $query = "SELECT user.fname, user.sex, worker.workerType, worker.height, worker.yearsOfExperience
+                FROM user
+                JOIN worker ON user.idUser = worker.idUser
+                ORDER BY RAND()
+                LIMIT 1";
+
+        // Use prepared statement to prevent SQL injection
+        $stmt = $your_db_connection->prepare($query);
+        $stmt->bind_param("ssisiiii", $interviewPlatform, $preferredSex, $preferredSex, $preferredAge, $preferredAge, $preferredHeight, $preferredHeight, $preferredExperience, $preferredExperience);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        // Fetch the result as an associative array
+        $workerData = $result->fetch_assoc();
+
+        // Close the statement
+        $stmt->close();
+
+        // Display the fetched worker information
+        // You can use the displayWorker() JavaScript function from the previous example
+        echo "<script>displayWorker(" . json_encode($workerData) . ");</script>";
+    }
 ?>
 
 <!DOCTYPE html>
