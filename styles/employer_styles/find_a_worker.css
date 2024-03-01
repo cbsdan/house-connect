@@ -25,6 +25,7 @@ main.employer .content .info {
     gap: 2rem;
     flex: 1;
     font-size: 1.4rem;
+    align-items: start;
 }
 
 main.employer .info .bottom {

@@ -95,6 +95,9 @@ main.worker .container {
 .c-light {
     color: var(--light-text);
 }
+.c-main-color {
+    color: var(--main-color);
+}
 .c-green {
     color: var(--green-text);
 }
@@ -262,4 +265,12 @@ select {
 input[type="text"], input[type='file'], input[type='date'], input[type='datetime'], input[type='password'], input[type='email'], select, textarea {
     border: 1px solid black;
     padding: 0.5rem 1rem;
+}
+.text-box {
+    width: 100%;
+    flex: 1;
+    font-size: 1.5rem;
+}
+.label {
+    font-size: 1.5rem;
 }
