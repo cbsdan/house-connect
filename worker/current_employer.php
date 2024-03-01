@@ -67,7 +67,7 @@
                 </div>
                 
                 <!-- Available -->
-                <div class='info'>
+                <div class='info hidden'>
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-green'>Available</p>
@@ -114,7 +114,7 @@
                 </div>
 
                 <!-- Hired -->
-                <div class='info hidden'>
+                <div class='info'>
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-red'>Hired</p>

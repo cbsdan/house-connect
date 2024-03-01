@@ -1,7 +1,8 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
-    
+    include_once('../database/connect.php');
+
     if ($_SESSION['userType'] == 'Employer') {
         header('Location: ../employer/account_profile.php');
         exit();
@@ -9,6 +10,39 @@
     if ($_SESSION['userType'] == 'Admin') {
         header('Location: ../admin/dashboard.php');
         exit();
+    }
+
+    // Fetch user and worker information
+    $user = fetchUserInformation($conn);
+    $worker = fetchWorkerInformation($conn);
+
+    // Check if form is submitted
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        // Update other profile information in the database
+        $birthdate = $_POST['birthdate'];
+        $address = $_POST['address'];
+        $contactNo = $_POST['contactNo'];
+        $yearsOfExperience = $_POST['yearsOfExperience'];
+
+        // Update user and worker table with new information
+        $updateUserQuery = "UPDATE user SET birthdate='$birthdate', address='$address', contactNo='$contactNo' WHERE idUser='" . $user['idUser'] . "'";
+        $updateWorkerQuery = "UPDATE worker SET yearsOfExperience='$yearsOfExperience'";
+
+        // Handle profile picture upload
+        if(isset($_FILES["profilePic"]) && $_FILES["profilePic"]["error"] == 0) {
+            $profilePic = addslashes(file_get_contents($_FILES['profilePic']['tmp_name']));
+            $updateWorkerQuery .= ", profilePic='$profilePic'";
+        }
+
+        $updateWorkerQuery .= " WHERE idUser='" . $user['idUser'] . "'";
+
+        if ($conn->query($updateUserQuery) === TRUE && $conn->query($updateWorkerQuery) === TRUE) {
+            // If update successful, fetch the updated information
+            $user = fetchUserInformation($conn);
+            $worker = fetchWorkerInformation($conn);
+        } else {
+            echo "<script>alert(Error updating profile: " . $conn->error. ")</script>";
+        }
     }
 ?>
 
@@ -51,7 +85,7 @@
                         <a href='./account_profile.php' class='c-light fw-bold'>ACCOUNT PROFILE</a>
                     </nav>
                     <nav>
-                        <a href='../logout.php' class='c-light'>LOG OUT</a>
+                        <a href='../login.php' class='c-light'>LOG OUT</a>
                     </nav>
                 </div>
             </div>
@@ -74,60 +108,67 @@
                 <div class='info view-only'>
                     <div class='left'>
                         <p class='label'>Email Address</p>
-                        <p class='text-box'>[email address]</p>
+                        <p class='text-box'><?php echo $user['email']; ?></p>
                         <p class='label'>First Name</p>
-                        <p class='text-box'>[First Name]</p>
+                        <p class='text-box'><?php echo $user['fname']; ?></p>
                         <p class='label'>Last Name</p>
-                        <p class='text-box'>[Last Name]</p>
+                        <p class='text-box'><?php echo $user['lname']; ?></p>
                         <p class='label'>Sex</p>
-                        <p class='text-box'>[Sex]</p>
-                        <p class='label'>Height</p>
-                        <p class='text-box'>[Height]</p>
+                        <p class='text-box'><?php echo $user['sex']; ?></p>
+                        <p class='label'>Height (cm)</p>
+                        <p class='text-box'><?php echo $worker['height']; ?></p>
                     </div>
                     <div class='right'>
-                    <p class='label'>Birthdate</p>
-                        <p class='text-box'>[Birthdate]</p>
+                        <p class='label'>Birthdate</p>
+                        <p class='text-box'><?php echo $user['birthdate']; ?></p>
                         <p class='label'>Address</p>
-                        <p class='text-box'>[Address]</p>
+                        <p class='text-box'><?php echo $user['address']; ?></p>
                         <p class='label'>Contact Number</p>
-                        <p class='text-box'>[Contact Number]</p>
+                        <p class='text-box'><?php echo $user['contactNo']; ?></p>
                         <p class='label'>Years of Experience</p>
-                        <p class='text-box'>[Years of Experience]</p>
+                        <p class='text-box'><?php echo $worker['yearsOfExperience']; ?></p>
                         <p class='label'>User Type</p>
-                        <p class='text-box'>[User Type]</p>
+                        <p class='text-box'><?php echo $user['userType']; ?></p>
                     </div>
                 </div>
-
-                <form class='info editable hidden' action='' method='POST'>
+                
+                <!-- Editable form -->
+                <form id="profileForm" action='./account_profile.php' method='POST' class='info editable hidden' enctype="multipart/form-data">
                     <div class='left'>
-                        <label class='label'>Email Address</label>
-                        <input class='text-box' readonly placeholder="[email address]">
-                        <label class='label'>First Name</label>
-                        <input class='text-box' placeholder="[First Name]">
-                        <label class='label'>Last Name</label>
-                        <input class='text-box' placeholder="[Last Name]">
-                        <label class='label'>Sex</label>
-                        <input class='text-box' placeholder="[Sex]">
-                        <label class='label'>Height</label>
-                        <input class='text-box' placeholder="[Height]">
+                        <p class='label'>Email Address</p>
+                        <p class='text-box'><?php echo $user['email']; ?></p>
+                        <p class='label'>First Name</p>
+                        <p class='text-box'><?php echo $user['fname']; ?></p>
+                        <p class='label'>Last Name</p>
+                        <p class='text-box'><?php echo $user['lname']; ?></p>
+                        <p class='label'>Sex</p>
+                        <p class='text-box'><?php echo $user['sex']; ?></p>
+                        <p class='label'>Height</p>
+                        <p class='text-box'><?php echo $worker['height']; ?></p>
                     </div>
-                    <div class='right'>
-                        <label class='label'>Birthdate</label>
-                        <input class='text-box' placeholder="[Birthdate]">
-                        <label class='label'>Address</label>
-                        <input class='text-box' placeholder="[Address]">
-                        <label class='label'>Contact Number</label>
-                        <input class='text-box' placeholder="[Contact Number]">
-                        <label class='label'>Years of Experience</label>
-                        <input class='text-box' placeholder="[Years of Experience]">
-                        <label class='label'>User Type</label>
-                        <input class='text-box' placeholder="[User Type]">
+                    <div class="right">
+                        <label class='label'>Change Profile Picture</label>
+                        <input class='text-box' type="file" name="profilePic">
+                        <label class='label'>Birthdate (Editable)</label>
+                        <input class='text-box' type="date" name="birthdate" value="<?php echo $user['birthdate']; ?>">
+                        <label class='label'>Address (Editable)</label>
+                        <input class='text-box' type="text" name="address" value="<?php echo $user['address']; ?>">
+                        <label class='label'>Contact Number (Editable)</label>
+                        <input class='text-box' type="text" name="contactNo" value="<?php echo $user['contactNo']; ?>">
+                        <label class='label'>Years of Experience (Editable)</label>
+                        <input class='text-box' type="number" name="yearsOfExperience" value="<?php echo $worker['yearsOfExperience']; ?>">
                     </div>
                 </form>
+
             </div>
         </div>
     </main>
 
-
+    <!-- JavaScript to submit the form when Save Changes button is clicked -->
+    <script>
+        document.querySelector('.save-changes').addEventListener('click', function() {
+            document.getElementById('profileForm').submit();
+        });
+    </script>
 </body>
 </html>
