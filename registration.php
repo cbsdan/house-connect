@@ -33,14 +33,25 @@
     
         // Insert data into the database
         $sql = "INSERT INTO user (userType, email, password, fname, lname, sex, birthdate, address, contactNo) 
-                VALUES ('$userType', '$email', '$password', '$fname', '$lname', '$sex', '$birthdate', '$address', '$contactNo')";
-    
+        VALUES ('$userType', '$email', '$password', '$fname', '$lname', '$sex', '$birthdate', '$address', '$contactNo')";
+
         if ($conn->query($sql) === TRUE) {
-            echo "<script>alert('Registration successful!');</script>";
-            echo "<script>window.location.href = 'login.php';</script>";
-            exit; // Exit PHP to prevent further execution
-        } else {
-            echo "<script>. $sql . '<br>' . $conn->error</script>";
+            // Get the ID of the last inserted record
+            $lastInsertedId = $conn->insert_id;
+
+            if ($userType == 'Employer') {
+                $sql = "INSERT INTO employer (verifyStatus, idUser) VALUES ('Not Verified', $lastInsertedId)";
+                // Execute the second query
+                if ($conn->query($sql) === TRUE) {
+                    echo "<script>alert('Registration successful!');</script>";
+                    echo "<script>window.location.href = 'login.php';</script>";
+                    exit; // Exit PHP to prevent further execution
+                } else {
+                    echo "<script>. $sql . '<br>' . $conn->error</script>";
+                }
+            } else {
+                echo "<script>. $sql . '<br>' . $conn->error</script>";
+            }
         }
     }
 ?>
