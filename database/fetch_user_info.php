@@ -3,10 +3,11 @@
     session_start();
 
     $idUser = $_POST['idUser'];
+    
     if ($_SESSION['userType'] == 'Worker') {
-        $sql = "SELECT * FROM user INNER JOIN worker ON user.idUser = worker.idUser LEFT JOIN worker_documents ON worker.idWorkerDocuments = worker_documents.idWorkerDocuments WHERE user.idUser = ". $idUser;
+        $sql = "SELECT *, user.idUser FROM user LEFT JOIN worker ON user.idUser = worker.idUser LEFT JOIN worker_documents ON worker.idWorkerDocuments = worker_documents.idWorkerDocuments WHERE user.idUser = ". $idUser;
     } else {
-        $sql = "SELECT * FROM user INNER JOIN employer ON user.idUser = employer.idUser WHERE user.idUser = ". $idUser;
+        $sql = "SELECT *, user.idUser FROM user LEFT JOIN employer ON user.idUser = employer.idUser WHERE user.idUser = ". $idUser;
     }
 
     $result = $conn->query($sql);
@@ -18,6 +19,6 @@
         // Return data as JSON
         echo json_encode($data);
     } else {
-        echo "0 results";
+        echo $idUser;
     }
 ?>
