@@ -28,21 +28,28 @@
         $updateUserQuery = "UPDATE user SET birthdate='$birthdate', address='$address', contactNo='$contactNo' WHERE idUser='" . $user['idUser'] . "'";
         $updateWorkerQuery = "UPDATE worker SET yearsOfExperience='$yearsOfExperience'";
 
-        // Handle profile picture upload
+        
         if(isset($_FILES["profilePic"]) && $_FILES["profilePic"]["error"] == 0) {
             $profilePic = addslashes(file_get_contents($_FILES['profilePic']['tmp_name']));
             $updateWorkerQuery .= ", profilePic='$profilePic'";
         }
 
         $updateWorkerQuery .= " WHERE idUser='" . $user['idUser'] . "'";
-
+        
         if ($conn->query($updateUserQuery) === TRUE && $conn->query($updateWorkerQuery) === TRUE) {
             // If update successful, fetch the updated information
             $user = fetchUserInformation($conn);
             $worker = fetchWorkerInformation($conn);
+
         } else {
             echo "<script>alert(Error updating profile: " . $conn->error. ")</script>";
         }
+    }
+    // Get profile image source
+    if(isset($worker["profilePic"])) {
+        $profilePic = getImageSrc($worker["profilePic"]);
+    } else {
+        $profilePic = '../img/user-icon.png'; //default if no profile
     }
 ?>
 
@@ -85,7 +92,7 @@
                         <a href='./account_profile.php' class='c-light fw-bold'>ACCOUNT PROFILE</a>
                     </nav>
                     <nav>
-                        <a href='../login.php' class='c-light'>LOG OUT</a>
+                        <a href='../logout.php' class='c-light'>LOG OUT</a>
                     </nav>
                 </div>
             </div>
@@ -97,7 +104,7 @@
             <div class='content'>
                 <div class='title'>
                     <div class='left'>
-                        <img class='user-profile' src='../img/user-icon.png' placeholder='profile'>
+                        <img class='user-profile' src='<?php echo $profilePic ?>' placeholder='profile'>
                         <h3>Account Profile</h3>   
                     </div>
                     <div class='right'>
@@ -143,12 +150,10 @@
                         <p class='text-box'><?php echo $user['lname']; ?></p>
                         <p class='label'>Sex</p>
                         <p class='text-box'><?php echo $user['sex']; ?></p>
-                        <p class='label'>Height</p>
+                        <p class='label'>Height (cm)</p>
                         <p class='text-box'><?php echo $worker['height']; ?></p>
                     </div>
                     <div class="right">
-                        <label class='label'>Change Profile Picture</label>
-                        <input class='text-box' type="file" name="profilePic">
                         <label class='label'>Birthdate (Editable)</label>
                         <input class='text-box' type="date" name="birthdate" value="<?php echo $user['birthdate']; ?>">
                         <label class='label'>Address (Editable)</label>
@@ -157,6 +162,8 @@
                         <input class='text-box' type="text" name="contactNo" value="<?php echo $user['contactNo']; ?>">
                         <label class='label'>Years of Experience (Editable)</label>
                         <input class='text-box' type="number" name="yearsOfExperience" value="<?php echo $worker['yearsOfExperience']; ?>">
+                        <label class='label'>Change Profile Picture</label>
+                        <input class='text-box' type="file" name="profilePic">
                     </div>
                 </form>
 
