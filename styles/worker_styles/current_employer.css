@@ -34,6 +34,7 @@ main.worker .info .right {
     align-items: center;
     justify-content: center;
 }
+
 main.worker .info .right .contract-container img {
     max-width: 20rem;
     max-height: 20rem;

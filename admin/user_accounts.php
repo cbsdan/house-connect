@@ -124,6 +124,7 @@
                                     <th>Status</th>
                                     <th>User Type</th>
                                     <th>Edit</th>
+                                    <th>Delete</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -155,6 +156,12 @@
                                                         <input type='hidden' name='idUser' value=" .$user['idUser'] .">
                                                         <input type='hidden' name='userType' value=" .$user['userType'] .">
                                                         <button type='submit' class='c-yellow'>[Edit]</button>
+                                                    </form>
+                                                </td>
+                                                <td class='t-align-center'>
+                                                    <form action='../database/delete_user_account.php' method='POST' id='deleteForm' onsubmit='return confirmDelete()'>
+                                                        <input type='hidden' name='idUser' value=" .$user['idUser'] .">
+                                                        <button type='submit' class='c-red'>[Delete]</button>
                                                     </form>
                                                 </td>
                                             </tr>";

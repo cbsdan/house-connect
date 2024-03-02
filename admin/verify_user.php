@@ -49,7 +49,7 @@
 <body>
     <header class='logged-in'>
         <div class="content">
-            <button class='orange-white-btn'><a href='./user_accounts.php' class='c-light'>Back to User Accounts</a></button>
+            <button class='orange-white-btn'><a href='./verify_users.php' class='c-light'>Back to Verify Users</a></button>
         </div>
     </header>
 
@@ -68,18 +68,15 @@
                         </div>
                         <div class="data">
                             <h4 class="label">First Name</h4>
-                            <input class="text-box userFname" type='text' name='fname' value='<?php echo $user['fname'];?>'>
+                            <input class="text-box userFname" type='text' name='fname' value='<?php echo $user['fname'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Last Name</h4>
-                            <input class="text-box userLname" type='text' name='lname' value='<?php echo $user['lname'];?>'>
+                            <input class="text-box userLname" type='text' name='lname' value='<?php echo $user['lname'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Sex</h4>
-                            <select class="text-box userSex" type='text' name='sex' value='<?php echo $user['sex'];?>'>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
-                            </select>
+                            <input class="text-box userSex" type='text' name='sex' value='<?php echo $user['sex'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">User Type</h4>
@@ -89,23 +86,19 @@
                     <div class='right'>
                         <div class="data">
                             <h4 class="label">Email</h4>
-                            <input class="text-box userEmail" type='email' name='email' value='<?php echo $user['email'];?>'>
-                        </div>
-                        <div class="data">
-                            <h4 class="label">Password</h4>
-                            <input class="text-box userPassword" type='text' name='password' value='<?php echo $user['password'];?>'>
+                            <input class="text-box userEmail" type='email' name='email' value='<?php echo $user['email'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Birthdate</h4>
-                            <input class="text-box userBirthdate" type='date' name='birthdate' value='<?php echo $user['birthdate'];?>'>
+                            <input class="text-box userBirthdate" type='date' name='birthdate' value='<?php echo $user['birthdate'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Address</h4>
-                            <input class="text-box userTypeEl" type='text' name='address' value='<?php echo $user['address'];?>' >
+                            <input class="text-box userTypeEl" type='text' name='address' value='<?php echo $user['address'];?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Contact No.</h4>
-                            <input class="text-box userTypeEl" type='text' name='contactNo' value='<?php echo $user['contactNo'];?>' >
+                            <input class="text-box userTypeEl" type='text' name='contactNo' value='<?php echo $user['contactNo'];?>' readonly>
                         </div>
                     </div>
                 </div>
@@ -116,49 +109,31 @@
                 <div class="info <?php echo ($user['userType'] == 'Worker' ? '' : 'hidden')?>">
                     <h4 class='c-red t-align-center fs-medium w-100 <?php echo (isset($user['idWorker'])) ? 'hidden' : ''?>'>This worker have to submit application documents first.</h4>
                     <div class="left <?php echo (isset($user['idWorker'])) ? '' : 'hidden'?>">
-                        <div class='data <?php echo (isset($user['idWorker'])) ? '' : 'hidden'?>'>
-                            <h4 class="label">Profile Picture</h4>
-                            <input class="text-box " type='file' name='workerProfilePic' accept="image/jpeg, image/png, image/jpg" >
-                        </div>
                         <div class="data">
                             <h4 class="label">Worker Status</h4>
-                            <select class="text-box" name='workerStatus'>
-                                <option value="Available" <?php if ($user['workerStatus'] == 'Available') echo 'selected'?>>Available</option>
-                                <option value="Hired" <?php if ($user['workerStatus'] == 'Hired') echo 'selected'?>>Hired</option>
-                                <option value="Pending" <?php if ($user['workerStatus'] == 'Pending') echo 'selected'?>>Pending</option>
-                                <option value="Unavailable" <?php if ($user['workerStatus'] == 'Unavailable') echo 'selected'?>>Unavailable</option>
-                            </select>
+                            <input class="text-box" name='workerStatus' type='text' readonly value='<?php echo $user['workerStatus']; ?>'>
                         </div>
                         <div class="data">
                             <h4 class="label">Worker Type</h4>
-                            <select class="text-box" name='workerType'>
-                                <option value="Nanny" <?php if ($user['workerType'] == 'Nanny') echo 'selected'?>>Nanny</option>
-                                <option value="Maid" <?php if ($user['workerType'] == 'Maid') echo 'selected'?>>Maid</option>
-                                <option value="Gardener" <?php if ($user['workerType'] == 'Gardener') echo 'selected'?>>Gardener</option>
-                                <option value="Cook" <?php if ($user['workerType'] == 'Cook') echo 'selected'?>>Cook</option>
-                                <option value="Driver" <?php if ($user['workerType'] == 'Driver') echo 'selected'?>>Driver</option>
-                            </select>
+                            <input class="text-box" type='text' name='workerType' value='<?php echo $user['workerType']; ?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Paypal Email Address</h4>
-                            <input class="text-box userTypeEl" type='email' name='paypalEmail' value='<?php echo (isset($user['paypalEmail']) ? $user['paypalEmail'] : '');?>' >
+                            <input class="text-box userTypeEl" type='email' name='paypalEmail' value='<?php echo (isset($user['paypalEmail']) ? $user['paypalEmail'] : '');?>' readonly>
                         </div>
                     </div>
                     <div class="right <?php echo (isset($user['idWorker'])) ? '' : 'hidden'?>">
                         <div class="data">
                             <h4 class="label">Years of Experience</h4>
-                            <input class="text-box userTypeEl" type='number' name='yearsOfExperience' value='<?php echo (isset($user['yearsOfExperience']) ? $user['yearsOfExperience'] : '');?>' >
+                            <input class="text-box userTypeEl" type='number' name='yearsOfExperience' value='<?php echo (isset($user['yearsOfExperience']) ? $user['yearsOfExperience'] : '');?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Height (cm)</h4>
-                            <input class="text-box userTypeEl" type='number' name='height' value='<?php echo (isset($user['height']) ? $user['height'] : '');?>' >
+                            <input class="text-box userTypeEl" type='number' name='height' value='<?php echo (isset($user['height']) ? $user['height'] : '');?>' readonly>
                         </div>
                         <div class="data">
                             <h4 class="label">Verification Status</h4>
-                            <select class="text-box" name='workerVerifyStatus'>
-                                <option value="Verified" <?php if ($user['verifyStatus'] == 'Verified') echo 'selected'?>>Verified</option>
-                                <option value="Not Verified" <?php if ($user['verifyStatus'] == 'Not Verified') echo 'selected'?>>Not Verified</option>
-                            </select>
+                            <input class="text-box userTypeEl" type='text' name='workerVerifyStatus' value='<?php echo $user['verifyStatus'];?>' readonly>
                         </div>
                     </div>
                 </div>
@@ -188,63 +163,28 @@
                             <h4>Certificate</h4>
                         </div>
                     </div>
-                    <div class="bottom flex-row align-start flex-1">
-                        <div class="left flex-1">
-                            <input type='hidden' name='idWorkerDocuments' value='<?php echo $user['idWorkerDocuments'];?>'>
-                            <div class='data'>
-                                <h4 class="label">Update Curriculum Vitae</h4>
-                                <input class="text-box " type='file' name='curriculumVitae' accept="image/jpeg, image/png, image/jpg" >
-                            </div>
-                            <div class='data'>
-                                <h4 class="label">Update Worker ValidId</h4>
-                                <input class="text-box " type='file' name='workerValidId' accept="image/jpeg, image/png, image/jpg" >
-                            </div>
-                            <div class='data'>
-                                <h4 class="label">Update NBI</h4>
-                                <input class="text-box " type='file' name='nbi' accept="image/jpeg, image/png, image/jpg" >
-                            </div>
-                        </div>
-                        <div class="right flex-1">
-                            <div class='data'>
-                                <h4 class="label">Update Medical</h4>
-                                <input class="text-box " type='file' name='medical' accept="image/jpeg, image/png, image/jpg" >
-                            </div>
-                            <div class='data'>
-                                <h4 class="label">Update Certification</h4>
-                                <input class="text-box " type='file' name='certificate' accept="image/jpeg, image/png, image/jpg" >
-                            </div>
-
-                        </div>
-                    </div>
                 </div>
                 <div class="info <?php echo ($user['userType'] == 'Employer' ? '' : 'hidden')?>">
                     <div class="left">
-                        <div class="data">
-                            <h4 class="label">Change Valid ID</h4>
-                            <input class="text-box" type='file' name='employerValidId' accept="image/jpeg, image/png, image/jpg" >
-                        </div>
-                        <div class="data">
-                            <h4 class="label">Profile Picture</h4>
-                            <input class="text-box" type='file' name='employerProfilePic' accept="image/jpeg, image/png, image/jpg">
-                        </div>
-                    </div>
-                    <div class="right">
                         <div class="data <?php echo (isset($user['validId']) ? '' : 'hidden'); ?>">
                             <div class="image-preview flex-row"><h4 class="label">Valid ID</h4><img class='validIdImg' src="<?php echo $user['validId'] ?>" alt="valid ID"></div>
                         </div>
-                        <div class="data">
-                            <h4 class="label">Verification Status</h4>
-                            <select class="text-box" name='employerVerifyStatus'>
-                                <option value="Verified" <?php if ($user['verifyStatus'] == 'Verified') echo 'selected'?>>Verified</option>
-                                <option value="Not Verified" <?php if ($user['verifyStatus'] == 'Not Verified') echo 'selected'?>>Not Verified</option>
-                            </select>
-                        </div>
                     </div>
+                    <div class="right"></div>
                 </div>
 
                 <div class='buttons'>
-                    <button class='red-white-btn cancelBtn'><a href='./user_accounts.php' class='c-light'>Cancel</a></button>
-                    <button type='submit' class='green-white-btn'>Save Changes</button>
+                    <button class='orange-white-btn'><a class='c-light' href='./verify_users.php'>Cancel</a></button>
+                    <form action='../database/update_verify_status.php' method='GET' enctype="multipart/form-data">
+                        <input type='hidden' name='idUser' value="<?php echo $user['idUser']; ?>">
+                        <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
+                        <button type='submit' name='decline' value='decline' class='red-white-btn'>Decline</button>
+                    </form>
+                    <form action='../database/update_verify_status.php' method='GET'>
+                        <input type='hidden' name='idUser' value="<?php echo $user['idUser']; ?>">
+                        <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
+                        <button type='submit' name='approve' value='approve' class='green-white-btn'>Approve</button>
+                    </form>
                 </div>
 
             </form>

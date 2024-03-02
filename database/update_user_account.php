@@ -69,6 +69,10 @@
             if ($sql != "") {
                 $conn->multi_query($sql);
             }
+
+            $sql = "UPDATE employer SET verifyStatus = '" . $_POST['employerVerifyStatus'] . "' WHERE idUser = " . $userId;
+            $conn->query($sql);
+
         } else if ($userType == 'Worker') {
             // Construct the SQL query to check for the existence of the entity
             $sql = "SELECT * FROM worker WHERE idUser = $userId";
@@ -80,6 +84,7 @@
             if ($result->num_rows == 1) {
                 $workerStatus = $_POST['workerStatus'];
                 $workerType = $_POST['workerType'];
+                $workerVerifyStatus = $_POST['workerVerifyStatus'];
                 $paypalEmail = $_POST['paypalEmail'];
                 $yearsOfExperience = $_POST['yearsOfExperience'];
                 $height = $_POST['height'];
@@ -90,6 +95,7 @@
                 $sql .= "workerType = '$workerType', ";
                 $sql .= "paypalEmail = '$paypalEmail', ";
                 $sql .= "yearsOfExperience = '$yearsOfExperience', ";
+                $sql .= "verifyStatus = '$workerVerifyStatus', ";
                 $sql .= "height = '$height'";
                 $sql .= "WHERE idUser = $userId";
                 

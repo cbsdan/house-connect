@@ -110,6 +110,9 @@ main .content {
 .c-yellow{
     color: var(--yellow-text);
 }
+.c-blue{
+    color: var(--blue-text);
+}
 /* Buttons */
 button {
     width: fit-content;
