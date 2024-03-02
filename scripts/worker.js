@@ -77,19 +77,27 @@ const userFnameEl = document.querySelector('.userFname');
 const userLnameEl = document.querySelector('.userLname');
 const userEmailEl = document.querySelector('.userEmail');
 const userPasswordEl = document.querySelector('.userPassword');
-const userTypeEl = document.querySelector('.userType');
+const userTypeEl = document.querySelector('.userTypeEl');
 const userSexEl = document.querySelector('.userSex');
 const userBirthdateEl = document.querySelector('.userBirthdate');
+
+console.log(viewBtns);
 
 if (viewBtns) {
     viewBtns.forEach((viewBtn)=>{
         viewBtn.addEventListener('click', (event)=>{
             event.stopPropagation();
 
-            const id = viewBtn.querySelector('.idUser').textContent;
+            const idEl = viewBtn.querySelector('.idUser').textContent;
+            const userTypeElement = viewBtn.querySelector('.userType').textContent;
+
             const postData = {
-                idUser: id 
+                idUser: idEl,
+                userType: userTypeElement
             }
+            
+            console.log(postData);
+
             $.ajax({
                 url: '../database/fetch_user_info.php', // Path to your PHP script
                 type: 'POST',
@@ -98,7 +106,16 @@ if (viewBtns) {
                 success: function(data) {
                     personalInformation.classList.remove('hidden');
                     data = data[0];
+                    const profilePicData = data.profilePic;
 
+                    console.log(profilePicData);
+                    // if (profilePicData) {
+                    //     const profilePicUrl = 'data:image/jpeg;base64,' + profilePicData; // Assuming the image format is JPEG
+                    // } else {
+                    //  const profilePicUrl = '../img/user-icon.png'; //display default picture if there is no pic
+                    // }
+                    const profilePicUrl = '../img/user-icon.png'; //display default picture if there is no pic
+                   
                     userIdEl.value = data.idUser;
                     userFnameEl.value = data.fname;
                     userLnameEl.value = data.lname;
@@ -107,11 +124,13 @@ if (viewBtns) {
                     userTypeEl.value = data.userType;
                     userSexEl.value = data.sex;
                     userBirthdateEl.value = data.birthdate;
+                    userProfileEl.src = profilePicUrl;
 
                     console.log(data); // Output data to console for testing
                 },
                 error: function(xhr, status, error) {
                     console.error(xhr.responseText);
+                    console.error(error);
                 }
             });
         })
