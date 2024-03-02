@@ -79,6 +79,29 @@ function fetchAllUserInformation($idUser, $userType) {
             } else {
                 $user['profilePic'] = '../img/user-icon.png';
             }
+
+            //For employer
+            if(isset($user['validId'])) {
+                $user['validId'] = getImageSrc($user['validId']);
+            }
+
+            //For Worker
+            if(isset($user['validID'])) {
+                $user['validID'] = getImageSrc($user['validID']);
+            }
+            if(isset($user['curriculumVitae'])) {
+                $user['curriculumVitae'] = getImageSrc($user['curriculumVitae']);
+            }
+            if(isset($user['medical'])) {
+                $user['medical'] = getImageSrc($user['medical']);
+            }
+            if(isset($user['nbi'])) {
+                $user['nbi'] = getImageSrc($user['nbi']);
+            }
+            if(isset($user['certificate'])) {
+                $user['certificate'] = getImageSrc($user['certificate']);
+            }
+
             return $user;
         }  else {
             return null;
