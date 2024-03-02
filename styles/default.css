@@ -62,6 +62,9 @@ main.worker .container {
     max-width: var(--max-width);
 }
 
+main .content {
+    margin-bottom: 2rem;
+}
 /* Fonts */
 .fw-bold {
     font-weight: 600;
@@ -154,6 +157,7 @@ button {
     width: 100%;
 }
 
+
 /* Table */
 main.worker .info table, main.employer .info table, main.admin .info table {
     width: 100%;
@@ -177,6 +181,9 @@ select {
 }
 
 /* Image Preview */
+.image-preview {
+    cursor: pointer;
+}
 .image-preview.active {
     position: fixed;
     top: 0;
@@ -187,11 +194,11 @@ select {
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    cursor: pointer;
     z-index: 200;
     flex-direction: column;
     background-color: var(--black-opacity);
     color: var(--light-text);
+
 }
 .image-preview.active img {
     border: none !important;
@@ -262,7 +269,7 @@ select {
 }
 
 /* Inputs */
-input[type="text"], input[type='file'], input[type='date'], input[type='datetime'], input[type='password'], input[type='email'], select, textarea {
+input[type="text"], input[type="number"], input[type='file'], input[type='date'], input[type='datetime'], input[type='password'], input[type='email'], select, textarea {
     border: 1px solid black;
     padding: 0.5rem 1rem;
 }
@@ -273,4 +280,30 @@ input[type="text"], input[type='file'], input[type='date'], input[type='datetime
 }
 .label {
     font-size: 1.5rem;
+}
+
+/* Flex */
+.flex-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-direction: row;
+}
+.align-start {
+    align-items: start;
+}
+.flex-column {
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+
+.flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flex-1 {
+    flex: 1;
+    width: 100%;
 }
