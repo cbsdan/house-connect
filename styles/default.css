@@ -206,6 +206,7 @@ select {
     max-width: unset !important;
     height: 85vh !important;
     width: 95% !important;
+    border-radius: unset !important;
 }
 
 /* Detail Preview */
