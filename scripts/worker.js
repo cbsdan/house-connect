@@ -181,3 +181,11 @@ function displayWorker(workerData) {
     document.querySelector('.find-worker-btn').classList.add('hidden');
     document.querySelector('.find-another-worker-btn').classList.remove('hidden');
 }
+
+function confirmDelete() {
+    if (confirm("Are you sure you want to delete this user?")) {
+        return true; // Proceed with form submission
+    } else {
+        return false; // Cancel the form submission
+    }
+}

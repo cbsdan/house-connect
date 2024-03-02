@@ -5,7 +5,7 @@
     --tertiary-color: violet;
     --warning-color: rgb(224, 85, 85);
     --sucess-color: green;
-    
+
     --pale-main-color: #BF715D;
     --light-background: #f2f0f1;
     --light-background-blur: #f2f0f17c;
@@ -14,6 +14,7 @@
     --dark-text: black;
     --gray-text: grey;
     --red-text: #BF715D;
+    --blue-text: #4567fd;
     --yellow-text: #D4B92C;
     --green-text: #20B638;
     --black-opacity: rgba(0, 0, 0, 0.6);

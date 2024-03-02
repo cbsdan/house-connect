@@ -1,6 +1,7 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
         header('Location: ../employer/account_profile.php');
@@ -8,6 +9,19 @@
     }
     if ($_SESSION['userType'] == 'Admin') {
         header('Location: ../admin/dashboard.php');
+        exit();
+    }
+
+    // Handle switch status action
+    if(isset($_POST['switch-status-btn'])) { // changed button name to switch-status-btn
+        $newStatus = ($_POST['switch-status'] === 'available') ? 'Unavailable' : 'Available';
+        
+        // Update worker status in the database
+        $updateStatusQuery = "UPDATE worker SET workerStatus = '$newStatus' WHERE idUser = " . $_SESSION['idUser'];
+        $conn->query($updateStatusQuery);
+        
+        // Redirect back to the same page after status update
+        header('Location: '.$_SERVER['PHP_SELF']);
         exit();
     }
 ?>
@@ -66,37 +80,34 @@
                     <h3>Current Employer</h3>   
                 </div>
                 
+                <?php
+                    $workerStatusQuery = "SELECT workerStatus FROM worker WHERE idUser = " . $_SESSION['idUser'];
+                    $workerStatusResult = $conn->query($workerStatusQuery);
+                    $workerStatus = $workerStatusResult->fetch_assoc()['workerStatus'];
+                ?>
+                
                 <!-- Available -->
-                <div class='info hidden'>
+                <div class='info <?php echo ($workerStatus != 'Unavailable' && $workerStatus != 'Available'  ? 'hidden' : ''); ?>'>
                     <div class='left'>
                         <p class='label'>Status</p>
-                        <p class='text-box c-green'>Available</p>
-                        <form action="" method='POST'>
-                            <input id='switch-status' type="checkbox" name='switch-status' value='available'>
-                            <label for='switch-status'>Switch to 'Unavailable'</label>
+                        <p class='text-box <?php echo(($workerStatus === 'Available') ? 'c-green' : 'c-red')?>'><?php echo $workerStatus; ?></p>
+                        <form class='switch-status-form flex-column' action="" method='POST'>
+                            <div>
+                                <input id='switch-status' type='checkbox' name='switch-status' value='<?php echo(($workerStatus === 'Available') ? 'available' : 'unavailable');?>' >
+                                <label for='switch-status'>Switch to <?php echo (($workerStatus === 'Available') ? 'Unavailable' : 'Available') ?></label>
+                            </div>
+                            <button class='orange-white-btn' type='submit' name='switch-status-btn'>Update Status</button>
                         </form>
                     </div>
                     <div class='right'>
-                        <p class='f-italic c-red fs-medium'>(Please wait for an employer to hire you)</p>
-                    </div>
-                </div>
-
-                <!-- Unavailable -->
-                <div class='info hidden'>
-                    <div class='left'>
-                        <p class='label'>Status</p>
-                        <p class='text-box c-red'>Unavailable</p>
-                        <form action="" method='POST'>
-                            <input id='switch-status' type="checkbox" name='switch-status' value='unavailable'>
-                            <label for='switch-status'>Switch to 'Available'</label>
-                        </form>
-                    </div>
-                    <div class='right'>
+                        <p class='f-italic c-red fs-medium'>
+                            <?php echo ($workerStatus === 'Available' ? '(Please wait for an employer to hire you)' : '(Currently unavailable)')?>
+                        </p>
                     </div>
                 </div>
 
                 <!-- Pending -->
-                <div class='info hidden'>
+                <div class='info <?php echo ($workerStatus != 'Pending' ? 'hidden' : ''); ?>'>
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-yellow'>Pending</p>
@@ -114,7 +125,7 @@
                 </div>
 
                 <!-- Hired -->
-                <div class='info'>
+                <div class='info <?php echo ($workerStatus != 'Hired' ? 'hidden' : ''); ?>'>
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-red'>Hired</p>

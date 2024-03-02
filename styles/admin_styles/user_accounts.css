@@ -91,6 +91,10 @@ main.edit-user .content .buttons {
     display: flex;
     justify-content: end;
     gap: 1rem;
+    position: fixed;
+    right: 2rem;
+    bottom: 2rem;
+    background-color: var(--light-background-blur);
 }
 
 main.edit-user .validIdImg {

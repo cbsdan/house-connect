@@ -100,7 +100,7 @@
                 <div class='title'>
                     <div class='left'>
                         <div class='image-preview'><img class='user-profile' src='<?php echo $user['profilePic'] ?>' placeholder='profile'></div>
-                        <h3>Account Profile</h3>   
+                        <h3>Account Profile <span class='c-blue'>(User ID: <?php echo $user['idUser']; ?>)</span></h3>   
                     </div>
                     <div class='right'>
                         <img class='edit-profile' src='../img/edit-icon.png' placeholder>
