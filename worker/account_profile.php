@@ -11,10 +11,12 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+    
+    $idUser = $_SESSION['idUser'];
+    $userType = $_SESSION['userType'];
 
     // Fetch user and worker information
-    $user = fetchUserInformation($conn);
-    $worker = fetchWorkerInformation($conn);
+    $user = fetchAllUserInformation($idUser, $userType);
 
     // Check if form is submitted
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -38,18 +40,11 @@
         
         if ($conn->query($updateUserQuery) === TRUE && $conn->query($updateWorkerQuery) === TRUE) {
             // If update successful, fetch the updated information
-            $user = fetchUserInformation($conn);
-            $worker = fetchWorkerInformation($conn);
+            $user = fetchAllUserInformation($idUser, $userType);
 
         } else {
             echo "<script>alert(Error updating profile: " . $conn->error. ")</script>";
         }
-    }
-    // Get profile image source
-    if(isset($worker["profilePic"])) {
-        $profilePic = getImageSrc($worker["profilePic"]);
-    } else {
-        $profilePic = '../img/user-icon.png'; //default if no profile
     }
 ?>
 
@@ -104,7 +99,7 @@
             <div class='content'>
                 <div class='title'>
                     <div class='left'>
-                        <img class='user-profile' src='<?php echo $profilePic ?>' placeholder='profile'>
+                        <div class='image-preview'><img class='user-profile' src='<?php echo $user['profilePic'] ?>' placeholder='profile'></div>
                         <h3>Account Profile</h3>   
                     </div>
                     <div class='right'>
@@ -123,7 +118,7 @@
                         <p class='label'>Sex</p>
                         <p class='text-box'><?php echo $user['sex']; ?></p>
                         <p class='label'>Height (cm)</p>
-                        <p class='text-box'><?php echo $worker['height']; ?></p>
+                        <p class='text-box'><?php echo $user['height']; ?></p>
                     </div>
                     <div class='right'>
                         <p class='label'>Birthdate</p>
@@ -133,7 +128,7 @@
                         <p class='label'>Contact Number</p>
                         <p class='text-box'><?php echo $user['contactNo']; ?></p>
                         <p class='label'>Years of Experience</p>
-                        <p class='text-box'><?php echo $worker['yearsOfExperience']; ?></p>
+                        <p class='text-box'><?php echo $user['yearsOfExperience']; ?></p>
                         <p class='label'>User Type</p>
                         <p class='text-box'><?php echo $user['userType']; ?></p>
                     </div>
@@ -151,7 +146,7 @@
                         <p class='label'>Sex</p>
                         <p class='text-box'><?php echo $user['sex']; ?></p>
                         <p class='label'>Height (cm)</p>
-                        <p class='text-box'><?php echo $worker['height']; ?></p>
+                        <p class='text-box'><?php echo $user['height']; ?></p>
                     </div>
                     <div class="right">
                         <label class='label'>Birthdate (Editable)</label>
@@ -161,9 +156,9 @@
                         <label class='label'>Contact Number (Editable)</label>
                         <input class='text-box' type="text" name="contactNo" value="<?php echo $user['contactNo']; ?>">
                         <label class='label'>Years of Experience (Editable)</label>
-                        <input class='text-box' type="number" name="yearsOfExperience" value="<?php echo $worker['yearsOfExperience']; ?>">
+                        <input class='text-box' type="number" name="yearsOfExperience" value="<?php echo $user['yearsOfExperience']; ?>">
                         <label class='label'>Change Profile Picture</label>
-                        <input class='text-box' type="file" name="profilePic">
+                        <input class='text-box' type="file" name="profilePic" accept="image/jpeg, image/png, image/jpg">
                     </div>
                 </form>
 

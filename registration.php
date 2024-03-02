@@ -42,16 +42,19 @@
             if ($userType == 'Employer') {
                 $sql = "INSERT INTO employer (verifyStatus, idUser) VALUES ('Not Verified', $lastInsertedId)";
                 // Execute the second query
-                if ($conn->query($sql) === TRUE) {
-                    echo "<script>alert('Registration successful!');</script>";
-                    echo "<script>window.location.href = 'login.php';</script>";
-                    exit; // Exit PHP to prevent further execution
-                } else {
-                    echo "<script>. $sql . '<br>' . $conn->error</script>";
+                if ($conn->query($sql) != TRUE) {
+                    echo "<script> $sql '<br>' $conn->error</script>";
+                    exit();
                 }
-            } else {
-                echo "<script>. $sql . '<br>' . $conn->error</script>";
-            }
+
+            } 
+            
+            echo "<script>alert('Registration successful!');</script>";
+            echo "<script>window.location.href = 'login.php';</script>";
+            exit(); // Exit PHP to prevent further execution
+        } else {
+            echo "<script> $sql '<br>' $conn->error</script>";
+            exit();
         }
     }
 ?>

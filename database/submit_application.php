@@ -6,12 +6,18 @@
         $workType = $_POST['workType'];
         $yearsOfExperience = $_POST['yearsOfExperience'];
         $height = $_POST['height'];
-        $profilePic = $_FILES['profilePic']['name'];
+        $profilePic = addslashes(file_get_contents($_FILES['profilePic']['tmp_name']));
     
-        $curriculumVitae = $_FILES['curriculumVitae']['name'];
-        $validID = $_FILES['validID']['name'];
-        $nbi = $_FILES['nbi']['name'];
-        $medical = $_FILES['medical']['name'];
+        $curriculumVitae = addslashes(file_get_contents($_FILES['curriculumVitae']['tmp_name']));
+        $validID = addslashes(file_get_contents($_FILES['validID']['tmp_name']));
+        $nbi = addslashes(file_get_contents($_FILES['nbi']['tmp_name']));
+        $medical = addslashes(file_get_contents($_FILES['medical']['tmp_name']));
+
+        if (isset($_FILES['certifications']) && is_uploaded_file($_FILES['certifications']['tmp_name'])) {
+            $certifications = addslashes(file_get_contents($_FILES['certifications']['tmp_name']));
+        } else {
+            $certifications = null;
+        }
 
         $userId = $_SESSION['idUser'];
        
@@ -26,7 +32,7 @@
         }
 
         $insertWorkerQuery = "INSERT INTO worker (workerType, workerStatus, yearsOfExperience, verifyStatus, height, idUser, profilePic, idWorkerDocuments) 
-                                VALUES ('$workType', 'Not Verified', '$yearsOfExperience', 'Not Verified', '$height', '$userId', '$profilePic', $lastInsertedId)";
+                                VALUES ('$workType', 'Unavailable', '$yearsOfExperience', 'Not Verified', '$height', '$userId', '$profilePic', $lastInsertedId)";
         $result = mysqli_query($conn, $insertWorkerQuery);
     
     

@@ -62,6 +62,31 @@ function fetchWorkerInformation($conn) {
     return $workerResult->fetch_assoc();
 }
 
+function fetchAllUserInformation($idUser, $userType) {
+    global $conn;
+    if ($userType == 'Worker') {
+        $sql = "SELECT *, user.idUser FROM user LEFT JOIN worker ON user.idUser = worker.idUser LEFT JOIN worker_documents ON worker.idWorkerDocuments = worker_documents.idWorkerDocuments WHERE user.idUser = ". $idUser;
+    } else if ($userType == 'Employer') {
+        $sql = "SELECT *, user.idUser FROM user LEFT JOIN employer ON user.idUser = employer.idUser WHERE user.idUser = ". $idUser;
+    }
+    if (isset($sql)) {
+        $result = $conn->query($sql);
+        if ($result->num_rows == 1) {
+            $user = $result->fetch_assoc();
+
+            if (isset($user['profilePic'])) {
+                $user['profilePic'] = getImageSrc($user['profilePic']);
+            } else {
+                $user['profilePic'] = '../img/user-icon.png';
+            }
+            return $user;
+        }  else {
+            return null;
+        }
+    } else {
+        return null;
+    }
+}
 
 // FOR BLOB IMAGE
 function getImageSrc($profile) {
