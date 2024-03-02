@@ -66,7 +66,7 @@
 
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+    <script src='../scripts/jquery-3.7.1.min.js' defer></script>
 
 
 </head>
@@ -98,7 +98,7 @@
     <main class='admin'>
         <div class='container application'>
             <div class='content'>
-                <div class='title'>
+                <div class='title border-bottom'>
                     <div class="left">
                         <img class='user-profile' src='../img/groups-people.png' placeholder='groups-icon'>
                         <h3>User Accounts</h3>  
@@ -139,7 +139,7 @@
                                         }
 
                                         echo "<tr>
-                                                <td>". $user['idUser']."</td>
+                                                <td class='t-align-center'>". $user['idUser']."</td>
                                                 <td class='t-align-center' ><img src='". $profile ."' alt='profile'></td>
                                                 <td>".$user['fname'] . " " . $user['lname']."</td>
                                                 <td>".$user['age']."</td>

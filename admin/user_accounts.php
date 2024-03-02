@@ -12,6 +12,7 @@
         exit();
     }
 
+    //Fetch all the users except for an admin account
     $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
                 TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
                 u.email, u.userType,
@@ -19,7 +20,7 @@
                     WHEN u.userType = 'Worker' THEN w.profilePic
                     WHEN u.userType = 'Employer' THEN e.profilePic
                     ELSE NULL
-                END AS profile,
+                END AS profilePic,
                 CASE 
                     WHEN u.userType = 'Worker' THEN w.verifyStatus
                     WHEN u.userType = 'Employer' THEN e.verifyStatus
@@ -28,7 +29,8 @@
             FROM user AS u
             LEFT JOIN worker AS w ON u.idUser = w.idUser
             LEFT JOIN employer AS e ON u.idUser = e.idUser
-            WHERE u.userType = 'Worker' OR u.userType = 'Employer';";
+            WHERE u.userType = 'Worker' OR u.userType = 'Employer'
+            ORDER BY u.idUser;";
 
     $result = $conn -> query($sql);
     
@@ -63,8 +65,7 @@
 
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
-
+    <script src='../scripts/jquery-3.7.1.min.js' defer></script>
 
 </head>
 <body>
@@ -95,7 +96,7 @@
     <main class='admin'>
         <div class='container application'>
             <div class='content'>
-                <div class='title'>
+                <div class='title border-bottom'>
                     <div class="left">
                         <img class='user-profile' src='../img/groups-people.png' placeholder='groups-icon'>
                         <h3>User Accounts</h3>  
@@ -107,7 +108,7 @@
                         <a class='nav verify-users' href='./verify_users.php'>
                             Verify Users
                         </a>
-                    </div>
+                    </div> 
                 </div>
                 <div class='info'>
                     <div class='table-result user-accounts <?php echo (isset($users) ? '' : 'hidden') ?>'>
@@ -122,7 +123,7 @@
                                     <th>Email</th>
                                     <th>Status</th>
                                     <th>User Type</th>
-                                    <th>View</th>
+                                    <th>Edit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -141,7 +142,7 @@
                                         }
 
                                         echo "<tr>
-                                                <td>". $user['idUser']."</td>
+                                                <td class='t-align-center'>". $user['idUser']."</td>
                                                 <td class='t-align-center' ><img src='". $profile ."' alt='profile'></td>
                                                 <td>".$user['fname'] . " " . $user['lname']."</td>
                                                 <td class='t-align-center'>".$user['age']."</td>
@@ -149,71 +150,22 @@
                                                 <td>".$user['email']."</td>
                                                 <td>".$verifyStaus."</td>
                                                 <td class='t-align-center'>".$user['userType']."</td>
-                                                <td class='t-align-center c-yellow view-btn'>[View]<span class='idUser hidden'>".$user['idUser']."</span></td>
+                                                <td class='t-align-center view-btn'>
+                                                    <form action='./edit-user-account.php' method='POST'>
+                                                        <input type='hidden' name='idUser' value=" .$user['idUser'] .">
+                                                        <input type='hidden' name='userType' value=" .$user['userType'] .">
+                                                        <button type='submit' class='c-yellow'>[Edit]</button>
+                                                    </form>
+                                                </td>
                                             </tr>";
                                     }
                                 ?>
-                                
                             </tbody>
                         </table>
                     </div>
 
                     <div class='no-record-label <?php echo (isset($users) ? 'hidden' : '') ?>'>
                         <p>There are no found record!</p>
-                    </div>
-
-                    <div class='detail-preview hidden'>
-                        <div class="preview">
-                            <div class="detail">
-                                <div class="title">
-                                    <h3>Personal Information</h3>
-                                </div>
-                                <div class="info">
-                                    <div class="left">
-                                        <div class="data">
-                                            <h4 class="label">User ID</h4>
-                                            <p class="text-box">001</p>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Profile</h4>
-                                            <p class="text-box"><img src='../img/user-icon.png'></p>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Profile</h4>
-                                            <input class='file-upload' type='file'>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Email</h4>
-                                            <input class="text-box" type='email' name='email' value='example_account@gmail.com'>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Password</h4>
-                                            <input class="text-box" name='password' value='example_account@gmail.com'>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">First Name</h4>
-                                            <input class="text-box" type='text' name='fname' value='Daniel'>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Last Name</h4>
-                                            <input class="text-box" type='text' name='lname' value='Cabasa'>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Sex</h4>
-                                            <select class="text-box" type='text' name='sex' value='Male'>
-                                                <option value="Male">Male</option>
-                                                <option value="Male">Female</option>
-                                            </select>
-                                        </div>
-                                        <div class="data">
-                                            <h4 class="label">Birthdate</h4>
-                                            <input class="text-box" type='date' name='birthdate'>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </div>
