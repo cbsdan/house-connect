@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`contract` (
   `contractStatus` VARCHAR(45) NOT NULL,
   `startDate` DATE NULL DEFAULT NULL,
   `endDate` DATE NULL DEFAULT NULL,
-  `salarytAmt` DECIMAL(2,0) NULL DEFAULT NULL,
+  `salarytAmt` DECIMAL(6,2) NULL DEFAULT NULL,
   `contractImg` MEDIUMBLOB NULL DEFAULT NULL,
   `date_created` TIMESTAMP(1) NOT NULL DEFAULT CURRENT_TIMESTAMP(1) ON UPDATE CURRENT_TIMESTAMP(1),
   `idWorker` INT(11) NOT NULL,
@@ -156,7 +156,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`employer_payment` (
   `idEmployerPayment` INT(11) NOT NULL AUTO_INCREMENT,
-  `amount` DECIMAL(2,0) NOT NULL,
+  `amount` DECIMAL(6,2) NOT NULL,
   `method` VARCHAR(45) NOT NULL,
   `imgReceipt` MEDIUMBLOB NOT NULL,
   `paymentStatus` VARCHAR(45) NOT NULL,
@@ -242,7 +242,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `house_connect`.`worker_salary` (
   `idWorkerSalary` INT(11) NOT NULL AUTO_INCREMENT,
   `paypalEmail` VARCHAR(45) NOT NULL,
-  `amount` DECIMAL(2,0) NOT NULL,
+  `amount` DECIMAL(6,2) NOT NULL,
   `status` VARCHAR(45) NOT NULL,
   `modified_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `idEmployerPayment` INT(11) NOT NULL,
