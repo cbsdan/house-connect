@@ -1,4 +1,7 @@
 <?php
+    //Check first if the user is logged in
+    include_once('../functions/user_authenticate.php');
+
 $servername = "localhost"; 
 $username = "root"; 
 $password = ""; 
