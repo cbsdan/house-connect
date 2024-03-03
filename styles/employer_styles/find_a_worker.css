@@ -27,6 +27,10 @@ main.employer .content .info {
     font-size: 1.4rem;
     align-items: start;
 }
+main.employer .content .info.flex-center {
+    align-items: center;
+
+}
 
 main.employer .info .bottom {
     display: flex;
@@ -38,7 +42,6 @@ main.employer .info .top {
     align-items: center;
     justify-content: space-evenly;
     gap: 1rem;
-    margin-bottom: 2rem;
 }
 main.employer .info .top .image-preview {
     display: flex;
