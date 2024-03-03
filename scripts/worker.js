@@ -189,3 +189,12 @@ function confirmDelete() {
         return false; // Cancel the form submission
     }
 }
+
+const findWorkerBtn = document.querySelector('.find-worker-btn');
+const findWorkerForm = document.querySelector('.find-worker-form');
+
+if (findWorkerBtn) {
+    findWorkerBtn.addEventListener('click', ()=>{
+        findWorkerForm.submit();
+    })
+}
