@@ -1,6 +1,7 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
         header('Location: ../employer/account_profile.php');
@@ -10,6 +11,18 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+    
+    $sql = "SELECT contract.*, userEmployer.fname AS employer_fname, userEmployer.lname AS employer_lname, 
+                userWorker.fname AS worker_fname, userWorker.lname AS worker_lname
+            FROM contract 
+            LEFT JOIN employer ON contract.idEmployer = employer.idEmployer 
+            LEFT JOIN user AS userEmployer ON employer.idUser = userEmployer.idUser
+            LEFT JOIN worker ON worker.idWorker = contract.idWorker
+            LEFT JOIN user AS userWorker ON worker.idUser = userWorker.idUser
+            WHERE userWorker.idUser = " .$_SESSION['idUser'];
+
+    $result = mysqli_query($conn, $sql);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +77,7 @@
                     <h3>Work History</h3>   
                 </div>
                 <div class='info'>
-                    <table class=''>
+                    <table class='<?php echo ($result->num_rows == 0 ? 'hidden' : '');?>'>
                         <thead>
                             <tr>
                                 <th>Status</th>
@@ -75,32 +88,29 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Pending</td>
-                                <td>John Smith</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                            </tr>
-                            <tr>
-                                <td>Completed</td>
-                                <td>Michael Brown</td>
-                                <td>Jan 01, 2020</td>
-                                <td>Jan 01, 2021</td>
-                                <td>P20,000</td>
-                            </tr>
-                            <tr>
-                                <td>Canceled</td>
-                                <td>Emily Johnson</td>
-                                <td>Jan 01, 2019</td>
-                                <td>N/A</td>
-                                <td>N/A</td>
-                            </tr>
+                            <?php
+                                while ($row = mysqli_fetch_array($result)) {
+                                    $contractStatus = $row['contractStatus'];
+                                    $startDate = $row['startDate'];
+                                    $endDate = $row['endDate'];
+                                    $salaryAmt = $row['salaryAmt'];
+                                    $employerName = $row['employer_fname'] . " " . $row['employer_lname'];
+                                
+                                    echo 
+                                    "<tr>
+                                        <td>$contractStatus</td>
+                                        <td>$employerName</td>
+                                        <td>" . (isset($startDate) ? $startDate : 'N/A') . "</td>
+                                        <td>" . (isset($endDate) ? $endDate : 'N/A') . "</td>
+                                        <td>" . (isset($salaryAmt) ? "₱$salaryAmt" : 'N/A') . "</td>
+                                    </tr>";
+                                }
+                            ?>
                         </tbody>
                     </table>
 
                     <!-- If there is no previous work -->
-                    <div class='no-record-label hidden'>
+                    <div class='no-record-label <?php echo ($result->num_rows > 0 ? 'hidden' : '');?>'>
                         <p>You have no previous work in the system!</p>
                     </div>
                 </div>

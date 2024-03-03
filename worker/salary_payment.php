@@ -1,6 +1,7 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
         header('Location: ../employer/account_profile.php');
@@ -10,6 +11,8 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+
+    $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
 ?>
 
 <!DOCTYPE html>
@@ -65,7 +68,7 @@
                     <h3>Salary Payment</h3>   
                 </div>
                 <div class='info'>
-                    <table class=''>
+                    <table class='<?php echo (isset($salaryDetails) ? '' : 'hidden');?>'>
                         <thead>
                             <tr>
                                 <th>Paypal Account</th>
@@ -76,32 +79,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>example_account@gmail.com</td>
-                                <td>Successful</td>
-                                <td>P20,000</td>
-                                <td>Jan 01, 2024</td>
-                                <td>P18,000</td>
-                            </tr>
-                            <tr>
-                                <td>example_account@gmail.com</td>
-                                <td>Successful</td>
-                                <td>P20,000</td>
-                                <td>Jan 01, 2024</td>
-                                <td>P18,000</td>
-                            </tr>
-                            <tr>
-                                <td>example_account@gmail.com</td>
-                                <td>Successful</td>
-                                <td>P20,000</td>
-                                <td>Jan 01, 2024</td>
-                                <td>P18,000</td>
-                            </tr>
+                        <?php
+                            if (isset($salaryDetails)) {
+                                foreach ($salaryDetails as $row) {
+                                    $paypalacc = $row['workerPaypalEmail'];
+                                    $status = $row['workerSalaryStatus'];
+                                    $amountPaidEmp = $row['employerPaymentAmount'];
+                                    $endDate = $row['endDate'];
+                                    $salaryamt = $row['workerSalaryAmount'];
+
+                                    echo 
+                                    "<tr>
+                                        <td>$paypalacc</td>
+                                        <td>$status</td>
+                                        <td>$amountPaidEmp</td>
+                                        <td>$endDate</td>
+                                        <td>₱ $salaryamt</td>
+                                    </tr>";
+                                }
+                            }
+                         ?>
                         </tbody>
                     </table>
 
                     <!-- If there is no previous work -->
-                    <div class='no-record-label hidden'>
+                    <div class='no-record-label <?php echo (isset($salaryDetails) ? 'hidden' : '');?>'>
                         <p>You have no previous salary payment in the system!</p>
                     </div>
                 </div>

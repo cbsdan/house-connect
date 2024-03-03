@@ -24,6 +24,14 @@
         header('Location: '.$_SERVER['PHP_SELF']);
         exit();
     }
+
+    $contractPending = getLatestContractInfo($_SESSION['idUser']);
+    $contract = getLatestContractByUserID($_SESSION['idUser']);
+
+    if (isset($contract)) {
+        $meetDetails = getMeetingDetailsByIdContract($contract['idContract']);
+        $employer = getEmployerInformationByContractID($contract['idContract']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -112,15 +120,17 @@
                         <p class='label'>Status</p>
                         <p class='text-box c-yellow'>Pending</p>
                         <p class='label'>Meet Platform</p>
-                        <p class='text-box'>[meet platform]</p>
+                        <p class='text-box'><?php echo $meetDetails['platform']?></p>
                         <p class='label'>Meet Link</p>
-                        <p class='text-box'>[Meet Link]</p>
-                        <p class='label'>Meet Date and Time</p>
-                        <p class='text-box'>[Meet Date and Time]</p>
-                        <p class='label'>Employer</p>
-                        <p class='text-box'>[Employer]</p>
+                        <p class='text-box'><?php echo $meetDetails['link']?></p>
                     </div>
                     <div class='right'>
+                        <p class='label'>Meet Date and Time</p>
+                        <p class='text-box'><?php echo $meetDetails['meetDate']?></p>
+                        <p class='label'>Employer</p>
+                        <p class='text-box'><?php echo $meetDetails['fname'] . " " . $meetDetails['lname']?></p>
+                        <p class='label'>Employer Message</p>
+                        <p class='text-box'><?php echo $meetDetails['employerMessage']?></p>
                     </div>
                 </div>
 
@@ -129,18 +139,24 @@
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-red'>Hired</p>
+                        <p class='label'>Employer</p>
+                        <p class='text-box'><?php echo $employer['employerFname'] . " " . $employer['employerLname']  ; ?></p>
                         <p class='label'>Salary Amount</p>
-                        <p class='text-box'>[salary amount]</p>
-                        <p class='label'>Date of Payment</p>
-                        <p class='text-box'>[Date of Payment]</p>
+                        <p class='text-box'><?php echo $contract['salaryAmt']; ?></p>
+                        <!-- <p class='label'>Date of Payment</p>
+                        <p class='text-box'><?php //echo $contract['salaryAmt']; ?></p> -->
                         <p class='label'>Starting Date</p>
-                        <p class='text-box'>[Starting Date]</p>
+                        <p class='text-box'><?php echo $contract['startDate']; ?></p>
                         <p class='label'>End of Contract</p>
-                        <p class='text-box'>[End of Contract]</p>
+                        <p class='text-box'><?php echo $contract['endDate']; ?></p>
                     </div>
-                    <div class='right'>
-                        <div class='contract-container image-preview'>
-                            <img src='../img/document-sample.jpg' alt='contract-img'>
+                    <div class='right flex-row flex-center'>
+                        <div class='contract-container image-preview flex-center flex-column <?php echo (isset($employer['employerProfilePic']) ? '' : 'hidden')?>'>
+                            <img src='<?php echo $employer['employerProfilePic'] ?>' alt='contract-img'>
+                            <P class='f-italic fs-small t-align-center'>Employer Profile</P>
+                        </div>
+                        <div class='contract-container image-preview flex-center flex-column'>
+                            <img src='<?php echo $contract['contractImg'] ?>' alt='contract-img'>
                             <P class='f-italic fs-small t-align-center'>Contract image</P>
                         </div>
                     </div>
