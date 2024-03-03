@@ -408,33 +408,76 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
     
+    function searchCandidateWorkers($workerType, $sex = null, $age = null, $height = null, $yearsOfExperience = null) {
+        global $conn; // Assuming you have a database connection
     
+        // Start building the SQL query
+        $sql = "SELECT uw.*, w.*, wd.* FROM user uw
+                JOIN worker w ON w.idUser = uw.idUser
+                LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments
+                WHERE w.workerType = '$workerType'";
+    
+        // Add conditional clauses for optional parameters
+        if ($sex !== null) {
+            $sql .= " AND uw.sex = '$sex'";
+        }
+        if ($age !== null) {
+            // Calculate birthdate based on provided age
+            $birthdate = date('Y-m-d', strtotime("-$age years"));
+            $sql .= " AND uw.birthdate <= '$birthdate'";
+        }
+        if ($height !== null) {
+            $sql .= " AND w.height >= '$height'";
+        }
+        if ($yearsOfExperience !== null) {
+            $sql .= " AND w.yearsOfExperience >= '$yearsOfExperience'";
+        }
+        $sql .= " AND w.workerStatus = 'Available'";
+
+        // Execute the query
+        $result = $conn->query($sql);
+    
+        // Check if the query executed successfully
+        if ($result === false || $result->num_rows == 0) {
+            return null;
+        } else {
+            // Fetch the result
+            $candidates = [];
+            while ($row = $result->fetch_assoc()) {
+                if (isset($row['profilePic'])) {
+                    $row['profilePic'] = getImageSrc($row['profilePic']);
+                } else {
+                    $row['profilePic'] = '../img/user-icon.png';
+                }
+                if (isset($row['curriculumVitae'])) {
+                    $row['curriculumVitae'] = getImageSrc($row['curriculumVitae']);
+                } else {
+                    $row['curriculumVitae'] = '../img/documents-icon.png';
+                }
+                if (isset($row['validID'])) {
+                    $row['validID'] = getImageSrc($row['validID']);
+                } else {
+                    $row['validID'] = '../img/documents-icon.png';
+                }
+                if (isset($row['nbi'])) {
+                    $row['nbi'] = getImageSrc($row['nbi']);
+                } else {
+                    $row['nbi'] = '../img/documents-icon.png';
+                }
+                if (isset($row['medical'])) {
+                    $row['medical'] = getImageSrc($row['medical']);
+                } else {
+                    $row['medical'] = '../img/documents-icon.png';
+                }
+                if (isset($row['certificate'])) {
+                    $row['certificate'] = getImageSrc($row['certificate']);
+                } 
+                
+                $candidates[] = $row;
+            }
+            return $candidates;
+        }
+    }
 ?>
 
 
-<!-- 
-QUERY FOR ALL TABLES ON DATABASE
-SELECT 
-    uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo,
-    ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname, ue.sex as employerSex, ue.birthdate as employerBirthdate, ue.address as employerAddress, ue.contactNo as employerContactNo,
-    am.idMessage, am.subject, am.message, am.isRead,
-    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, 
-    wd.curriculumVitae, wd.validId, wd.nbi, wd.medical, wd.certificate,
-    e.idEmployer, e.profilePic as employerProfilePic, e.validId, e.verifyStatus as employerVerifyStatus, 
-    c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created, c.idEmployer as contractIdEmployer,
-    r.idRating, r.rate, r.comment, 
-    m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
-    ep.idEmployerPayment, ep.amount as employerPaymentAmount, ep.method as employerPaymentMethod, ep.imgReceipt, ep.paymentStatus, ep.submitted_at,
-    ws.idWorkerSalary, ws.paypalEmail as salaryPaypalEmail, ws.amount as workerSalaryAmount, ws.modified_at
-FROM user uw 
-LEFT JOIN admin_message am ON am.idUser = uw.idUser 
-LEFT JOIN worker w ON w.idUser = uw.idUser
-LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments
-LEFT JOIN contract c ON c.idWorker = w.idWorker
-LEFT JOIN meeting m ON m.contract_idContract = c.idContract
-LEFT JOIN rating r ON r.idContract = c.idContract
-LEFT JOIN employer e ON e.idEmployer = c.idEmployer
-LEFT JOIN user ue ON ue.idUser = e.idEmployer  
-LEFT JOIN employer_payment ep ON ep.idContract = c.idContract
-LEFT JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
-WHERE uw.idUser = " . $_SESSION['idUser']; -->
