@@ -9,20 +9,20 @@ main.worker .info {
 
 }
 
-main.worker .info .left {
+main.worker .info .left, main.worker .info .right {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
 }
-main.worker .info .right {
-    flex: 1;
+main.worker .info .right.flex-row {
+    flex-direction: row;
+    gap: 1.5rem;
 }
-
-main.worker .info .left .label {
+main.worker .info .left .label, main.worker .info .right .label {
     font-weight: 600;
 }
-main.worker .info .left .text-box {
+main.worker .info .left .text-box, main.worker .info .right .text-box {
     padding: 0.5rem 1rem;
     border: 1px solid black;
     margin-bottom: 1rem;
@@ -31,8 +31,6 @@ main.worker .info .left .text-box {
 main.worker .info .right {
     padding: 1rem;
     display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 main.worker .info .right .contract-container img {
