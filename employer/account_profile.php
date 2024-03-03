@@ -79,7 +79,7 @@ if ($userData['profilePic']) {
                 <div class='title'>
                     <div class='left'>
                         <img class='user-profile' src='<?php echo $profilePic?>' placeholder='profile'>
-                        <h3>Account Profile</h3>
+                        <h3>Account Profile <span class = 'c-blue'>(User ID: <?php echo $userData['idUser'];?>)</span></h3>
                     </div>
                     <div class='right'>
                         <img class='edit-profile' src='../img/edit-icon.png' placeholder onclick="redirectToEditProfile()">
