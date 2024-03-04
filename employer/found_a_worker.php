@@ -13,42 +13,52 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // var_dump($_POST);
-        // exit();
-        $workerType = $_POST['workerType-preferred'];
+        if (isset($_POST['next-worker'])) {
+            array_pop($_POST);
 
-        if (!isset($_POST['sex-preferred']) || $_POST['sex-preferred'] == 'unset') {
-            $sex = null;
+            $candidateWorkers = [];
+            foreach($_POST as $candidateWorker) {
+                $candidateWorkers[]['idUser'] = $candidateWorker;
+            }            
+            
         } else {
-            $sex = $_POST['sex-preferred'];
+            $workerType = $_POST['workerType-preferred'];
+    
+            if (!isset($_POST['sex-preferred']) || $_POST['sex-preferred'] == 'unset') {
+                $sex = null;
+            } else {
+                $sex = $_POST['sex-preferred'];
+            }
+    
+            if (isset($_POST['height-preferred']) && $_POST['height-preferred'] != '') {
+                $height = $_POST['height-preferred'];
+            } else {
+                $height = null;
+            }
+    
+            if (isset($_POST['age-preferred']) && $_POST['age-preferred'] != '') {
+                $age = $_POST['age-preferred'];
+            } else {
+                $age = null;
+            }
+    
+            if (isset($_POST['yearsOfExperience-preferred']) && $_POST['yearsOfExperience-preferred'] != '') {
+                $yearsOfExperience = $_POST['yearsOfExperience-preferred'];
+            } else {
+                $yearsOfExperience = null;
+            }
+            $candidateWorkers = searchCandidateWorkersIdUser($workerType, $sex, $age, $height, $yearsOfExperience);
+            
         }
-
-        if (isset($_POST['height-preferred']) && $_POST['height-preferred'] != '') {
-            $height = $_POST['height-preferred'];
-        } else {
-            $height = null;
-        }
-
-        if (isset($_POST['age-preferred']) && $_POST['age-preferred'] != '') {
-            $age = $_POST['age-preferred'];
-        } else {
-            $age = null;
-        }
-
-        if (isset($_POST['yearsOfExperience-preferred']) && $_POST['yearsOfExperience-preferred'] != '') {
-            $yearsOfExperience = $_POST['yearsOfExperience-preferred'];
-        } else {
-            $yearsOfExperience = null;
-        }
-        $candidateWorkers = searchCandidateWorkers($workerType, $sex, $age, $height, $yearsOfExperience);
+        
         if (isset($candidateWorkers)) {
-            if(count($candidateWorkers) > 1) {
+            if(is_array($candidateWorkers) && count($candidateWorkers) > 1) {
                 $otherCandidates = array_slice($candidateWorkers, 1);
             }
-            $candidateWorker = $candidateWorkers[0];
+            $candidateWorkerId = $candidateWorkers[0]['idUser'];
+            $candidateWorker = fetchAllWorkerInformation($candidateWorkerId);        
         }
-        // var_dump($candidateWorker);
-        // exit();
+
     } else {
         header('Location: ./find_a_worker.php');
         exit();
@@ -88,7 +98,7 @@
             </div>
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
-                    <nav >
+                    <nav>
                         <a href='./find_a_worker.php' class='c-light fw-bold'>FIND A WORKER</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
@@ -110,10 +120,24 @@
                         <h3>Find a Worker</h3>  
                     </div>
                     <div class='right'>
-                        <button class='find-another-worker-btn'>FIND ANOTHER</button>
+                        <form class='find-another-worker-btn' action='./found_a_worker.php' method='POST' <?php echo (isset($otherCandidates) ? '' : 'hidden')?>>
+                            <?php 
+                                // If $otherCandidates is set, loop through and generate hidden inputs
+                                if (isset($otherCandidates)) {
+                                    foreach ($otherCandidates as $index => $otherCandidate) {
+                                        foreach ($otherCandidate as $inputName => $inputValue) {
+                                            echo "<input type='hidden' name='$inputName$index' value='$inputValue'>";
+                                        }
+                                    }
+                                }
+                            ?>
+                            <button type='submit' name='next-worker' value='submit'>FIND ANOTHER</button>
+                        </form>
                         <button class='cancel-btn'><a href='./find_a_worker.php' class='c-light'>CANCEL</a></button>
-                        <button class='hire-worker-btn'>HIRE WORKER</button>
-                        <button class='interview-submit-btn hidden'>CONFIRM</button>
+                        <form class='hire-worker-btn' action='./meet_details.php' method='POST'>
+                            <input type='hidden' name='workerIdUser' value='<?php echo $candidateWorker['idUser'];?>' >
+                            <button type='submit'>HIRE WORKER</button>
+                        </form>
                     </div> 
                 </div>
 

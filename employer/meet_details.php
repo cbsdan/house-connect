@@ -13,69 +13,7 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        // var_dump($_POST);
-        // exit();
-        $workerType = $_POST['workerType-preferred'];
-
-        if (!isset($_POST['sex-preferred']) || $_POST['sex-preferred'] == 'unset') {
-            $sex = null;
-        } else {
-            $sex = $_POST['sex-preferred'];
-        }
-
-        if (isset($_POST['height-preferred']) && $_POST['height-preferred'] != '') {
-            $height = $_POST['height-preferred'];
-        } else {
-            $height = null;
-        }
-
-        if (isset($_POST['age-preferred']) && $_POST['age-preferred'] != '') {
-            $age = $_POST['age-preferred'];
-        } else {
-            $age = null;
-        }
-
-        if (isset($_POST['yearsOfExperience-preferred']) && $_POST['yearsOfExperience-preferred'] != '') {
-            $yearsOfExperience = $_POST['yearsOfExperience-preferred'];
-        } else {
-            $yearsOfExperience = null;
-        }
-        $candidateWorkers = searchCandidateWorkers($workerType, $sex, $age, $height, $yearsOfExperience);
-
-    }
-
-
-    // Check if the confirm button is clicked
-    if (isset($_POST['confirm'])) {
-        // Get preferences from the form
-        $interviewPlatform = $_POST['interview_platform'];
-        $preferredSex = $_POST['sex_preferred'];
-        $preferredAge = $_POST['preferred_age'];
-        $preferredHeight = $_POST['preferred_height'];
-        $preferredExperience = $_POST['preferred_experience'];
-
-        // Build the SQL query to fetch a random worker based on preferences
-        $query = "SELECT user.fname, user.sex, worker.workerType, worker.height, worker.yearsOfExperience
-                FROM user
-                JOIN worker ON user.idUser = worker.idUser
-                ORDER BY RAND()
-                LIMIT 1";
-
-        // Use prepared statement to prevent SQL injection
-        $stmt = $your_db_connection->prepare($query);
-        $stmt->bind_param("ssisiiii", $interviewPlatform, $preferredSex, $preferredSex, $preferredAge, $preferredAge, $preferredHeight, $preferredHeight, $preferredExperience, $preferredExperience);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        // Fetch the result as an associative array
-        $workerData = $result->fetch_assoc();
-
-        // Close the statement
-        $stmt->close();
-
-        // Display the fetched worker information
-        // You can use the displayWorker() JavaScript function from the previous example
-        echo "<script>displayWorker(" . json_encode($workerData) . ");</script>";
+        $workerIdUser = $_POST['workerIdUser']; 
     }
 
 ?>
@@ -134,85 +72,20 @@
                         <h3>Find a Worker</h3>  
                     </div>
                     <div class='right'>
-                        <button class='find-worker-btn'>CONFIRM</button>
-                        <button class='find-another-worker-btn hidden'>FIND ANOTHER</button>
-                        <button class='cancel-btn hidden'>CANCEL</button>
-                        <button class='hire-worker-btn hidden'>HIRE WORKER</button>
-                        <button class='interview-submit-btn hidden'>CONFIRM</button>
+                        <button id='formSubmit' class='interview-submit-btn'>CONFIRM</button>
                     </div> 
                 </div>
-                <form class='find-worker-form info' action='./find_a_worker.php' method='POST'>
-                     <div class='left'>
-                        <label class='label'>Worker Type</label>
-                        <select class='text-box' name='workerType-preferred'>
-                            <option value='nanny'>Nanny</option>
-                            <option value='maid'>Maid</option>
-                            <option value='gardener'>Gardener</option>
-                            <option value='cook'>Cook</option>
-                            <option value='driver'>Driver</option>
-                        </select>
-                        <label class='label'>Preferred Sex (Optional)</label>
-                        <select class='text-box' name='sex-preferred'>
-                            <option value='unset'>Unset</option>
-                            <option value='Male'>Male</option>
-                            <option value='Female'>Female</option>
-                        </select>
-                        <label class='label'>Preferred Age (Optional)</label>
-                        <input class='text-box' name='age-preferred' type='number' min=0 max=100>
-                     </div>
 
-                     <div class='right'>
-                         <label class='label'>Preferred Height (Optional)</label>
-                         <input class='text-box' name='height-preferred' type='number' placeholder="(cm)" min=0 max=1000>
-                         <label class='label'>Preferred Years of Experience (Optional)</label>
-                         <input class='text-box' name='yearsOfExperience-preferred' type='number' min=0 max=100>
-                    </div>
-                </form>
-
-                <!-- Display the Worker Info -->
-                <div class='info flex-column flex-center hidden'>
-                    <div class='top flex-1'>
-                        <div class='profile-image image-preview'>
-                            <img src='../img/user-icon.png' alt='user-img'>
-                            <P class='f-italic fs-small t-align-center'>Profile Image</P>
-                        </div>
-                        <div class='curriculum-vitae image-preview'>
-                            <img src='../img/document-sample.jpg' alt='cv-img'>
-                            <P class='f-italic fs-small t-align-center'>Curriculum Vitae</P>
-                        </div>
-                        <div class='certificates image-preview'>
-                            <img src='../img/document-sample.jpg' alt='certificate-img'>
-                            <P class='f-italic fs-small t-align-center'>Certificate</P>
-                        </div>
-                    </div>
-                    <div class=' flex-1'>
-                        <div class="left">
-                            <p class="label">Worker Name</p>
-                            <p class="text-box">[Worker Name]</p>
-                            <p class="label">Age</p>
-                            <p class="text-box">[Age]</p>
-                            <p class="label">Sex</p>
-                            <p class="text-box">[Sex]</p>
-                        </div>
-                        <div class="right">
-                            <p class="label">Worker Type</p>
-                            <p class="text-box">[Worker Type]</p>
-                            <p class="label">Height</p>
-                            <p class="text-box">[Height]</p>
-                            <p class="label">Years of Experience</p>
-                            <p class="text-box">[Years of Experience]</p>
-                        </div>
-                    </div>
-                </div>
-
-                <form class="info hidden" action='' method='POST'> 
+                <form class="info" action='../database/create-contract.php' method='POST' id='meetScheduleForm'> 
+                    <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser?>'>
+                    <input type='hidden' name='employerIdUser' value='<?php echo $_SESSION['idUser']?>'>
                     <div class="left">
                         <label class="label">Interview Platform</label>
-                        <input class="text-box" name='platform' type='text' placeholder="[Interview Platform]">
+                        <input class="text-box" name='platform' type='text' placeholder="[Interview Platform]" required>
                         <label class="label">Interview Link</label>
-                        <input class="text-box" name='link' type='text' placeholder="[Interview Link]">
+                        <input class="text-box" name='link' type='text' placeholder="[Interview Link]" required>
                         <label class="label">Interview Schedule</label>
-                        <input class="text-box" type='date' name='schedule'>
+                        <input class="text-box" type='datetime-local' name='schedule' required>
                     </div>
                     <div class="right">
                         <label class="label">Leave a Message (Optional)</label>
@@ -224,3 +97,25 @@
     </main>
 </body>
 </html>
+
+<script>
+    const formSubmitBtn = document.querySelector('#formSubmit');
+    const meetScheduleForm = document.querySelector('#meetScheduleForm');
+
+    formSubmitBtn.addEventListener('click', function(event) {
+        // Check if all required fields are filled
+        if (meetScheduleForm.checkValidity()) {
+            // Display a confirmation dialog
+            const confirmation = confirm('Are you sure you want to submit the form?');
+
+            // If user confirms, submit the form
+            if (confirmation) {
+                meetScheduleForm.submit(); // Submit the form
+            }
+        } else {
+            // If required fields are not filled, show a message or perform any other action
+            alert('Please fill out all required fields before submitting.');
+        }
+    });
+
+</script>
