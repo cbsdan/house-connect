@@ -1,6 +1,7 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
         header('Location: ../worker/application.php');
@@ -10,6 +11,12 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+
+    $myIdUser = $_SESSION['idUser'];
+    $myIdEmployer = getEmployerOrWorkerID($myIdUser);
+
+    $contracts = getContractListByEmployerID($myIdEmployer);
+
 ?>
 
 <!DOCTYPE html>
@@ -74,7 +81,7 @@
                         <option value='completed'>Completed</option>
                     </select>
                     <div class='table-container'>
-                        <table class=''>
+                        <table class='<?php echo (!isset($contracts) ? 'hidden' : '');?>'>
                             <thead>
                                 <tr>
                                     <th>Contract ID</th>
@@ -87,148 +94,32 @@
                                 </tr>
                             </thead>
                             <tbody>
+
                                 <tr>
-                                    <td>001</td>
-                                    <td>Hired</td>
-                                    <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>Driver</td>
-                                    <td>Jan. 01, 2024</td>
-                                    <td class='t-align-center'><a class='open-detail-preview c-yellow details'>[Details]</a></td>
-                                </tr>
-                                <tr>
-                                    <td>002</td>
-                                    <td>Cancelled</td>
-                                    <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>Driver</td>
-                                    <td>Jan. 01, 2024</td>
-                                    <td class='t-align-center'><a class='open-detail-preview c-yellow details'>[Details]</a></td>
-                                </tr>
-                                <tr>
-                                    <td>003</td>
-                                    <td>Completed</td>
-                                    <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
-                                    <td>Juan Dela Cruz</td>
-                                    <td>Driver</td>
-                                    <td>Jan. 01, 2024</td>
-                                    <td class='t-align-center'><a class='open-detail-preview c-yellow details'>[Details]</a></td>
+                                    <?php 
+                                        foreach($contracts as $contract) {
+                                            echo "
+                                                <td class='t-align-center'>" . $contract['idContract'] . "</td>
+                                                <td>" . $contract['contractStatus'] . "</td>
+                                                <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
+                                                <td>" . $contract['workerFname'] . " " . $contract['workerLname'] . "</td>
+                                                <td class='t-align-center'>" . $contract['workerType'] . "</td>
+                                                <td>" . $contract['date_created'] . "</td>
+                                                <td class='t-align-center'>
+                                                    <form action='./contract_info.php' method='POST' class='open-detail-preview '>
+                                                        <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
+                                                        <button type='submit' class='c-yellow details'>[Details]</button>
+                                                    </form>
+                                                </td>  
+                                            ";
+                                        }
+                                    ?>
                                 </tr>
                             </tbody>
                         </table>
-                        <div class='no-record-label hidden'>
+                        <div class='no-record-label <?php echo (isset($contracts) ? 'hidden' : '');?>'>
                             <p>There are no found record!</p>
                         </div>
-                    </div>
-                    <div class='details-preview hidden'>
-                        <div class="preview">
-                            <div class="contract-info detail">
-                                <div class='title'>
-                                    <h3>Contract Info</h3>
-                                </div>
-                                <div class='info'>
-                                    <div class="left">
-                                        <div class='data'>
-                                            <h4 class="label">Contract ID</h4>
-                                            <p class="value">001</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Status</h4>
-                                            <p class="value">Hired</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Date Created</h4>
-                                            <p class="value">January 01, 2024</p>
-                                        </div>
-                                    </div>
-                                    <div class="right">
-                                        <div class='data'>
-                                            <h4 class="label">Start Date</h4>
-                                            <p class="value">January 01, 2024</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">End Date</h4>
-                                            <p class="value">January 01, 2025</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Salary Amount</h4>
-                                            <p class="value">P20,000</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="meet-info detail">
-                                <div class='title'>
-                                    <h3>Interview Info</h3>
-                                </div>
-                                <div class="info">
-                                    <div class="left">
-                                        <div class='data'>
-                                            <h4 class="label">Interview Data</h4>
-                                            <p class="value">001</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Platform</h4>
-                                            <p class="value">Google Meet</p>
-                                        </div>
-                                    </div>
-                                    <div class="right">
-                                        <div class='data'>
-                                            <h4 class="label">Link</h4>
-                                            <p class="value">url-link</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Employer Message</h4>
-                                            <p class="value">Hello!</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        
-                            <div class="worker-info detail">
-                                <div class='title'>
-                                    <h3>Worker Info</h3>
-                                </div>
-                                <div class="info">
-                                    <div class="left">
-                                        <div class='data'>
-                                            <h4 class="label">Profile</h4>
-                                            <p class="value"><img src='../img/user-icon.png'></p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Name</h4>
-                                            <p class="value">Juan Dela Cruz</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Age</h4>
-                                            <p class="value">25</p>
-                                        </div>
-                                    </div>
-                                    <div class="right">
-                                        <div class='data'>
-                                            <h4 class="label">Worker Type</h4>
-                                            <p class="value">Driver</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Years of Experience</h4>
-                                            <p class="value">1</p>
-                                        </div>
-                                        <div class='data'>
-                                            <h4 class="label">Curriculum Vitae</h4>
-                                            <p class="value">
-                                                <div class='image-preview'>
-                                                    <img src='../img/document-sample.jpg' alt='contract-img'>
-                                                </div>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <button class='pay-worker-btn'><a href='./salary_payment.php' class='c-light'>Pay Worker Salary</a></button>
-
-                        </div>
-                        
                     </div>
                 </div>
             </div>

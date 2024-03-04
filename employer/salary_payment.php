@@ -36,7 +36,7 @@
 <body>
     <header class='logged-in'>
         <div class="content">
-            <button class='orange-white-btn'><a href='./manage_worker.php'>Back to Manage Worker</a></button>
+            <button class='orange-white-btn'><a href='./contract_info.php'>Back to Contract Info</a></button>
         </div>
     </header>
 
