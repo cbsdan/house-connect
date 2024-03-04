@@ -76,9 +76,9 @@
                         </div>
                         <div class="data">
                             <h4 class="label">Sex</h4>
-                            <select class="text-box userSex" type='text' name='sex' value='<?php echo $user['sex'];?>'>
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                            <select class="text-box userSex" type='text' name='sex' ?>'>
+                                <option value="Male" <?php echo ($user['sex'] == 'Male' ? 'selected' : '');?>>Male</option>
+                                <option value="Female" <?php echo ($user['sex'] == 'Female' ? 'selected' : '');?>>Female</option>
                             </select>
                         </div>
                         <div class="data">
