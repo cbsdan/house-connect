@@ -13,6 +13,10 @@
     }
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (!isset($_POST['workerIdUser'])) {
+            header('Location: ./find_a_worker.php');
+            exit();
+        }
         $workerIdUser = $_POST['workerIdUser']; 
     }
 
