@@ -408,11 +408,65 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
     
-    function searchCandidateWorkers($workerType, $sex = null, $age = null, $height = null, $yearsOfExperience = null) {
-        global $conn; // Assuming you have a database connection
+    function fetchAllWorkerInformation($idUser) {
+        global $conn;
     
         // Start building the SQL query
         $sql = "SELECT uw.*, w.*, wd.* FROM user uw
+        JOIN worker w ON w.idUser = uw.idUser
+        LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments
+        WHERE uw.idUser = '$idUser'";
+    
+        // Execute the query
+        $result = $conn->query($sql);
+    
+        // Check if the query executed successfully
+        if ($result === false || $result->num_rows == 0) {
+            return null;
+        } else {
+            // Fetch the result
+            $row = $result->fetch_assoc();
+    
+            // Manipulate the row
+            if (isset($row['profilePic'])) {
+                $row['profilePic'] = getImageSrc($row['profilePic']);
+            } else {
+                $row['profilePic'] = '../img/user-icon.png';
+            }
+            if (isset($row['curriculumVitae'])) {
+                $row['curriculumVitae'] = getImageSrc($row['curriculumVitae']);
+            } else {
+                $row['curriculumVitae'] = '../img/documents-icon.png';
+            }
+            if (isset($row['validID'])) {
+                $row['validID'] = getImageSrc($row['validID']);
+            } else {
+                $row['validID'] = '../img/documents-icon.png';
+            }
+            if (isset($row['nbi'])) {
+                $row['nbi'] = getImageSrc($row['nbi']);
+            } else {
+                $row['nbi'] = '../img/documents-icon.png';
+            }
+            if (isset($row['medical'])) {
+                $row['medical'] = getImageSrc($row['medical']);
+            } else {
+                $row['medical'] = '../img/documents-icon.png';
+            }
+            if (isset($row['certificate'])) {
+                $row['certificate'] = getImageSrc($row['certificate']);
+            } 
+    
+            return $row;
+        }
+    }
+    
+
+    function searchCandidateWorkersIdUser($workerType, $sex = null, $age = null, $height = null, $yearsOfExperience = null) {
+        global $conn; // Assuming you have a database connection
+    
+        // Start building the SQL query
+        $sql = "SELECT uw.idUser FROM user uw
                 JOIN worker w ON w.idUser = uw.idUser
                 LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments
                 WHERE w.workerType = '$workerType'";
@@ -444,40 +498,120 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
             // Fetch the result
             $candidates = [];
             while ($row = $result->fetch_assoc()) {
-                if (isset($row['profilePic'])) {
-                    $row['profilePic'] = getImageSrc($row['profilePic']);
-                } else {
-                    $row['profilePic'] = '../img/user-icon.png';
-                }
-                if (isset($row['curriculumVitae'])) {
-                    $row['curriculumVitae'] = getImageSrc($row['curriculumVitae']);
-                } else {
-                    $row['curriculumVitae'] = '../img/documents-icon.png';
-                }
-                if (isset($row['validID'])) {
-                    $row['validID'] = getImageSrc($row['validID']);
-                } else {
-                    $row['validID'] = '../img/documents-icon.png';
-                }
-                if (isset($row['nbi'])) {
-                    $row['nbi'] = getImageSrc($row['nbi']);
-                } else {
-                    $row['nbi'] = '../img/documents-icon.png';
-                }
-                if (isset($row['medical'])) {
-                    $row['medical'] = getImageSrc($row['medical']);
-                } else {
-                    $row['medical'] = '../img/documents-icon.png';
-                }
-                if (isset($row['certificate'])) {
-                    $row['certificate'] = getImageSrc($row['certificate']);
-                } 
-                
                 $candidates[] = $row;
             }
             return $candidates;
         }
     }
+
+    function getEmployerOrWorkerID($idUser) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Query to fetch idEmployer or idWorker based on userType
+        $sql = "SELECT 
+                    CASE 
+                        WHEN userType = 'Worker' THEN w.idWorker
+                        WHEN userType = 'Employer' THEN e.idEmployer
+                        ELSE NULL
+                    END AS id
+                FROM user u
+                LEFT JOIN worker w ON u.idUser = w.idUser
+                LEFT JOIN employer e ON u.idUser = e.idUser
+                WHERE u.idUser = $idUser";
+    
+        // Execute the query
+        $result = $conn->query($sql);
+    
+        // Check if the query executed successfully
+        if ($result === false) {
+            return null;
+        } else {
+            // Fetch the result
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                return $row['id']; // Return idEmployer or idWorker based on userType
+            } else {
+                return null; // Return null if no user found
+            }
+        }
+    }
+
+    function insertNewContract($idWorker, $idEmployer) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Get current datetime
+        $currentDateTime = date("Y-m-d H:i:s");
+    
+        // Prepare SQL statement to insert a new contract
+        $sql = "INSERT INTO contract (idWorker, idEmployer, contractStatus, startDate, endDate, salaryAmt, contractImg, date_created) 
+                VALUES ($idWorker, $idEmployer, 'Pending', NULL, NULL, NULL, NULL, '$currentDateTime')";
+    
+        // Execute the query
+        if ($conn->query($sql) === true) {
+            // Get the idContract of the inserted contract
+            $idContract = $conn->insert_id;
+            return $idContract; // Return the idContract if insertion is successful
+        } else {
+            return false; // Return false if insertion fails
+        }
+    }
+    
+    function insertNewMeeting($idContract, $platform, $link, $schedule, $message = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to insert a new meeting
+        $sql = "INSERT INTO meeting (contract_idContract, platform, link, meetDate, employerMessage) 
+                VALUES ($idContract, '$platform', '$link', '$schedule', ?)";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+        
+        // Bind parameters
+        if ($stmt) {
+            if ($message !== null) {
+                $stmt->bind_param("s", $message);
+            } else {
+                $stmt->bind_param("s", $message);
+            }
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            // Get the idMeeting of the inserted meeting
+            $idMeeting = $stmt->insert_id;
+            return $idMeeting; // Return the idMeeting if insertion is successful
+        } else {
+            return false; // Return false if insertion fails
+        }
+    }
+    
+
+    function updateWorkerStatus($idWorker, $status) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update workerStatus
+        $sql = "UPDATE worker SET workerStatus = ? WHERE idWorker = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+        
+        // Bind parameters
+        if ($stmt) {
+            $stmt->bind_param("si", $status, $idWorker);
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
+    
 ?>
 
 
