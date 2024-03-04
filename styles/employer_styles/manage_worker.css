@@ -8,8 +8,35 @@ main.employer .content .info .label, main.employer .content .info .select-worker
 }
 
 .pay-worker-btn {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
     width: 100%;
     text-align: center;
-    margin: auto;
     max-width: 20rem;
+}
+.contract.info .title {
+    background-color: var(--main-color);
+    padding-bottom: 0;
+    padding: 1rem 2rem;
+    color: var(--light-text);
+    border-bottom: unset !important;
+    border-radius: 1rem;
+}
+.contract.info .information .label {
+    font-size: 1.5rem;
+}
+.contract.info .information .value {
+    font-size: 1.3rem;
+
+}
+.contract.info {
+    gap: 2rem !important;
+}
+.contract.info .information {
+    display: flex;
+    gap: 1rem;
+}
+.contract .information .left, .contract .information .right {
+    flex: 1;
 }

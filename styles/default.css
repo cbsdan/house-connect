@@ -287,6 +287,9 @@ input[type="text"], input[type="number"], input[type='file'], input[type='date']
 }
 
 /* Flex */
+.d-flex {
+    display: flex;
+}
 .flex-row {
     display: flex;
     gap: 1rem;
