@@ -1,6 +1,7 @@
 <?php
     //Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
+    include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
         header('Location: ../worker/application.php');
@@ -10,6 +11,8 @@
         header('Location: ../employer/account_profile.php');
         exit();
     }
+
+    $payments= getAllEmployerPayments();
 ?>
 
 <!DOCTYPE html>
@@ -61,11 +64,64 @@
     <main class='admin'>
         <div class='container application'>
             <div class='content'>
-                <div class='title'>
+                <div class='title <?php echo (isset($payments) ? '' : 'hidden') ?>'>
                     <img class='user-profile' src='../img/wallet-icon.png' placeholder='wallet-icon'>
                     <h3>Payment</h3>  
                 </div>
-                <div class='info'></div>
+                <div class='info'>
+                    <form class="search-contract flex-row" action='./user_accounts.php' method='POST'>
+                        <input type="number" name='idUser' class='text-box' placeholder='Search by User ID'>
+                        <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
+                    </form>
+                    <div class='table-result employer-payments <?php echo (isset($payments) ? '' : 'hidden') ?>'>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Employer Name</th>
+                                    <th>Worker Name</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Receipt Image</th>
+                                    <th>Status</th>
+                                    <th>Contract ID</th>
+                                    <th>Submitted At</th>
+                                    <th>[View]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php 
+                                    if (isset($payments)) {
+                                        foreach($payments as $payment) {
+                                            echo "
+                                                <tr>
+                                                    <td class='t-align-center'>".$payment['idEmployerPayment']."</td>
+                                                    <td>".$payment['employerFname']. " " . $payment['employerLname'] ."/td>
+                                                    <td>".$payment['workerFname']. " " . $payment['workerLname']."</td>
+                                                    <td>₱".$payment['employerPaymentAmount']."</td>
+                                                    <td>".$payment['employerPaymentMethod']."</td>
+                                                    <td class='image-preview'><img src='".(isset($payment['imgReceipt']) ? getImageSrc($payment['imgReceipt']) : '')."alt='Receipt''></td>
+                                                    <td>".$payment['employerPaymentStatus']."</td>
+                                                    <td>".$payment['idContract']."</td>
+                                                    <td>".$payment['submitted_at']."</td>
+                                                    <td class='t-align-center'>
+                                                        <form class='' action='' method='POST'>
+                                                            <input type='hidden' name='idEmployerPayment' value='".$payment['idEmployerPayment']."'>
+                                                            <button type='submit' name='submit' value='submit' class='c-yellow'>[View]</button>
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            ";
+                                        }
+                                    }
+                                ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class='no-record-label <?php echo (isset($payments) ? 'hidden' : '') ?>'>
+                        <p>There are no found record!</p>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

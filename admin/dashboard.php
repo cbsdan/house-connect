@@ -140,7 +140,7 @@
                         function displayContractStatus($conn) {
 
                             $sql = "SELECT COUNT(*) AS totalContracts,
-                                        SUM(CASE WHEN contractStatus = 'Active' THEN 1 ELSE 0 END) AS activeContracts,
+                                        SUM(CASE WHEN contractStatus = 'Hired' THEN 1 ELSE 0 END) AS activeContracts,
                                         SUM(CASE WHEN contractStatus = 'Pending' THEN 1 ELSE 0 END) AS pendingContracts,
                                         SUM(CASE WHEN contractStatus = 'Completed' THEN 1 ELSE 0 END) AS completedContracts,
                                         SUM(CASE WHEN contractStatus = 'Canceled' THEN 1 ELSE 0 END) AS canceledContracts
@@ -158,7 +158,7 @@
                             echo "</div>";
                             
                             echo "<div class='data'>";
-                            echo "<p class='label'>Active</p>";
+                            echo "<p class='label'>Hired</p>";
                             echo "<p class='value'>" . $row['activeContracts'] . "</p>";
                             echo "</div>";
                             

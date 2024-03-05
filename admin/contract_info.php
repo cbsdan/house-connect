@@ -114,7 +114,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class='buttons m-l-auto'>
+                        <div class='m-l-auto'>
                             <button type='submit' name='submit' value='submit' class='green-white-btn '>Save Changes</button>
                         </div>
                     </form>
@@ -146,7 +146,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class='buttons m-l-auto'>
+                        <div class='m-l-auto'>
                             <button type='submit' name='submit' value='submit' class='green-white-btn '>Save Changes</button>
                         </div>
                     </form>
@@ -159,27 +159,27 @@
                             <div class="left">
                                 <div class='data'>
                                     <h4 class="label">Employer Profile</h4>
-                                    <p class="value image-preview"><img src='<?php echo (isset($contract['employerProfilePic']) ? getImageSrc($contract['employerProfilePic']) : '../img/user-icon.png') ?>' alt='profile'></p>
+                                    <div class="image-preview"><img src='<?php echo (isset($contract['employerProfilePic']) ? getImageSrc($contract['employerProfilePic']) : '../img/user-icon.png') ?>' alt='profile'></div>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Employer Name / User ID</h4>
-                                    <p class="value text-box">
+                                    <p class="value">
                                         <?php echo $contract['employerFname'] . " " . $contract['employerLname'] . " / <span class='c-blue'>(" . $contract['employerIdUser'] . ")</span>"?>
                                     </p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Employer Age</h4>
-                                    <p class="value text-box"><?php echo calculateAge($contract['employerBirthdate']) ?></p>
+                                    <p class="value"><?php echo calculateAge($contract['employerBirthdate']) ?></p>
                                 </div>
                             </div>
                             <div class="right">
                                 <div class='data'>
                                     <h4 class="label">Employer Sex</h4>
-                                    <p class="value text-box"><?php echo $contract['employerSex'] ?></p>
+                                    <p class="value"><?php echo $contract['employerSex'] ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Employer Email Address</h4>
-                                    <p class="value text-box"><?php echo $contract['employerEmail'] ?></p>
+                                    <p class="value"><?php echo $contract['employerEmail'] ?></p>
                                 </div>
                             </div>
                         </div>
@@ -193,45 +193,41 @@
                             <div class="left">
                                 <div class='data'>
                                     <h4 class="label">Worker Name / ID</h4>
-                                    <p class="value text-box"><?php echo $contract['workerFname'] . " " . $contract['workerLname'] . " / <span class='c-blue'>(" . $contract['workerIdUser'] . ")</span>"?></p>
+                                    <p class="value "><?php echo $contract['workerFname'] . " " . $contract['workerLname'] . " / <span class='c-blue'>(" . $contract['workerIdUser'] . ")</span>"?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Worker Type</h4>
-                                    <p class="value text-box"><?php echo $contract['workerEmail'] ?></p>
+                                    <p class="value "><?php echo $contract['workerEmail'] ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Worker Sex</h4>
-                                    <p class="value text-box"><?php echo $contract['workerSex'] ?></p>
+                                    <p class="value "><?php echo $contract['workerSex'] ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Worker Profile</h4>
-                                    <p class="value">
-                                        <div class='image-preview'>
-                                            <img src="<?php echo (isset($contract['workerProfilePic']) ? getImageSrc($contract['workerProfilePic']) : '../img/user-icon.png') ?>" alt='worker profile'>
-                                        </div>
-                                    </p>
+                                    <div class='image-preview'>
+                                        <img src="<?php echo (isset($contract['workerProfilePic']) ? getImageSrc($contract['workerProfilePic']) : '../img/user-icon.png') ?>" alt='worker profile'>
+                                    </div>
                                 </div>
                             </div>
                             <div class="right">
                                 <div class='data'>
                                     <h4 class="label">Worker Age</h4>
-                                    <p class="value text-box"><?php echo calculateAge($contract['workerBirthdate']) ?></p>
+                                    <p class="value "><?php echo calculateAge($contract['workerBirthdate']) ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Worker Type</h4>
-                                    <p class="value text-box"><?php echo $contract['workerType'] ?></p>
+                                    <p class="value "><?php echo $contract['workerType'] ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Years of Experience</h4>
-                                    <p class="value text-box"><?php echo $contract['yearsOfExperience'] ?></p>
+                                    <p class="value "><?php echo $contract['yearsOfExperience'] ?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Curriculum Vitae</h4>
-                                    <p class="value">
-                                        <div class='image-preview'>
-                                            <img src='<?php echo (isset($contract['curriculumVitae']) ? getImageSrc($contract['curriculumVitae']) : '../img/document-sample.jpg') ?>' alt='curriculum vitae'>
-                                        </div>
-                                    </p>
+                                    <div class='image-preview'>
+                                        <img src='<?php echo (isset($contract['curriculumVitae']) ? getImageSrc($contract['curriculumVitae']) : '../img/document-sample.jpg') ?>' alt='curriculum vitae'>
+                                    </div>
                                 </div>
                             </div>
                         </div>
