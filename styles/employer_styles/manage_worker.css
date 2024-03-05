@@ -28,7 +28,8 @@ main.employer .content .info .label, main.employer .content .info .select-worker
 }
 .contract.info .information .value {
     font-size: 1.3rem;
-
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
 }
 .contract.info {
     gap: 2rem !important;
