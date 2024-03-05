@@ -94,27 +94,28 @@
                                 </tr>
                             </thead>
                             <tbody>
-
-                                <tr>
-                                    <?php 
+                                <?php 
+                                    if (isset($contracts)) {
                                         foreach($contracts as $contract) {
                                             echo "
+                                                <tr>
                                                 <td class='t-align-center'>" . $contract['idContract'] . "</td>
-                                                <td>" . $contract['contractStatus'] . "</td>
-                                                <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
-                                                <td>" . $contract['workerFname'] . " " . $contract['workerLname'] . "</td>
-                                                <td class='t-align-center'>" . $contract['workerType'] . "</td>
-                                                <td>" . $contract['date_created'] . "</td>
-                                                <td class='t-align-center'>
-                                                    <form action='./contract_info.php' method='POST' class='open-detail-preview '>
-                                                        <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
-                                                        <button type='submit' class='c-yellow details'>[Details]</button>
-                                                    </form>
-                                                </td>  
+                                                    <td>" . $contract['contractStatus'] . "</td>
+                                                    <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
+                                                    <td>" . $contract['workerFname'] . " " . $contract['workerLname'] . "</td>
+                                                    <td class='t-align-center'>" . $contract['workerType'] . "</td>
+                                                    <td>" . $contract['date_created'] . "</td>
+                                                    <td class='t-align-center'>
+                                                        <form action='./contract_info.php' method='POST' class='open-detail-preview '>
+                                                            <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
+                                                            <button type='submit' class='c-yellow details'>[Details]</button>
+                                                        </form>
+                                                    </td>  
+                                                </tr>
                                             ";
                                         }
-                                    ?>
-                                </tr>
+                                    }
+                                ?>
                             </tbody>
                         </table>
                         <div class='no-record-label <?php echo (isset($contracts) ? 'hidden' : '');?>'>
