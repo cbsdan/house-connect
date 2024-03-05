@@ -2,3 +2,36 @@ main.admin .search-icon {
     height: 3rem;
     width: 3rem;
 }
+
+
+main.employer .contract.info .detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.contract.info .title {
+    font-size: 1.6rem;
+}
+.contract.info .left, .contract.info .right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.contract.info .left .data, .contract.info .right .data {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.contract.info .information .label {
+    font-size: 1.5rem !important;
+}
+.contract.info .information .value.text-box {
+    font-size: 1.4rem !important;
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+}
+
+.contract-info .value {
+    border: 1px solid black;
+    padding: 0.5rem 1rem;
+}

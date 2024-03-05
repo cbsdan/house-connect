@@ -140,6 +140,12 @@ button {
     display: none !important;
 }
 
+.employer .container .content .info.contract .buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+}
+
 /* Margin, Padding, Border, Height */
 .m-t-auto {
     margin-top: auto;
@@ -273,7 +279,7 @@ select {
 }
 
 /* Inputs */
-input[type="text"], input[type="number"], input[type='file'], input[type='date'], input[type='datetime'], input[type='password'], input[type='email'], select, textarea {
+input[type="text"], input[type='datetime-local'], input[type="number"], input[type='file'], input[type='date'], input[type='datetime'], input[type='password'], input[type='email'], select, textarea {
     border: 1px solid black;
     padding: 0.5rem 1rem;
 }

@@ -76,7 +76,7 @@
                     <h3>Contract Manager</h3>  
                 </div>
                 <div class='info'>
-                <form class="search-contract flex-row" action='contract_manager.php' method='POST'>
+                <form class="search-contract flex-row <?php echo (!isset($contracts) ? 'hidden' : '');?>" action='contract_manager.php' method='POST'>
                     <input type="number" name='idContract' class='text-box' placeholder='Search by Contract ID'>
                     <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                 </form>
@@ -114,7 +114,6 @@
                                             </tr>
                                         ";
                                     }
-                            
                                 }
                                 ?>
                         </tbody>

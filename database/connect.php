@@ -652,15 +652,19 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         // Prepare SQL statement to fetch contract lists
         $sql = "SELECT 
                     c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
-                    uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo,
-                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, 
+                    m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
+                    uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,
+                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
+                    wd.curriculumVitae,
                     e.idEmployer, e.profilePic as employerProfilePic, e.validId, e.verifyStatus as employerVerifyStatus,
-                    ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname
+                    ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname, ue.birthdate as employerBirthdate, ue.sex as employerSex, ue.email as employerEmail
                 FROM contract c
-                INNER JOIN worker w ON c.idWorker = w.idWorker
-                INNER JOIN user uw ON uw.idUser = w.idUser
-                INNER JOIN employer e ON c.idEmployer = e.idEmployer
-                INNER JOIN user ue ON e.idUser = ue.idUser";
+                LEFT JOIN meeting m ON m.contract_idContract = c.idContract
+                LEFT JOIN worker w ON c.idWorker = w.idWorker
+                LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments 
+                LEFT JOIN user uw ON uw.idUser = w.idUser
+                LEFT JOIN employer e ON c.idEmployer = e.idEmployer
+                LEFT JOIN user ue ON e.idUser = ue.idUser";
 
         if ($idContract != null) {
             $sql .= " WHERE c.idContract = '$idContract'"; 
@@ -686,6 +690,117 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
     
+    function calculateAge($dob) {
+        $dobObject = new DateTime($dob);
+        $now = new DateTime();
+        $age = $now->diff($dobObject);
+        return $age->y;
+    }
+
+    function updateContract($idContract, $contractStatus = null, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update contract
+        $sql = "UPDATE contract SET ";
+        $updates = array();
+    
+        // Build SQL query dynamically based on provided parameters
+        if ($contractStatus !== null) {
+            $updates[] = "contractStatus = '$contractStatus'";
+        }
+        if ($startDate !== null) {
+            $updates[] = "startDate = '$startDate'";
+        }
+        if ($endDate !== null) {
+            $updates[] = "endDate = '$endDate'";
+        }
+        if ($salaryAmt !== null) {
+            $updates[] = "salaryAmt = '$salaryAmt'";
+        }
+        if ($contractImg !== null) {
+            $updates[] = "contractImg = '$contractImg'";
+        }
+        
+        // Join the updates into a single string
+        $sql .= implode(", ", $updates);
+    
+        // Add WHERE clause for specific idContract
+        $sql .= " WHERE idContract = $idContract";
+
+        // Execute the query
+        if ($conn->query($sql) === TRUE) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
+
+    function updateMeeting($idMeeting, $meetDate = null, $platform = null, $link = null, $employerMessage = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update meeting
+        $sql = "UPDATE meeting SET ";
+        $updates = array();
+    
+        // Build SQL query dynamically based on provided parameters
+        if ($meetDate !== null) {
+            $updates[] = "meetDate = '$meetDate'";
+        }
+        if ($platform !== null) {
+            $updates[] = "platform = '$platform'";
+        }
+        if ($link !== null) {
+            $updates[] = "link = '$link'";
+        }
+        if ($employerMessage !== null) {
+            $updates[] = "employerMessage = ?";
+        }
+    
+        // Join the updates into a single string
+        $sql .= implode(", ", $updates);
+    
+        // Add WHERE clause for specific idMeeting
+        $sql .= " WHERE idMeeting = $idMeeting";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+        
+        // Bind parameter if employerMessage is provided
+        if ($stmt && $employerMessage !== null) {
+            $stmt->bind_param("s", $employerMessage);
+        } else if ($stmt && $employerMessage === null) {
+            return false;
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
+    
+    function deleteContract($idContract) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to delete contract
+        $sql = "DELETE FROM contract WHERE idContract = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind idContract parameter
+        $stmt->bind_param("i", $idContract);
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if deletion is successful
+        } else {
+            return false; // Return false if deletion fails
+        }
+    }
     
 ?>
 
