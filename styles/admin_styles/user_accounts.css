@@ -101,3 +101,8 @@ main.edit-user .validIdImg {
     width: 5.75rem;
     height: 5.75rem;
 }
+
+main.admin .search-icon {
+    height: 3rem;
+    width: 3rem;
+}
