@@ -40,7 +40,7 @@
 
         // Close the statement
         $stmt->close();
-
+        
         // Display the fetched worker information
         // You can use the displayWorker() JavaScript function from the previous example
         echo "<script>displayWorker(" . json_encode($workerData) . ");</script>";

@@ -16,7 +16,17 @@
     $myIdEmployer = getEmployerOrWorkerID($myIdUser);
 
     $contracts = getContractListByEmployerID($myIdEmployer);
+    // var_dump($contracts);
 
+    // Define a variable to store the selected status
+    $selectedStatus = isset($_GET['status']) ? $_GET['status'] : 'All';
+
+    // Filter contracts based on the selected status
+    if ($selectedStatus != 'All') {
+        $contracts = array_filter($contracts, function($contract) use ($selectedStatus) {
+            return $contract['contractStatus'] == $selectedStatus;
+        });
+    }
 ?>
 
 <!DOCTYPE html>
@@ -72,14 +82,15 @@
                     <h3>Manage Worker</h3>   
                 </div>
                 <div class='info'>  
-                    <label class='label fw-bold fs-extra-large'>List of Workers</label>
-                    <select name='status' class='select-worker-type'>
-                        <option value='all'>All</option>
-                        <option value='hired'>Hired</option>
-                        <option value='pending'>Pending</option>
-                        <option value='canceled'>Canceled</option>
-                        <option value='completed'>Completed</option>
-                    </select>
+                    <label class='label fw-bold fs-extra-large <?php echo (!isset($contracts) ? 'hidden' : '');?>'>List of Workers</label>
+                    <!-- Add an onchange event to the dropdown to trigger filtering -->
+                    <select name='status' class='select-worker-type <?php echo (!isset($contracts) ? 'hidden' : '');?>' onchange="filterContracts()">
+                        <option value='All' <?php echo ($selectedStatus == 'All') ? 'selected' : ''; ?>>All</option>
+                        <option value='Hired' <?php echo ($selectedStatus == 'Hired') ? 'selected' : ''; ?>>Hired</option>
+                        <option value='Pending' <?php echo ($selectedStatus == 'Pending') ? 'selected' : ''; ?>>Pending</option>
+                        <option value='Canceled' <?php echo ($selectedStatus == 'Canceled') ? 'selected' : ''; ?>>Canceled</option>
+                        <option value='Completed' <?php echo ($selectedStatus == 'Completed') ? 'selected' : ''; ?>>Completed</option>
+                </select>
                     <div class='table-container'>
                         <table class='<?php echo (!isset($contracts) ? 'hidden' : '');?>'>
                             <thead>
@@ -94,39 +105,54 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                    if (isset($contracts)) {
-                                        foreach($contracts as $contract) {
-                                            echo "
-                                                <tr>
-                                                <td class='t-align-center'>" . $contract['idContract'] . "</td>
-                                                    <td>" . $contract['contractStatus'] . "</td>
-                                                    <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
-                                                    <td>" . $contract['workerFname'] . " " . $contract['workerLname'] . "</td>
-                                                    <td class='t-align-center'>" . $contract['workerType'] . "</td>
-                                                    <td>" . $contract['date_created'] . "</td>
-                                                    <td class='t-align-center'>
-                                                        <form action='./contract_info.php' method='POST' class='open-detail-preview '>
-                                                            <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
-                                                            <button type='submit' class='c-yellow details'>[Details]</button>
-                                                        </form>
-                                                    </td>  
-                                                </tr>
-                                            ";
-                                        }
+                                <!-- Display the filtered contracts -->
+                            <?php
+                                if (isset($contracts)) {
+                                    foreach ($contracts as $contract) {
+                                        // Check if the contract should be displayed based on the selected status
+                                        if ($selectedStatus == 'All' || $contract['contractStatus'] == $selectedStatus) {
+                                    ?>
+                                        <tr>
+                                            <td class='t-align-center'><?php echo $contract['idContract']; ?></td>
+                                            <td><?php echo $contract['contractStatus']; ?></td>
+                                            <td class='t-align-center'><img src='../img/user-icon.png' alt='profile'></td>
+                                            <td><?php echo $contract['workerFname'] . " " . $contract['workerLname']; ?></td>
+                                            <td class='t-align-center'><?php echo $contract['workerType']; ?></td>
+                                            <td><?php echo $contract['date_created']; ?></td>
+                                            <td class='t-align-center'>
+                                                <!-- Form for passing worker information to contract_info.php -->
+                                                <form action='./contract_info.php' method='POST' class='open-detail-preview'>
+                                                    <input type='hidden' name='idContract' value='<?php echo $contract['idContract']; ?>'>
+                                                    <input type='hidden' name='workerIdUser' value='<?php echo $contract['workerIdUser']; ?>'>
+                                                    <input type='hidden' name='workerName' value='<?php echo $contract['workerFname'] . " " . $contract['workerLname']; ?>'>
+                                                    <input type='hidden' name='workerType' value='<?php echo $contract['workerType']; ?>'>
+                                                    <input type='hidden' name='contractStatus' value='<?php echo $contract['contractStatus']; ?>'>
+                                                    <input type='hidden' name='workerProfilePic' value='../img/user-icon.png'> <!-- Update with actual path -->
+                                                    <button type='submit' class='c-yellow details'>[Details]</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                        }                                     
                                     }
+                                }
                                 ?>
-                            </tbody>
+                                
+            </tbody>
                         </table>
                         <div class='no-record-label <?php echo (isset($contracts) ? 'hidden' : '');?>'>
-                            <p>There are no found record!</p>
+                            <p>There are no found records!</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-
-
+    <script>
+            function filterContracts() {
+                var status = document.querySelector('.select-worker-type').value;
+                window.location.href = 'manage_worker.php?status=' + status;
+            }
+    </script>
 </body>
 </html>

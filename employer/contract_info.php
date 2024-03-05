@@ -1,5 +1,5 @@
 <?php
-    //Check first if the user is logged in
+    // Check first if the user is logged in
     include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
@@ -13,15 +13,34 @@
     }
 
     
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (!isset($_POST['idContract'])) {
-            header('Location: ./manage_worker.php');
-            exit();
+    if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_SESSION['idContract'])) {
+        if (isset($_POST['idContract'])) {
+            $idContract = $_POST['idContract'];
+            $workerIdUser = $_POST['workerIdUser'];
+        } else {
+            $idContract = $_SESSION['idContract'];
+            $workerIdUser = $_SESSION['workerIdUser'];
+            $_SESSION['idContract'] = null;
+            $_SESSION['workerIdUser'] = null;
         }
-        
-        $idContract = $_POST['idContract'];
+        // Fetch meeting details using the function
+        $meetingDetails = getMeetingDetailsByIdContract($idContract);
 
+        //Contract Info
+        $contractInfo = getContractList($idContract);
+        if (isset($contractInfo[0])) {
+            $contractInfo = $contractInfo[0];
+        }
+    } else {
+        header('Location: ./manage_worker.php');
+        exit();
     }
+    $idEmployer = getEmployerOrWorkerID($_SESSION['idUser']);
+    // Fetch user information
+    $userInfo = fetchUserInformation($conn, $_SESSION['idUser']);
+
+    // Fetch all user information
+    $allUserInfo = fetchAllUserInformation($workerIdUser, 'Worker');
 ?>
 
 <!DOCTYPE html>
@@ -57,6 +76,11 @@
             <div class='content'>
                 <div class='info contract'>  
                     <div class="contract-info">
+                    <?php
+                    // Check if the contract status is 'Pending'
+                    if ($contractInfo['contractStatus'] != 'Pending') {
+                        // Display the contract information
+                    ?>
                         <div class='title'>
                             <h3 class='t-align-center w-100'>Contract Info</h3>
                         </div>
@@ -90,90 +114,87 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="meet-info detail">
-                        <div class='title'>
-                            <h3 class='t-align-center w-100'>Interview Info</h3>
-                        </div>
-                        <div class="information w-100 flex-1">
-                            <div class="left">
-                                <div class='data'>
-                                    <h4 class="label">Interview Data</h4>
-                                    <p class="value">001</p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Platform</h4>
-                                    <p class="value">Google Meet</p>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <div class='data'>
-                                    <h4 class="label">Link</h4>
-                                    <p class="value">url-link</p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Employer Message</h4>
-                                    <p class="value">Hello!</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                
-                    <div class="worker-info detail">
-                        <div class='title'>
-                            <h3 class='t-align-center w-100'>Worker Info</h3>
-                        </div>
-                        <div class="information w-100 flex-1">
-                            <div class="left">
-                                <div class='data'>
-                                    <h4 class="label">Profile</h4>
-                                    <p class="value">
-                                        <div class='image-preview'>
-                                            <img src='../img/user-icon.png'>
-                                        </div>
-                                    </p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Name</h4>
-                                    <p class="value">Juan Dela Cruz</p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Age</h4>
-                                    <p class="value">25</p>
-                                </div>
-                            </div>
-                            <div class="right">
-                                <div class='data'>
-                                    <h4 class="label">Worker Type</h4>
-                                    <p class="value">Driver</p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Years of Experience</h4>
-                                    <p class="value">1</p>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Curriculum Vitae</h4>
-                                    <p class="value">
-                                        <div class='image-preview'>
-                                            <img src='../img/document-sample.jpg' alt='contract-img'>
-                                        </div>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <form action='./salary_payment.php' method='POST'>
-                        <input type='hidden' name='idEmployer' value=''>
-                        <input type='hidden' name='idWorker' value=''>
-                        <input type='hidden' name='idContract' value=''>
-                        <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
-                    </form>
+                    <?php
+                    }
+                    ?>
                 </div>
+                <div class="meet-info detail">
+                    <div class='title'>
+                        <h3 class='t-align-center w-100'>Interview Info</h3>
+                    </div>
+                    <div class="information w-100 flex-1">
+                        <div class="left">
+                            <div class='data'>
+                                <h4 class="label">Interview ID</h4>
+                                <p class="value"><?php echo isset($meetingDetails['idMeeting']) ? $meetingDetails['idMeeting'] : ''; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Platform</h4>
+                                <p class="value"><?php echo isset($meetingDetails['platform']) ? $meetingDetails['platform'] : ''; ?></p>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class='data'>
+                                <h4 class="label">Link</h4>
+                                <p class="value"><?php echo isset($meetingDetails['link']) ? $meetingDetails['link'] : ''; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Employer Message</h4>
+                                <p class="value"><?php echo isset($meetingDetails['employerMessage']) ? $meetingDetails['employerMessage'] : ''; ?></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+       
+                <div class="worker-info detail">
+                    <div class='title'>
+                        <h3 class='t-align-center w-100'>Worker Info</h3>
+                    </div>
+                    <div class="information w-100 flex-1">
+                        <div class="left">
+                            <div class='data'>
+                                <h4 class="label">Name</h4>
+                                <p class="value"><?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Age</h4>
+                                <p class="value"><?php echo calculateAge($allUserInfo['birthdate']); ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Profile</h4>
+                                <div class=" image-preview">
+                                    <img src='<?php echo $allUserInfo['profilePic']?>' alt='profile-pic'>";
+                                </div>
+                            </div>
+                        </div>
+                        <div class="right">
+                            <div class='data'>
+                                <h4 class="label">Worker Type</h4>
+                                <p class="value"><?php echo $allUserInfo['workerType']; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Years of Experience</h4>
+                                <p class='value'><?php echo $allUserInfo['yearsOfExperience'] ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Curriculum Vitae</h4>
+                                <div class='image-preview'>
+                                    <img src='<?php echo $allUserInfo['curriculumVitae'] ?>' alt='curriculumVitae-img'>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+          
+                <form action='./salary_payment.php' method='POST'>
+                    <input type='hidden' name='idEmployer' value='<?php echo $idEmployer?>'>
+                    <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                    <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
+                    <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                    <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
+                </form>
             </div>
         </div>
     </main>
-
-
 </body>
 </html>

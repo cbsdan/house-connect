@@ -10,6 +10,16 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $_SESSION['idContract'] = $_POST['idContract']; //Use to avoid error when clicking the back to manage worker button
+        $_SESSION['workerIdUser'] = $_POST['workerIdUser']; //Use to avoid error when clicking the back to manage worker button
+    } else {
+        header('Location: ./manage_worker.php');
+        exit();
+    }
+
+
 ?>
 
 <!DOCTYPE html>
