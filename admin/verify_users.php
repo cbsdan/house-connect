@@ -12,26 +12,41 @@
         exit();
     }
 
-    
-    $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
-                TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
-                u.email, u.userType,
-                CASE 
-                    WHEN u.userType = 'Worker' THEN w.profilePic
-                    WHEN u.userType = 'Employer' THEN e.profilePic
-                    ELSE NULL
-                END AS profilePic,
-                CASE 
-                    WHEN u.userType = 'Worker' THEN w.verifyStatus
-                    WHEN u.userType = 'Employer' THEN e.verifyStatus
-                    ELSE NULL
-                END AS verifyStatus
-            FROM user AS u
-            LEFT JOIN worker AS w ON u.idUser = w.idUser
-            LEFT JOIN employer AS e ON u.idUser = e.idUser
-            WHERE (u.userType = 'Worker' OR u.userType = 'Employer') 
-                AND ((u.userType = 'Worker' AND w.verifyStatus = 'Not Verified') 
-                OR (u.userType = 'Employer' AND e.verifyStatus = 'Not Verified' AND e.validId IS NOT NULL));";
+    function fetchUserSqlCommand ($idUser = null) {
+        $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
+                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
+                    u.email, u.userType,
+                    CASE 
+                        WHEN u.userType = 'Worker' THEN w.profilePic
+                        WHEN u.userType = 'Employer' THEN e.profilePic
+                        ELSE NULL
+                    END AS profilePic,
+                    CASE 
+                        WHEN u.userType = 'Worker' THEN w.verifyStatus
+                        WHEN u.userType = 'Employer' THEN e.verifyStatus
+                        ELSE NULL
+                    END AS verifyStatus
+                FROM user AS u
+                LEFT JOIN worker AS w ON u.idUser = w.idUser
+                LEFT JOIN employer AS e ON u.idUser = e.idUser
+                WHERE (u.userType = 'Worker' OR u.userType = 'Employer') 
+                    AND ((u.userType = 'Worker' AND w.verifyStatus = 'Not Verified') 
+                    OR (u.userType = 'Employer' AND e.verifyStatus = 'Not Verified' AND e.validId IS NOT NULL))";
+
+        if ($idUser != null) {
+            $sql .= " AND u.idUser = $idUser";
+        }
+
+        return $sql;
+    };
+
+    $sql = fetchUserSqlCommand();
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if (isset($_POST['idUser'])) {
+            $sql = fetchUserSqlCommand($_POST['idUser']);
+        } 
+    } 
 
     $result = $conn -> query($sql);
     
@@ -111,6 +126,10 @@
                     </div>
                 </div>
                 <div class='info'>
+                    <form class="search-contract flex-row <?php echo (isset($users) ? '' : 'hidden') ?>" action='./verify_users.php' method='POST'>
+                        <input type="number" name='idUser' class='text-box' placeholder='Search by User ID'>
+                        <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
+                    </form>
                     <div class='table-result verify-users <?php echo (isset($users) ? '' : 'hidden') ?>'>
                         <table>
                             <thead>

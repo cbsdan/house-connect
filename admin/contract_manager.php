@@ -77,7 +77,7 @@
                 </div>
                 <div class='info'>
                 <form class="search-contract flex-row" action='contract_manager.php' method='POST'>
-                    <input type="text" name='idContract' class='text-box'>
+                    <input type="number" name='idContract' class='text-box' placeholder='Search by Contract ID'>
                     <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                 </form>
                 <div class='table-container'>
