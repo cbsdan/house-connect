@@ -801,6 +801,139 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
             return false; // Return false if deletion fails
         }
     }
+
+    // Add this function to your connect.php or another appropriate file
+    function getYearsOfExperienceByContractId($contractId) {
+        global $conn;
+
+        $query = "SELECT w.yearsOfExperience
+                FROM contract c
+                JOIN worker w ON c.idWorker = w.idWorker
+                WHERE c.idContract = ?";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $contractId);
+        $stmt->execute();
+        $stmt->bind_result($yearsOfExperience);
+        $stmt->fetch();
+        $stmt->close();
+
+        return isset($yearsOfExperience) ? $yearsOfExperience : 0;
+    }
+
+        // Function to get profile picture by contract ID
+    function getProfilePicByContractId($contractId) {
+        global $conn;
+
+        $query = "SELECT w.profilePic
+                FROM contract c
+                JOIN worker w ON c.idWorker = w.idWorker
+                WHERE c.idContract = ?";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $contractId);
+        $stmt->execute();
+        $stmt->bind_result($profilePic);
+        $stmt->fetch();
+        $stmt->close();
+
+        return $profilePic !== null ? $profilePic : null;
+    }
+
+        // Add this function to your connect.php or another appropriate file
+    function getCurriculumVitaeByContractId($contractId) {
+        global $conn;
+
+        $query = "SELECT wd.curriculumVitae
+                FROM contract c
+                JOIN worker w ON c.idWorker = w.idWorker
+                JOIN worker_documents wd ON w.idWorkerDocuments = wd.idWorkerDocuments
+                WHERE c.idContract = ?";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $contractId);
+        $stmt->execute();
+        $stmt->bind_result($curriculumVitae);
+        $stmt->fetch();
+        $stmt->close();
+
+        return isset($curriculumVitae) ? $curriculumVitae : '';
+    }
+
+    // Add this function to your connect.php or another appropriate file
+    function calculateAgeByContractId($contractId) {
+        global $conn;
+
+        $query = "SELECT TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age
+                FROM contract c
+                JOIN worker w ON c.idWorker = w.idWorker
+                JOIN user u ON w.idUser = u.idUser
+                WHERE c.idContract = ?";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('i', $contractId);
+        $stmt->execute();
+        $stmt->bind_result($age);
+        $stmt->fetch();
+        $stmt->close();
+
+        return isset($age) ? $age : 0;
+    }
+
+    function getAllEmployerPayments($idContract = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare the base SQL query
+        $sql = "SELECT 
+                    ep.idEmployerPayment, ep.amount as employerPaymentAmount, ep.method as employerPaymentMethod, ep.imgReceipt, ep.paymentStatus as employerPaymentStatus, ep.submitted_at,
+                    ws.idWorkerSalary, ws.paypalEmail, ws.amount as workerSalaryAmount, ws.status as workerSalaryStatus, ws.modified_at,
+                    c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
+                    m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
+                    uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,
+                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
+                    wd.curriculumVitae,
+                    e.idEmployer, e.profilePic as employerProfilePic, e.validId, e.verifyStatus as employerVerifyStatus,
+                    ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname, ue.birthdate as employerBirthdate, ue.sex as employerSex, ue.email as employerEmail
+                FROM employer_payment ep
+                LEFT JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment 
+                LEFT JOIN contract c ON c.idContract = ep.idContract
+                LEFT JOIN meeting m ON m.contract_idContract = c.idContract
+                LEFT JOIN worker w ON c.idWorker = w.idWorker
+                LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments 
+                LEFT JOIN user uw ON uw.idUser = w.idUser
+                LEFT JOIN employer e ON c.idEmployer = e.idEmployer
+                LEFT JOIN user ue ON e.idUser = ue.idUser";
+    
+        // If idContract is provided, add WHERE clause to filter by idContract
+        if ($idContract !== null) {
+            $sql .= " WHERE ep.idContract = ?";
+        }
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        if ($idContract !== null) {
+            // Bind idContract parameter
+            $stmt->bind_param("i", $idContract);
+        }
+    
+        // Execute the prepared statement
+        $stmt->execute();
+    
+        // Get the result
+        $result = $stmt->get_result();
+    
+        // Check if there are any rows returned
+        if ($result->num_rows > 0) {
+            // Fetch all rows and return as an array
+            $employerPayments = $result->fetch_all(MYSQLI_ASSOC);
+            return $employerPayments;
+        } else {
+            // Return null if no rows found
+            return null;
+        }
+    }
+    
     
 ?>
 
