@@ -646,6 +646,45 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
             }
         }
     }
+    function getContractList($idContract = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to fetch contract lists
+        $sql = "SELECT 
+                    c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
+                    uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo,
+                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, 
+                    e.idEmployer, e.profilePic as employerProfilePic, e.validId, e.verifyStatus as employerVerifyStatus,
+                    ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname
+                FROM contract c
+                INNER JOIN worker w ON c.idWorker = w.idWorker
+                INNER JOIN user uw ON uw.idUser = w.idUser
+                INNER JOIN employer e ON c.idEmployer = e.idEmployer
+                INNER JOIN user ue ON e.idUser = ue.idUser";
+
+        if ($idContract != null) {
+            $sql .= " WHERE c.idContract = '$idContract'"; 
+        }
+
+        // Execute the query
+        $result = $conn->query($sql);
+    
+        // Check if the query executed successfully
+        if ($result === false) {
+            return null;
+        } else {
+            // Fetch the result
+            $contracts = [];
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $contracts[] = $row;
+                }
+                return $contracts; // Return the contract lists
+            } else {
+                return null; // Return null if no contracts found for the given employer
+            }
+        }
+    }
     
     
 ?>
