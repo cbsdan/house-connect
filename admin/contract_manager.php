@@ -91,6 +91,7 @@
                                 <th>Worker Type</th>
                                 <th>Date Created</th>
                                 <th>Details</th>
+                                <th>Payments</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -107,6 +108,12 @@
                                                 <td>" . $contract['date_created'] . "</td>
                                                 <td class='t-align-center'>
                                                     <form action='./contract_info.php' method='POST' class='open-detail-preview '>
+                                                        <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
+                                                        <button type='submit' class='c-yellow details'>[Details]</button>
+                                                    </form>
+                                                </td>  
+                                                <td class='t-align-center'>
+                                                    <form action='./display_salary_payments.php' method='POST' class='open-detail-preview '>
                                                         <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
                                                         <button type='submit' class='c-yellow details'>[Details]</button>
                                                     </form>

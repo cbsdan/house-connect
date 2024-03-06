@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['submitPayment'])) {
         // Retrieve form data
         $amount = $_POST['amount'];
+        $paypalEmail = $_POST['paypalEmail'];
         $method = $_POST['method'];
         $contractId = $_POST['idContract'];
         // Handle image receipt upload
@@ -46,7 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $idEmployerPayment = insertEmployerPayment($contractId, $amount, $method, $imageReceipt);
 
-        insertWorkerSalary("samplepaypal@gmail.com", $amount * 0.9, $idEmployerPayment);
+        insertWorkerSalary($paypalEmail, $amount * 0.9, $idEmployerPayment);
 
         header('Location: ./manage_worker.php');
         exit();
@@ -96,22 +97,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <form class="info" action='' method='POST' enctype="multipart/form-data"> 
                     <input type="hidden" name='idContract' value='<?php echo $contractId; ?>'>
+                    <input type="hidden" name='paypalEmail' value='<?php echo $contractInfo['workerPaypalEmail']; ?>'>
                     <input type="hidden" name='workerName' value='<?php echo $workerName; ?>'>
 
+                    
                     <label class="label">Contract ID</label>
                     <input class='text-box' name='contract-id' value='<?php echo $contractId; ?>' readonly>
-
+                    
                     <label class="label">Worker Name</label>
                     <input class="text-box" name='name' type='text' value='<?php echo $workerFname . ' ' . $workerLname; ?>' readonly>
-
+                    
                     <label class="label">Enter Amount (P)</label>
                     <input class="text-box" name='amount' type='number' min=<?php echo $contractInfo['salaryAmt']?> required>
-
+                    
                     <label class="label">Method</label>
                     <input class="text-box" type='text' name='method' value='Paypal' readonly>
+                    
+                    <label class="label">Send to this PayPal Account</label>
+                    <input class='text-box' type='email' value='houseconnect@gmail.com' readonly>
 
                     <label class="label">Image Receipt</label>
-                    <input class='text-box' type="file" id="image-receipt" name="image_receipt" accept="image/png, image/jpeg, image/jpg">
+                    <input class='text-box' type="file" id="image-receipt" name="image_receipt" accept="image/png, image/jpeg, image/jpg" required>
                     <button class="orange-white-btn" type="submit" name="submitPayment">Submit Payment</button>
                 </form>
             </div>

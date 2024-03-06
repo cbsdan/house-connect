@@ -136,7 +136,7 @@
                         <button class='cancel-btn'><a href='./find_a_worker.php' class='c-light'>CANCEL</a></button>
                         <form class='hire-worker-btn <?php echo (isset($candidateWorker) ? '' : 'hidden') ?>' action='./meet_details.php' method='POST'>
                             <input type='hidden' name='workerIdUser' value='<?php echo $candidateWorker['idUser'];?>' >
-                            <button type='submit'>HIRE WORKER</button>
+                            <button type='submit'>INTERVIEW WORKER</button>
                         </form>
                     </div> 
                 </div>

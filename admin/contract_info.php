@@ -18,7 +18,7 @@
         header('Location: ./contract_manager.php');
         exit();
     }
-
+    
     $contract = getContractList($idContract);
     $contract = $contract[0];
 
@@ -233,10 +233,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class='buttons m-l-auto'>
+                    <div class='buttons m-l-auto flex-row'>
                         <form action='../database/delete_contract.php' method='POST' onsubmit='return confirmDelete()'>
                             <input type='hidden' name='idContract' value='<?php echo $contract['idContract'] ?>'>
                             <button class='red-white-btn' type='submit' name='submit' value='submit'>Delete Contract</button>
+                        </form>
+                        <form action='./display_salary_payments.php' method='POST' class='<?php echo $contract['contractStatus'] != 'Hired' ? 'hidden' : '' ?>'>
+                            <input type='hidden' name='idContract' value='<?php echo $contract['idContract'] ?>'>
+                            <button class='green-white-btn' type='submit' name='submit' value='submit'>Salary Payments</button>
                         </form>
                     </div>
                 </div>

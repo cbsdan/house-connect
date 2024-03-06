@@ -100,6 +100,43 @@
                         <button type='submit' class='green-white-btn' name='submit' value='submit'>Save Changes</button>
                     </div>
                 </form>
+                <div class="title">
+                    <img src='../img/wallet-icon.png'>   
+                    <h3>Worker Salary</h3>
+                </div>
+                <form class="info flex-wrap" action='../database/update_worker_salary.php' method='POST' enctype="multipart/form-data">
+                    <div class="left">
+                        <div class="data">
+                            <h4 class="label">ID Salary</h4>
+                            <input class="text-box" type='number' name='idWorkerSalary' value='<?php echo $paymentInfo['idWorkerSalary'];?>' readonly >
+                        </div>
+                        <div class="data">
+                            <h4 class="label">PayPal Email</h4>
+                            <input class="text-box" type='email' name='paypalEmail' value='<?php echo $paymentInfo['paypalEmail'];?>'>
+                        </div>
+                        <div class="data">
+                            <h4 class="label">Amount</h4>
+                            <input class="text-box" type='text' name='workerSalaryAmount' value='<?php echo $paymentInfo['workerSalaryAmount'];?>'>
+                        </div>
+                    </div>
+                    <div class='right'>
+                        <div class="data">
+                            <h4 class="label">Status</h4>
+                            <select class='text-box' name='workerSalaryStatus'>
+                                <option value='Pending' <?php echo ($paymentInfo['workerSalaryStatus'] == 'Pending') ? 'selected' : ''?>>Pending</option>    
+                                <option value='Successful' <?php echo ($paymentInfo['workerSalaryStatus'] == 'Successful') ? 'selected' : ''?>>Successful</option>    
+                                <option value='Failed' <?php echo ($paymentInfo['workerSalaryStatus'] == 'Failed') ? 'selected' : ''?>>Failed</option>    
+                            </select>
+                            <div class="data">
+                                <h4 class="label">Modified At</h4>
+                                <input class="text-box" type='datetime-local' name='modified_at' value='<?php echo $paymentInfo['modified_at'];?>'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='flex-basis-100 m-l-auto justify-content-end'>
+                        <button type='submit' class='green-white-btn' name='submit' value='submit'>Save Changes</button>
+                    </div>
+                </form>
 
                 <div class="title">
                     <img class='logo' src='../img/documents-icon.png'>

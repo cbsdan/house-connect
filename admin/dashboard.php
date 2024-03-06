@@ -111,31 +111,67 @@
                     </div>
                     <?php
                         function displayWorkerTypes($conn) {
-                            $sql = "SELECT workerType, COUNT(*) AS typeCount
-                                    FROM worker
-                                    GROUP BY workerType";
-                            $result = mysqli_query($conn, $sql);
+                            // $sql = "SELECT workerType, COUNT(*) AS typeCount
+                            //         FROM worker
+                            //         GROUP BY workerType";
+                            // $result = mysqli_query($conn, $sql);
+
+                            // $sql = "SELECT workerType, COUNT(*) AS typeCount
+                            //         FROM worker
+                            //         WHERE worker.workerStatus = 'Available'
+                            //         GROUP BY workerType";
+                            // $result = mysqli_query($conn, $sql);
                             
-                            echo "<div class='details'>";
-                            echo "<h3 class='title'>Workers</h3>";
+                            // echo "<div class='details'>";
+                            // echo "<h3 class='title'>Available Workers</h3>";
                             
-                            $totalWorkers = 0;
+                            // $totalWorkers = 0;
                             
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<div class='data'>";
-                                echo "<p class='label'>" . $row['workerType'] . "</p>";
-                                echo "<p class='value'>" . $row['typeCount'] . "</p>";
-                                echo "</div>";
+                            // while ($row = mysqli_fetch_assoc($result)) {
+                            //     echo "<div class='data'>";
+                            //     echo "<p class='label'>" . $row['workerType'] . "</p>";
+                            //     echo "<p class='value'>" . $row['typeCount'] . "</p>";
+                            //     echo "</div>";
                                 
-                                $totalWorkers += $row['typeCount'];
-                            }
+                            //     $totalWorkers += $row['typeCount'];
+                            // }
                             
-                            echo "<div class='data'>";
-                            echo "<p class='label'>Total</p>";
-                            echo "<p class='value'>$totalWorkers</p>";
-                            echo "</div>";
+                            // echo "<div class='data'>";
+                            // echo "<p class='label'>Total</p>";
+                            // echo "<p class='value'>$totalWorkers</p>";
+                            // echo "</div>";
                             
-                            echo "</div>"; 
+                            // echo "</div>"; 
+                            $sql = "SELECT workerType, 
+                            COUNT(*) AS totalWorkers,
+                            SUM(CASE WHEN workerStatus = 'Available' THEN 1 ELSE 0 END) AS availableWorkers
+                                        FROM worker
+                                        GROUP BY workerType";
+
+                                $result = mysqli_query($conn, $sql);
+
+                                echo "<div class='details'>";
+                                echo "<h3 class='title'>Available Workers</h3>";
+
+                                $totalWorkers = 0;
+                                $availableWorkers = 0;
+
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    echo "<div class='data'>";
+                                    echo "<p class='label'>" . $row['workerType'] . "</p>";
+                                    echo "<p class='value'>" . $row['availableWorkers'] . " / " . $row['totalWorkers'] . "</p>";
+                                    echo "</div>";
+
+                                    $totalWorkers += $row['totalWorkers'];
+                                    $availableWorkers += $row['availableWorkers'];
+                                }
+
+                                echo "<div class='data'>";
+                                echo "<p class='label'>Total Available Workers</p>";
+                                echo "<p class='value'> $availableWorkers / $totalWorkers</p>";
+                                echo "</div>";
+
+                                echo "</div>";
                         }
                         displayWorkerTypes($conn);
                         ?>

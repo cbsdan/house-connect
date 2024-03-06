@@ -42,7 +42,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     updateContract($idContract, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
-    updateWorkerStatus($idWorker, $contractStatus);
+    if ($contractStatus == 'Completed' || $contractStatus == 'Canceled') {
+        $workerStatus = 'Available';
+    } else {
+        $workerStatus = $contractStatus;
+    }
+    updateWorkerStatus($idWorker, $workerStatus);
 }
 
 // Redirect to the appropriate page

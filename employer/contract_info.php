@@ -88,29 +88,29 @@
                             <div class="left">
                                 <div class='data'>
                                     <h4 class="label">Contract ID</h4>
-                                    <p class="value">001</p>
+                                    <p class="value"><?php echo $contractInfo['idContract']?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Status</h4>
-                                    <p class="value">Hired</p>
+                                    <p class="value"><?php echo $contractInfo['contractStatus']?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Date Created</h4>
-                                    <p class="value">January 01, 2024</p>
+                                    <p class="value"><?php echo $contractInfo['date_created']?></p>
                                 </div>
                             </div>
                             <div class="right">
                                 <div class='data'>
                                     <h4 class="label">Start Date</h4>
-                                    <p class="value">January 01, 2024</p>
+                                    <p class="value"><?php echo $contractInfo['startDate']?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">End Date</h4>
-                                    <p class="value">January 01, 2025</p>
+                                    <p class="value"><?php echo $contractInfo['endDate']?></p>
                                 </div>
                                 <div class='data'>
                                     <h4 class="label">Salary Amount</h4>
-                                    <p class="value">P20,000</p>
+                                    <p class="value"><?php echo $contractInfo['salaryAmt']?></p>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                             <div class='data'>
                                 <h4 class="label">Profile</h4>
                                 <div class=" image-preview">
-                                    <img src='<?php echo $allUserInfo['profilePic']?>' alt='profile-pic'>";
+                                    <img src='<?php echo $allUserInfo['profilePic']?>' alt='profile-pic'>
                                 </div>
                             </div>
                         </div>
@@ -185,15 +185,35 @@
                         </div>
                     </div>
                 </div>
-          
-                <form action='./salary_payment.php' method='POST'>
-                    <input type='hidden' name='idEmployer' value='<?php echo $idEmployer?>'>
-                    <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
-                    <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
-                    <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
-                    <input type='hidden' name='workerName' value='<?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?>'>
-                    <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
-                </form>
+                
+                <div class='contract-info-buttons'>
+                    <form action='./salary_payment.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Hired' ? 'hidden' : '')?>'>
+                        <input type='hidden' name='idEmployer' value='<?php echo $idEmployer?>'>
+                        <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                        <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
+                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                        <input type='hidden' name='workerName' value='<?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?>'>
+                        <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
+                    </form>
+                    <form action='../database/update_contract_status.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
+                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                        <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                        <input type='hidden' name='contractStatus' value='Canceled'>
+                        <button type='submit' class='pay-worker-btn red-white-btn '>Not Qualified</button>
+                    </form>
+                    <form action='../database/update_contract_status.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
+                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                        <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                        <input type='hidden' name='contractStatus' value='Hired'>
+                        <button type='submit' class='pay-worker-btn green-white-btn '>Hire Worker</button>
+                    </form>
+                    <form action='../database/update_contract_status.php' method='POST' class='<?php echo ((strtotime($contractInfo['endDate']) <= strtotime(date('Y-m-d'))) && ($contractInfo['contractStatus'] == 'Hired') ? '' : 'hidden') ?>'>
+                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                        <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                        <input type='hidden' name='contractStatus' value='Completed'>
+                        <button type='submit' class='pay-worker-btn green-white-btn'>Completed</button>
+                    </form>
+                </div>
             </div>
         </div>
     </main>

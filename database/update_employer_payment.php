@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     updateEmployerPayment($idEmployerPayment, $employerPaymentAmount, $employerPaymentStatus, $imgReceipt, $submitted_at);
-    updateWorkerSalary($idEmployerPayment, $employerPaymentAmount * 9, $employerPaymentStatus);
+    updateWorkerSalary($idEmployerPayment, $employerPaymentAmount * 0.9, $employerPaymentStatus);
 }
 
 // Redirect to the appropriate page

@@ -13,7 +13,14 @@
     }
 
     $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
+    $worker = fetchAllWorkerInformation($_SESSION['idUser']);
 
+    if (isset($_POST['idWorker']) && isset($_POST['paypalEmail'])) {
+        $sql = "UPDATE worker SET paypalEmail = '".$_POST['paypalEmail']."' WHERE idWorker =". $_POST['idWorker'];
+        $conn->query($sql);
+        header('Location: ./salary_payment.php');
+        exit();
+    }   
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +75,12 @@
                     <img src='../img/wallet-icon.png'>
                     <h3>Salary Payment</h3>   
                 </div>
-                <div class='info'>
+                <div class='info flex-column'>
+                    <form action='' method='POST' class='flex-row'>
+                        <input type='email' class='text-box' name='paypalEmail' placeholder="Please set-up your paypal email for your salary" value='<?php echo (isset($worker['paypalEmail']) ? $worker['paypalEmail'] : '');?>'>
+                        <input type='hidden' name='idWorker' value='<?php echo $worker['idWorker'];?>'>
+                        <button type='submit' name='update' class='green-white-btn'>Update</button>
+                    </form>
                     <table class='<?php echo (isset($salaryDetails) ? '' : 'hidden');?>'>
                         <thead>
                             <tr>
@@ -79,6 +91,7 @@
                                 <th>Amt. Paid by Employer</th>
                                 <th>End of Contract</th>
                                 <th>Salary Amount</th>
+                                <th>Date</th>
                                 <th>Print</th>
                             </tr>
                         </thead>
@@ -95,16 +108,24 @@
                                     $endDate = $row['endDate'];
                                     $salaryamt = $row['workerSalaryAmount'];
 
+                                    $workerSalary = getWorkerSalaryInformation($row['idContract']);
+                                    $date = $workerSalary['modified_at'];
+
                                     echo 
                                     "<tr>
                                         <td class='t-align-center'>".$row['idContract']."</td>
                                         <td>".$contractInfo['employerFname']. " ". $contractInfo['employerLname'] ."</td>
                                         <td>$paypalacc</td>
                                         <td>$status</td>
-                                        <td>$amountPaidEmp</td>
+                                        <td>₱ $amountPaidEmp</td>
                                         <td>$endDate</td>
                                         <td>₱ $salaryamt</td>
-                                        <td class='t-align-center'><a class='c-yellow'>[Receipt]</a></td>
+                                        <td>$date</td>
+                                        <td class='t-align-center'>
+                                            <form action='payment_pdf.php' method='post'>
+                                            <button type='submit' class='c-yellow' name='receipt'>[Receipt]</button>
+                                            </form>
+                                        </td>
                                     </tr>";
                                 }
                             }

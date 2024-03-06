@@ -171,10 +171,6 @@ function updateProfileData($idUser, $birthdate, $address, $contactNo, $profilePi
     }
 }
 
-function getWorkerDocuments($idUser) {
-
-}
-
 function getLatestContractInfo($idUser = null, $idContract = null, $contractStatus = null) {
     global $conn;
     if (isset($ididContractUser)) {
@@ -227,7 +223,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
     function getWorkerSalaryInformation($idContract) {
         global $conn;
         
-        $sql = "SELECT ws.amount as workerSalaryAmount
+        $sql = "SELECT ws.amount as workerSalaryAmount, ws.modified_at
                 FROM worker_salary ws
                 INNER JOIN employer_payment ep ON ws.idEmployerPayment = ep.idEmployerPayment
                 INNER JOIN contract c ON ep.idContract = c.idContract
@@ -880,7 +876,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         return isset($age) ? $age : 0;
     }
 
-    function getAllEmployerPayments($idEmployerPayment = null) {
+    function getAllEmployerPayments($idEmployerPayment = null, $idContract = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Prepare the base SQL query
@@ -908,6 +904,9 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         if ($idEmployerPayment !== null) {
             $sql .= " WHERE ep.idEmployerPayment = ?";
         }
+        if ($idContract !== null) {
+            $sql .= " WHERE ep.idContract = ?";
+        }
     
         // Create a prepared statement
         $stmt = $conn->prepare($sql);
@@ -915,6 +914,10 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         if ($idEmployerPayment !== null) {
             // Bind idContract parameter
             $stmt->bind_param("i", $idEmployerPayment);
+        }
+        if ($idContract !== null) {
+            // Bind idContract parameter
+            $stmt->bind_param("i", $idContract);
         }
     
         // Execute the prepared statement
@@ -1138,6 +1141,69 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
 
+    function updateWorkerSalaryPayment($idWorkerSalary, $paypalEmail = null, $workerSalaryAmount = null, $workerSalaryStatus = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update worker_salary
+        $sql = "UPDATE worker_salary SET ";
+        $updates = array();
+    
+        // Build SQL query dynamically based on provided parameters
+        if ($paypalEmail !== null) {
+            $updates[] = "paypalEmail = ?";
+        }
+        if ($workerSalaryAmount !== null) {
+            $updates[] = "amount = ?";
+        }
+        if ($workerSalaryStatus !== null) {
+            $updates[] = "status = ?";
+        }
+    
+        // Join the updates into a single string
+        $sql .= implode(", ", $updates);
+    
+        // Add WHERE clause for specific idWorkerSalary
+        $sql .= " WHERE idWorkerSalary = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameters
+        if ($stmt) {
+            $paramTypes = ""; // Parameter types string
+            $paramValues = array(); // Array to store parameter values
+    
+            // Bind parameter values and types dynamically
+            if ($paypalEmail !== null) {
+                $paramTypes .= "s"; // Assuming paypalEmail is a string
+                $paramValues[] = $paypalEmail;
+            }
+            if ($workerSalaryAmount !== null) {
+                $paramTypes .= "d"; // Assuming workerSalaryAmount is a double
+                $paramValues[] = $workerSalaryAmount;
+            }
+            if ($workerSalaryStatus !== null) {
+                $paramTypes .= "s"; // Assuming workerSalaryStatus is a string
+                $paramValues[] = $workerSalaryStatus;
+            }
+    
+            // Bind idWorkerSalary parameter
+            $paramTypes .= "i"; // Assuming idWorkerSalary is an integer
+            $paramValues[] = $idWorkerSalary;
+    
+            // Bind parameters
+            $stmt->bind_param($paramTypes, ...$paramValues);
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
     
 ?>
 
