@@ -13,6 +13,7 @@
     }
 
     $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
+
 ?>
 
 <!DOCTYPE html>
@@ -71,17 +72,23 @@
                     <table class='<?php echo (isset($salaryDetails) ? '' : 'hidden');?>'>
                         <thead>
                             <tr>
+                                <th>Contract ID</th>
+                                <th>Employer Name</th>
                                 <th>Paypal Account</th>
                                 <th>Status</th>
                                 <th>Amt. Paid by Employer</th>
                                 <th>End of Contract</th>
                                 <th>Salary Amount</th>
+                                <th>Print</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
                             if (isset($salaryDetails)) {
                                 foreach ($salaryDetails as $row) {
+                                    $contractInfo = getContractList($row['idContract']);
+                                    $contractInfo = $contractInfo[0];
+
                                     $paypalacc = $row['workerPaypalEmail'];
                                     $status = $row['workerSalaryStatus'];
                                     $amountPaidEmp = $row['employerPaymentAmount'];
@@ -90,11 +97,14 @@
 
                                     echo 
                                     "<tr>
+                                        <td class='t-align-center'>".$row['idContract']."</td>
+                                        <td>".$contractInfo['employerFname']. " ". $contractInfo['employerLname'] ."</td>
                                         <td>$paypalacc</td>
                                         <td>$status</td>
                                         <td>$amountPaidEmp</td>
                                         <td>$endDate</td>
                                         <td>₱ $salaryamt</td>
+                                        <td class='t-align-center'><a class='c-yellow'>[Receipt]</a></td>
                                     </tr>";
                                 }
                             }

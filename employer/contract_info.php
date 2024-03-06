@@ -191,6 +191,7 @@
                     <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
                     <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
                     <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                    <input type='hidden' name='workerName' value='<?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?>'>
                     <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
                 </form>
             </div>

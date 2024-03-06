@@ -318,7 +318,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         $sql = "SELECT ws.paypalEmail as workerPaypalEmail,
                        ws.amount as workerSalaryAmount,
                        ep.amount as employerPaymentAmount,
-                       c.endDate,
+                       c.endDate, c.idContract, c.startDate,
                        ws.status as workerSalaryStatus
                 FROM worker w
                 INNER JOIN contract c ON c.idWorker = w.idWorker
@@ -880,7 +880,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         return isset($age) ? $age : 0;
     }
 
-    function getAllEmployerPayments($idContract = null) {
+    function getAllEmployerPayments($idEmployerPayment = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Prepare the base SQL query
@@ -890,7 +890,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                     c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
                     m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
                     uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,
-                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
+                    w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.workerStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
                     wd.curriculumVitae,
                     e.idEmployer, e.profilePic as employerProfilePic, e.validId, e.verifyStatus as employerVerifyStatus,
                     ue.idUser as employerIdUser, ue.fname as employerFname, ue.lname as employerLname, ue.birthdate as employerBirthdate, ue.sex as employerSex, ue.email as employerEmail
@@ -905,16 +905,16 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                 LEFT JOIN user ue ON e.idUser = ue.idUser";
     
         // If idContract is provided, add WHERE clause to filter by idContract
-        if ($idContract !== null) {
-            $sql .= " WHERE ep.idContract = ?";
+        if ($idEmployerPayment !== null) {
+            $sql .= " WHERE ep.idEmployerPayment = ?";
         }
     
         // Create a prepared statement
         $stmt = $conn->prepare($sql);
     
-        if ($idContract !== null) {
+        if ($idEmployerPayment !== null) {
             // Bind idContract parameter
-            $stmt->bind_param("i", $idContract);
+            $stmt->bind_param("i", $idEmployerPayment);
         }
     
         // Execute the prepared statement
@@ -934,6 +934,210 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
     
+    function deleteEmployerPayment($idEmployerPayment) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to delete employer_payment
+        $sql = "DELETE FROM employer_payment WHERE idEmployerPayment = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind idEmployerPayment parameter
+        $stmt->bind_param("i", $idEmployerPayment);
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if deletion is successful
+        } else {
+            return false; // Return false if deletion fails
+        }
+    }
+
+    function updateEmployerPayment($idEmployerPayment, $employerPaymentAmount = null, $employerPaymentStatus = null, $imgReceipt = null, $submitted_at = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update employer_payment
+        $sql = "UPDATE employer_payment SET ";
+        $updates = array();
+    
+        // Build SQL query dynamically based on provided parameters
+        if ($employerPaymentAmount !== null) {
+            $updates[] = "amount = ?";
+        }
+        if ($employerPaymentStatus !== null) {
+            $updates[] = "paymentStatus = ?";
+        }
+        if ($imgReceipt !== null) {
+            $updates[] = "imgReceipt = ?";
+        }
+        if ($submitted_at !== null) {
+            $updates[] = "submitted_at = ?";
+        }
+    
+        // Join the updates into a single string
+        $sql .= implode(", ", $updates);
+    
+        // Add WHERE clause for specific idEmployerPayment
+        $sql .= " WHERE idEmployerPayment = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameters
+        if ($stmt) {
+            $paramTypes = ""; // Parameter types string
+            $paramValues = array(); // Array to store parameter values
+    
+            // Bind parameter values and types dynamically
+            if ($employerPaymentAmount !== null) {
+                $paramTypes .= "d"; // Assuming employerPaymentAmount is a double
+                $paramValues[] = $employerPaymentAmount;
+            }
+            if ($employerPaymentStatus !== null) {
+                $paramTypes .= "s"; // Assuming employerPaymentStatus is a string
+                $paramValues[] = $employerPaymentStatus;
+            }
+            if ($imgReceipt !== null) {
+                $paramTypes .= "s"; // Assuming imgReceipt is a string
+                $paramValues[] = $imgReceipt;
+            }
+            if ($submitted_at !== null) {
+                $paramTypes .= "s"; // Assuming submitted_at is a string
+                $paramValues[] = $submitted_at;
+            }
+    
+            // Bind idEmployerPayment parameter
+            $paramTypes .= "i"; // Assuming idEmployerPayment is an integer
+            $paramValues[] = $idEmployerPayment;
+    
+            // Bind parameters
+            $stmt->bind_param($paramTypes, ...$paramValues);
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
+    
+    function insertEmployerPayment($idContract, $amount, $method, $imgReceipt, $paymentStatus = 'Pending') {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to insert into employer_payment
+        $sql = "INSERT INTO employer_payment (amount, method, imgReceipt, paymentStatus, idContract) VALUES (?, ?, ?, ?, ?)";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameters
+        if ($stmt) {
+            $stmt->bind_param("dsssd", $amount, $method, $imgReceipt, $paymentStatus, $idContract);
+    
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                // Return the idEmployerPayment of the inserted row
+                return $stmt->insert_id;
+            } else {
+                return false; // Return false if execution fails
+            }
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    }
+
+    function insertWorkerSalary($paypalEmail, $amount, $idEmployerPayment, $status = 'Pending') {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to insert into worker_salary
+        $sql = "INSERT INTO worker_salary (paypalEmail, amount, status, idEmployerPayment) VALUES (?, ?, ?, ?)";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameters
+        if ($stmt) {
+            $stmt->bind_param("sdsi", $paypalEmail, $amount, $status, $idEmployerPayment);
+    
+            // Execute the prepared statement
+            if ($stmt->execute()) {
+                return true; // Return true if insertion is successful
+            } else {
+                return false; // Return false if execution fails
+            }
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    }
+    
+    function updateWorkerSalary($idEmployerPayment, $amount = null, $status = null, $paypalEmail = null) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to update worker_salary
+        $sql = "UPDATE worker_salary SET ";
+        $updates = array();
+    
+        // Build SQL query dynamically based on provided parameters
+        if ($amount !== null) {
+            $updates[] = "amount = ?";
+        }
+        if ($status !== null) {
+            $updates[] = "status = ?";
+        }
+        if ($paypalEmail !== null) {
+            $updates[] = "paypalEmail = ?";
+        }
+    
+        // Join the updates into a single string
+        $sql .= implode(", ", $updates);
+    
+        // Add WHERE clause for specific idWorkerSalary
+        $sql .= " WHERE idEmployerPayment = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameters
+        if ($stmt) {
+            $paramTypes = ""; // Parameter types string
+            $paramValues = array(); // Array to store parameter values
+    
+            // Bind parameter values and types dynamically
+            if ($amount !== null) {
+                $paramTypes .= "d"; // Assuming amount is a double
+                $paramValues[] = $amount;
+            }
+            if ($status !== null) {
+                $paramTypes .= "s"; // Assuming status is a string
+                $paramValues[] = $status;
+            }
+            if ($paypalEmail !== null) {
+                $paramTypes .= "s"; // Assuming paypalEmail is a string
+                $paramValues[] = $paypalEmail;
+            }
+    
+            // Bind idWorkerSalary parameter
+            $paramTypes .= "i"; // Assuming idWorkerSalary is an integer
+            $paramValues[] = $idEmployerPayment;
+    
+            // Bind parameters
+            $stmt->bind_param($paramTypes, ...$paramValues);
+        } else {
+            return false; // Return false if prepared statement creation fails
+        }
+    
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            return true; // Return true if update is successful
+        } else {
+            return false; // Return false if update fails
+        }
+    }
+
     
 ?>
 

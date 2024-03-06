@@ -126,7 +126,7 @@
                     </div>
                 </div>
                 <div class='info'>
-                    <form class="search-contract flex-row <?php echo (isset($users) ? '' : 'hidden') ?>" action='./verify_users.php' method='POST'>
+                    <form class="search-contract flex-row" action='./verify_users.php' method='POST'>
                         <input type="number" name='idUser' class='text-box' placeholder='Search by User ID'>
                         <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                     </form>

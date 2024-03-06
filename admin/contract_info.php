@@ -64,6 +64,7 @@
                         </div>
                         <div class='information w-100 flex-1 flex-row align-start'>
                             <div class="left">
+                                <input type='hidden' name='idWorker' value='<?php echo $contract['idWorker'] ?>' readonly>
                                 <div class='data'>
                                     <h4 class="label">Contract ID</h4>
                                     <input class="value" type='text' name='idContract' value='<?php echo $contract['idContract'] ?>' readonly>

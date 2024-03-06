@@ -320,3 +320,13 @@ input[type="text"], input[type='datetime-local'], input[type="number"], input[ty
     flex: 1;
     width: 100%;
 }
+.flex-basis-100 {
+    flex-basis: 100%;
+}
+.flex-wrap {
+    flex-wrap: wrap;
+}
+.justify-content-end {
+    display: flex;
+    justify-content: end;
+}

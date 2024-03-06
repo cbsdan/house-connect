@@ -80,11 +80,13 @@
                     <table class='<?php echo ($result->num_rows == 0 ? 'hidden' : '');?>'>
                         <thead>
                             <tr>
+                                <th>Contract ID</th>
                                 <th>Status</th>
                                 <th>Employer</th>
                                 <th>Start of Contract</th>
                                 <th>End of Contract</th>
                                 <th>Salary Amount</th>
+                                <th>Date Created</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,14 +97,17 @@
                                     $endDate = $row['endDate'];
                                     $salaryAmt = $row['salaryAmt'];
                                     $employerName = $row['employer_fname'] . " " . $row['employer_lname'];
+                                    $date_created = $row['date_created'];
                                 
                                     echo 
                                     "<tr>
+                                        <td class='t-align-center'>".$row['idContract']."</td>
                                         <td>$contractStatus</td>
                                         <td>$employerName</td>
                                         <td>" . (isset($startDate) ? $startDate : 'N/A') . "</td>
                                         <td>" . (isset($endDate) ? $endDate : 'N/A') . "</td>
                                         <td>" . (isset($salaryAmt) ? "₱$salaryAmt" : 'N/A') . "</td>
+                                        <td>$date_created</td>
                                     </tr>";
                                 }
                             ?>

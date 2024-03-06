@@ -13,6 +13,10 @@
     }
 
     $payments= getAllEmployerPayments();
+
+    if (isset($_POST['idEmployerPayment']) && $_POST['idEmployerPayment'] != '') {
+        $payments= getAllEmployerPayments($_POST['idEmployerPayment']);
+    }
 ?>
 
 <!DOCTYPE html>
@@ -64,13 +68,13 @@
     <main class='admin'>
         <div class='container application'>
             <div class='content'>
-                <div class='title <?php echo (isset($payments) ? '' : 'hidden') ?>'>
+                <div class='title'>
                     <img class='user-profile' src='../img/wallet-icon.png' placeholder='wallet-icon'>
                     <h3>Payment</h3>  
                 </div>
                 <div class='info'>
-                    <form class="search-contract flex-row" action='./user_accounts.php' method='POST'>
-                        <input type="number" name='idUser' class='text-box' placeholder='Search by User ID'>
+                    <form class="search-contract flex-row" action='./payment.php' method='POST'>
+                        <input type="number" name='idEmployerPayment' class='text-box' placeholder='Search by Payment ID'>
                         <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                     </form>
                     <div class='table-result employer-payments <?php echo (isset($payments) ? '' : 'hidden') ?>'>
@@ -96,16 +100,16 @@
                                             echo "
                                                 <tr>
                                                     <td class='t-align-center'>".$payment['idEmployerPayment']."</td>
-                                                    <td>".$payment['employerFname']. " " . $payment['employerLname'] ."/td>
+                                                    <td>".$payment['employerFname']. " " . $payment['employerLname'] ."</td>
                                                     <td>".$payment['workerFname']. " " . $payment['workerLname']."</td>
                                                     <td>₱".$payment['employerPaymentAmount']."</td>
                                                     <td>".$payment['employerPaymentMethod']."</td>
-                                                    <td class='image-preview'><img src='".(isset($payment['imgReceipt']) ? getImageSrc($payment['imgReceipt']) : '')."alt='Receipt''></td>
+                                                    <td class='image-preview'><img src='".(isset($payment['imgReceipt']) ? getImageSrc($payment['imgReceipt']) : '../img/document-sample.jpg') ."' alt='Receipt''></td>
                                                     <td>".$payment['employerPaymentStatus']."</td>
-                                                    <td>".$payment['idContract']."</td>
+                                                    <td class='t-align-center'>".$payment['idContract']."</td>
                                                     <td>".$payment['submitted_at']."</td>
                                                     <td class='t-align-center'>
-                                                        <form class='' action='' method='POST'>
+                                                        <form class='' action='./payment_info.php' method='POST'>
                                                             <input type='hidden' name='idEmployerPayment' value='".$payment['idEmployerPayment']."'>
                                                             <button type='submit' name='submit' value='submit' class='c-yellow'>[View]</button>
                                                         </form>

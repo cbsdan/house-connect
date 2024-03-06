@@ -28,6 +28,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $salaryAmt = null;
     }
+    
+    if ($_POST['idWorker'] != '' && $_POST['idWorker'] != null) {
+        $idWorker = $_POST['idWorker'];
+    } else {
+        $idWorker = null;
+    }
 
     if (isset($_FILES['contractImg']) && is_uploaded_file($_FILES['contractImg']['tmp_name'])) {
         $contractImg = addslashes(file_get_contents($_FILES['contractImg']['tmp_name']));
@@ -36,6 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     updateContract($idContract, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
+    updateWorkerStatus($idWorker, $contractStatus);
 }
 
 // Redirect to the appropriate page

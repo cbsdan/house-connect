@@ -64,6 +64,11 @@
                 <div class='title'>
                     <img class='user-profile' src='../img/dashboard-icon.png' placeholder='dashboard-icon'>
                     <h3>Dashboard</h3>  
+                    <form action="download_pdf.php" method="post" class='m-l-auto'>
+                        <button type="submit" class='generate-receipt-btn c-blue fw-bold' name="downloadPDF">
+                           Generate Receipt
+                        </button>
+                    </form>
                 </div>
                 <div class='info'>
                     <div class="details">
@@ -140,7 +145,7 @@
                         function displayContractStatus($conn) {
 
                             $sql = "SELECT COUNT(*) AS totalContracts,
-                                        SUM(CASE WHEN contractStatus = 'Hired' THEN 1 ELSE 0 END) AS activeContracts,
+                                        SUM(CASE WHEN contractStatus = 'Active' THEN 1 ELSE 0 END) AS activeContracts,
                                         SUM(CASE WHEN contractStatus = 'Pending' THEN 1 ELSE 0 END) AS pendingContracts,
                                         SUM(CASE WHEN contractStatus = 'Completed' THEN 1 ELSE 0 END) AS completedContracts,
                                         SUM(CASE WHEN contractStatus = 'Canceled' THEN 1 ELSE 0 END) AS canceledContracts
@@ -158,7 +163,7 @@
                             echo "</div>";
                             
                             echo "<div class='data'>";
-                            echo "<p class='label'>Hired</p>";
+                            echo "<p class='label'>Active</p>";
                             echo "<p class='value'>" . $row['activeContracts'] . "</p>";
                             echo "</div>";
                             
@@ -217,7 +222,7 @@
                             echo "</div>";
                             
                             echo "<div class='data'>";
-                            echo "<p class='label'>Non-verified Users</p>";
+                            echo "<p class='label'>Non-verified Workers</p>";
                             echo "<p class='value'>" . $rowWorkers['nonVerifiedWorkers'] . "</p>";
                             echo "</div>";
                             
@@ -239,6 +244,7 @@
                     </div>
                 </div>
             </div>
+    
         </div>
     </main>
 </body>
