@@ -77,6 +77,7 @@
                 </div>
                 <div class='info flex-column'>
                     <form action='' method='POST' class='flex-row'>
+                        <label class='label fw-bold'>Paypal Email:</label>
                         <input type='email' class='text-box' name='paypalEmail' placeholder="Please set-up your paypal email for your salary" value='<?php echo (isset($worker['paypalEmail']) ? $worker['paypalEmail'] : '');?>'>
                         <input type='hidden' name='idWorker' value='<?php echo $worker['idWorker'];?>'>
                         <button type='submit' name='update' class='green-white-btn'>Update</button>
