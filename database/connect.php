@@ -59,10 +59,24 @@ function fetchUserInformation($conn) {
 }
 
 // Function to fetch worker information
-function fetchWorkerInformation($conn) {
-    $workerQuery = "SELECT idUser, profilePic, height, yearsOfExperience FROM worker";
+function fetchWorkerInformation($conn = null) {
+    global $conn;
+    $workerQuery = "SELECT u.fname, u.lname, w.idUser, w.workerType, w.idWorker, w.profilePic, w.height, w.yearsOfExperience 
+                    FROM worker w
+                    LEFT JOIN user u ON u.idUser = w.idUser
+                    WHERE w.workerStatus = 'Available'";
     $workerResult = $conn->query($workerQuery);
-    return $workerResult->fetch_assoc();
+    
+    // Initialize an array to store all rows
+    $rows = array();
+    
+    // Fetch each row and add it to the array
+    while ($row = $workerResult->fetch_assoc()) {
+        $rows[] = $row;
+    }
+    
+    // Return the array containing all rows
+    return $rows;
 }
 
 function fetchAllUserInformation($idUser, $userType) {
@@ -532,15 +546,36 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
 
-    function insertNewContract($idWorker, $idEmployer) {
+    function fetchEmployerInformation($conn = null) {
+        global $conn;
+        $employerQuery = "SELECT u.fname, u.lname, e.idUser, e.idEmployer, e.profilePic
+                        FROM employer e
+                        LEFT JOIN user u ON u.idUser = e.idUser";
+        $employerResult = $conn->query($employerQuery);
+        
+        // Initialize an array to store all rows
+        $rows = array();
+        
+        // Fetch each row and add it to the array
+        while ($row = $employerResult->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        
+        // Return the array containing all rows
+        return $rows;
+    }
+
+    function insertNewContract($idWorker, $idEmployer, $contractStatus = null, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Get current datetime
         $currentDateTime = date("Y-m-d H:i:s");
-    
+        if (checkEmployerExists($idEmployer) == false) {
+            return false;
+        }
         // Prepare SQL statement to insert a new contract
         $sql = "INSERT INTO contract (idWorker, idEmployer, contractStatus, startDate, endDate, salaryAmt, contractImg, date_created) 
-                VALUES ($idWorker, $idEmployer, 'Pending', NULL, NULL, NULL, NULL, '$currentDateTime')";
+                VALUES ($idWorker, $idEmployer, 'Pending', '$startDate', '$endDate', $salaryAmt, '$contractImg', '$currentDateTime')";
     
         // Execute the query
         if ($conn->query($sql) === true) {
@@ -1204,6 +1239,35 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
             return false; // Return false if update fails
         }
     }
+    
+    function checkEmployerExists($idEmployer) {
+        global $conn; // Assuming $conn is your database connection object
+    
+        // Prepare SQL statement to check if idEmployer exists in the employer table
+        $sql = "SELECT COUNT(*) AS count FROM employer WHERE idEmployer = ?";
+    
+        // Create a prepared statement
+        $stmt = $conn->prepare($sql);
+    
+        // Bind parameter
+        $stmt->bind_param("i", $idEmployer);
+    
+        // Execute the prepared statement
+        $stmt->execute();
+    
+        // Bind result variables
+        $stmt->bind_result($count);
+    
+        // Fetch result
+        $stmt->fetch();
+    
+        // Close statement
+        $stmt->close();
+    
+        // Return true if count is greater than 0, indicating idEmployer exists, otherwise return false
+        return $count > 0;
+    }
+
     
 ?>
 

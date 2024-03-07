@@ -310,7 +310,9 @@ input[type="text"], input[type='datetime-local'], input[type="number"], input[ty
     gap: 1rem;
     flex-direction: column;
 }
-
+.justify-between {
+    justify-content: space-between;
+}
 .flex-center {
     display: flex;
     align-items: center;
@@ -329,4 +331,9 @@ input[type="text"], input[type='datetime-local'], input[type="number"], input[ty
 .justify-content-end {
     display: flex;
     justify-content: end;
+}
+
+thead {
+    background-color: var(--main-color);
+    color: var(--light-background);
 }

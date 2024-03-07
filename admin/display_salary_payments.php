@@ -71,6 +71,7 @@
                         </thead>
                         <tbody>
                             <?php 
+                            if (isset($paymentInfo)) {
                                 foreach($paymentInfo as $payment) {
                                     echo "<tr>
                                             <td class='t-align-center'>". $payment['idEmployerPayment'] ."</td>
@@ -87,6 +88,7 @@
                                             </td>
                                         </tr>";
                                 }
+                            }
                             ?>
                         </tbody>
                     </table>

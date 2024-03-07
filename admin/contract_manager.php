@@ -71,9 +71,14 @@
     <main class='admin'>
         <div class='container application'>
             <div class='content'>
-                <div class='title'>
-                    <img class='user-profile' src='../img/documents-icon.png' placeholder='contract-icon'>
-                    <h3>Contract Manager</h3>  
+                <div class='title justify-between'>
+                    <div class='left flex-row flex-center'>
+                        <img class='user-profile' src='../img/documents-icon.png' placeholder='contract-icon'>
+                        <h3>Contract Manager</h3>  
+                    </div>
+                    <div class="right">
+                        <button class='orange-white-btn fw-bold fs-medium m-r-2'><a class='c-light' href='./create-new-contract.php'>Add new contract</a></button>
+                    </div>
                 </div>
                 <div class='info'>
                 <form class="search-contract flex-row" action='contract_manager.php' method='POST'>
@@ -90,7 +95,7 @@
                                 <th>Worker Name</th>
                                 <th>Worker Type</th>
                                 <th>Date Created</th>
-                                <th>Details</th>
+                                <th>Edit</th>
                                 <th>Payments</th>
                             </tr>
                         </thead>
@@ -109,7 +114,7 @@
                                                 <td class='t-align-center'>
                                                     <form action='./contract_info.php' method='POST' class='open-detail-preview '>
                                                         <input type='hidden' name='idContract' value='" . $contract['idContract'] . "'>
-                                                        <button type='submit' class='c-yellow details'>[Details]</button>
+                                                        <button type='submit' class='c-yellow details'>[Edit]</button>
                                                     </form>
                                                 </td>  
                                                 <td class='t-align-center'>

@@ -1,0 +1,31 @@
+header button {
+    color: var(--light-text);
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+}
+
+.buttons {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+}
+
+main.admin .info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    
+}
+main.admin .left, main.admin .right {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label {
+    font-weight: 600;
+}
+.title {
+    margin-top: 1rem;
+}
