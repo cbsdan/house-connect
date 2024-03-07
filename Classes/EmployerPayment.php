@@ -30,7 +30,7 @@
             return $result->fetch_assoc();
         }
         // Function to read all employer payment 
-        public function readEmployerPayments($idEmployerPayment) {
+        public function readEmployerPayments() {
             $sql = "SELECT * FROM employer_payment";
             $stmt = $this->conn->prepare($sql);
             $stmt->execute();

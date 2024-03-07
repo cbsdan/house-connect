@@ -111,7 +111,7 @@ if (isset($editUserData['profilePic']) && !($editUserData['profilePic'] == '')) 
             <div class='content'>
                 <div class='title'>
                     <div class='left m-b-2'>
-                        <img class='user-profile' src='<?php echo $profilePic; ?>' placeholder='profile'>
+                        <div class='image-preview'><img class='user-profile' src='<?php echo $profilePic?>' placeholder='profile'></div>
                         <h3>Account Profile</h3>
                     </div>
                 </div>

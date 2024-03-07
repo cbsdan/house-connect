@@ -12,10 +12,10 @@
         exit();
     }
 
-    $payments= getAllEmployerPayments();
+    $payments= getAllEmployerPayments(null, null, true, null);
 
     if (isset($_POST['idEmployerPayment']) && $_POST['idEmployerPayment'] != '') {
-        $payments= getAllEmployerPayments($_POST['idEmployerPayment']);
+        $payments= getAllEmployerPayments($_POST['idEmployerPayment'], null, true, null);
     }
 ?>
 
@@ -104,7 +104,7 @@
                                                     <td>".$payment['workerFname']. " " . $payment['workerLname']."</td>
                                                     <td>₱".$payment['employerPaymentAmount']."</td>
                                                     <td>".$payment['employerPaymentMethod']."</td>
-                                                    <td class='image-preview'><img src='".(isset($payment['imgReceipt']) ? getImageSrc($payment['imgReceipt']) : '../img/document-sample.jpg') ."' alt='Receipt''></td>
+                                                    <td class='image-preview t-align-center'><img src='".(isset($payment['imgReceipt']) ? getImageSrc($payment['imgReceipt']) : '../img/document-sample.jpg') ."' alt='Receipt''></td>
                                                     <td>".$payment['employerPaymentStatus']."</td>
                                                     <td class='t-align-center'>".$payment['idContract']."</td>
                                                     <td>".$payment['submitted_at']."</td>

@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $schedule = $_POST['schedule'];
     $message = $_POST['message'];
 
-    $idContract = insertNewContract($idWorker, $idEmployer);
+    $idContract = insertNewContract($idWorker, $idEmployer, 'Pending');
     $idMeeting = insertNewMeeting($idContract, $platform, $link, $schedule, $message);
 
     updateWorkerStatus($idWorker, 'Pending');

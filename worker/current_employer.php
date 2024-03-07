@@ -119,13 +119,13 @@
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-yellow'>Pending</p>
-                        <p class='label'>Meet Platform</p>
+                        <p class='label'>Interview Platform</p>
                         <p class='text-box'><?php echo $meetDetails['platform']?></p>
-                        <p class='label'>Meet Link</p>
+                        <p class='label'>Interview Link</p>
                         <p class='text-box'><?php echo $meetDetails['link']?></p>
                     </div>
                     <div class='right'>
-                        <p class='label'>Meet Date and Time</p>
+                        <p class='label'>Interview Date and Time</p>
                         <p class='text-box'><?php echo $meetDetails['meetDate']?></p>
                         <p class='label'>Employer</p>
                         <p class='text-box'><?php echo $meetDetails['fname'] . " " . $meetDetails['lname']?></p>

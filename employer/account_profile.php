@@ -78,7 +78,7 @@ if ($userData['profilePic']) {
             <div class='content'>
                 <div class='title'>
                     <div class='left'>
-                        <img class='user-profile' src='<?php echo $profilePic?>' placeholder='profile'>
+                        <div class='image-preview'><img class='user-profile' src='<?php echo $profilePic?>' placeholder='profile'></div>
                         <h3>Account Profile <span class = 'c-blue'>(User ID: <?php echo $userData['idUser'];?>)</span></h3>
                     </div>
                     <div class='right'>
@@ -87,7 +87,7 @@ if ($userData['profilePic']) {
                     </div>
                 </div>
                 <div class='not-verified-label <?php echo (($userData['verifyStatus'] == 'Not Verified') && !(isset($userData['validId'])) ? '' : 'hidden' );?>'>
-                    <p class='fs-medium m-b-2 t-align-center f-italic c-main-color'>You are not verified, Please upload one valid id and wait for admin approval!</p>
+                    <p class='fs-medium m-b-2 t-align-center f-italic c-main-color'>You are not verified, To use the other tab, please upload one valid id and wait for admin approval!</p>
                 </div>
                 <div class='wait-for-approval-label <?php echo (($userData['verifyStatus'] == 'Not Verified') && (isset($userData['validId'])) ? '' : 'hidden' );?>'>
                     <p class='fs-medium m-b-2 t-align-center f-italic c-main-color'>Please wait for an approval of your valid id from administrator.</p>

@@ -1,6 +1,6 @@
 <?php
 
-class WorkerCRUD {
+class Worker {
     private $conn;
 
     public function __construct($conn) {
@@ -20,11 +20,20 @@ class WorkerCRUD {
         };
     }
 
-    // Read worker information by idUser
-    public function getWorkerByIdUser($idUser) {
-        $sql = "SELECT * FROM worker WHERE idUser = ?";
+    // Read worker information by idWorker
+    public function getWorkerByIdWorker($idWorker) {
+        $sql = "SELECT * FROM worker WHERE idWorker = ?";
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $idUser);
+        $stmt->bind_param("i", $idWorker);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc();
+    }
+
+    // Read worker information by idUser
+    public function getWorkers() {
+        $sql = "SELECT * FROM worker";
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $result = $stmt->get_result();
             

@@ -2,6 +2,8 @@
 // Check first if the user is logged in
 include_once('../functions/user_authenticate.php');
 include_once('../database/connect.php');
+require_once('../Classes/Contract.php');
+require_once('../Classes/Meeting.php');
 
 if ($_SESSION['userType'] == 'Worker') {
     header('Location: ../worker/application.php');
@@ -69,10 +71,14 @@ if (isset($_POST['idWorker']) && isset($_POST['idEmployer'])) {
         $contractImg = null;
     }
 
-    $idContract = insertNewContract($idWorker, $idEmployer, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
+    $contractObj = new Contract($conn);
+    $meetingObj = new Meeting($conn);
+
+    $idContract = $contractObj->createContract($idWorker, $idEmployer, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
+    
     if ($idContract != false) {
         updateWorkerStatus($idWorker, $contractStatus);
-        insertNewMeeting($idContract, $platform, $link, $meetDate, $employerMessage);
+        $meetingObj->createMeeting($idContract, $meetDate, $platform, $link, $employerMessage);
         header('Location: ./contract_manager.php');
         exit();
     } else {

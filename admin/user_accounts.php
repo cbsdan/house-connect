@@ -16,7 +16,7 @@
     function fetchUserSqlCommand($idUser = null) {
         $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
                     TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
-                    u.email, u.userType,
+                    u.email, u.userType, w.workerType, w.workerStatus,
                     CASE 
                         WHEN u.userType = 'Worker' THEN w.profilePic
                         WHEN u.userType = 'Employer' THEN e.profilePic
@@ -35,7 +35,7 @@
         if ($idUser != null) {
             $sql .= " AND u.idUser = '$idUser' ORDER BY u.idUser;";
         } else {
-            $sql .= " ORDER BY u.idUser";
+            $sql .= " ORDER BY u.userType DESC";
         }
         return $sql;
     }
@@ -141,8 +141,10 @@
                                     <th>Age</th>
                                     <th>Sex</th>
                                     <th>Email</th>
-                                    <th>Status</th>
+                                    <th>Verify Status</th>
                                     <th>User Type</th>
+                                    <th>Worker Type</th>
+                                    <th>Worker Status</th>
                                     <th>Edit</th>
                                     <th>Delete</th>
                                 </tr>
@@ -164,13 +166,15 @@
 
                                         echo "<tr>
                                                 <td class='t-align-center'>". $user['idUser']."</td>
-                                                <td class='t-align-center' ><img src='". $profile ."' alt='profile'></td>
+                                                <td class='t-align-center image-preview' ><img src='". $profile ."' alt='profile'></td>
                                                 <td>".$user['fname'] . " " . $user['lname']."</td>
                                                 <td class='t-align-center'>".$user['age']."</td>
                                                 <td>".$user['sex']."</td>
                                                 <td>".$user['email']."</td>
                                                 <td>".$verifyStaus."</td>
                                                 <td class='t-align-center'>".$user['userType']."</td>
+                                                <td class='t-align-center'>". (isset($user['workerType']) ? $user['workerType'] : "N/A") ."</td>
+                                                <td class='t-align-center'>". (isset($user['workerStatus']) ? $user['workerStatus'] : "N/A") ."</td>
                                                 <td class='t-align-center view-btn'>
                                                     <form action='./edit-user-account.php' method='POST'>
                                                         <input type='hidden' name='idUser' value=" .$user['idUser'] .">

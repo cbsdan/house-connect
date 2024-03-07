@@ -12,7 +12,12 @@
         exit();
     }
 
-    
+    $userData = fetchEmployerData($_SESSION['idUser']);
+    if ($userData['verifyStatus'] == 'Not Verified') {
+        header('Location: ./account_profile.php');
+        exit();
+    }
+
     if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_SESSION['idContract'])) {
         if (isset($_POST['idContract'])) {
             $idContract = $_POST['idContract'];
@@ -98,6 +103,10 @@
                                     <h4 class="label">Date Created</h4>
                                     <p class="value"><?php echo $contractInfo['date_created']?></p>
                                 </div>
+                                <div class='data'>
+                                    <h4 class="label">Contract Img</h4>
+                                    <div class="image-preview"><img src='<?php echo (isset($contractInfo['contractImg']) ? getImageSrc($contractInfo['contractImg']) : '')?>'></div>
+                                </div>
                             </div>
                             <div class="right">
                                 <div class='data'>
@@ -131,6 +140,10 @@
                             <div class='data'>
                                 <h4 class="label">Platform</h4>
                                 <p class="value"><?php echo isset($meetingDetails['platform']) ? $meetingDetails['platform'] : ''; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Interview Date</h4>
+                                <p class="value"><?php echo isset($meetingDetails['meetDate']) ? $meetingDetails['meetDate'] : ''; ?></p>
                             </div>
                         </div>
                         <div class="right">
@@ -201,11 +214,12 @@
                         <input type='hidden' name='contractStatus' value='Canceled'>
                         <button type='submit' class='pay-worker-btn red-white-btn '>Not Qualified</button>
                     </form>
-                    <form action='../database/update_contract_status.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
+                    <form action='./contract_details.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
                         <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
                         <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
+                        <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
                         <input type='hidden' name='contractStatus' value='Hired'>
-                        <button type='submit' class='pay-worker-btn green-white-btn '>Hire Worker</button>
+                        <button type='submit' name='input-contract-details' value='true' class='pay-worker-btn green-white-btn '>Hire Worker</button>
                     </form>
                     <form action='../database/update_contract_status.php' method='POST' class='<?php echo ((strtotime($contractInfo['endDate']) <= strtotime(date('Y-m-d'))) && ($contractInfo['contractStatus'] == 'Hired') ? '' : 'hidden') ?>'>
                         <input type='hidden' name='idContract' value='<?php echo $idContract?>'>

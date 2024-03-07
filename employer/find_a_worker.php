@@ -12,7 +12,12 @@
         exit();
     }
 
-
+    $userData = fetchEmployerData($_SESSION['idUser']);
+    if ($userData['verifyStatus'] == 'Not Verified') {
+        header('Location: ./account_profile.php');
+        exit();
+    }
+    
     // Check if the confirm button is clicked
     if (isset($_POST['confirm'])) {
         // Get preferences from the form

@@ -322,7 +322,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
 
-    function getWorkerSalaryAndPaymentDetails($idUser) {
+    function getWorkerSalaryAndPaymentDetails($idUser, $idContract = null) {
         global $conn;
         
         $sql = "SELECT ws.paypalEmail as workerPaypalEmail,
@@ -335,7 +335,10 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                 INNER JOIN employer_payment ep ON ep.idContract = c.idContract
                 INNER JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
                 WHERE w.idUser = $idUser";
-    
+
+        if ($idContract != null) {
+            $sql .= " AND c.idContract = $idContract";
+        }
         // Execute the query
         $result = $conn->query($sql);
     
@@ -570,12 +573,23 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
     
         // Get current datetime
         $currentDateTime = date("Y-m-d H:i:s");
+    
         if (checkEmployerExists($idEmployer) == false) {
             return false;
         }
+    
+        // Escape variables to avoid SQL injection
+        $idWorker = mysqli_real_escape_string($conn, $idWorker);
+        $idEmployer = mysqli_real_escape_string($conn, $idEmployer);
+        $contractStatus = mysqli_real_escape_string($conn, $contractStatus);
+        $startDate = mysqli_real_escape_string($conn, $startDate);
+        $endDate = mysqli_real_escape_string($conn, $endDate);
+        $salaryAmt = mysqli_real_escape_string($conn, $salaryAmt);
+        $contractImg = mysqli_real_escape_string($conn, $contractImg);
+    
         // Prepare SQL statement to insert a new contract
         $sql = "INSERT INTO contract (idWorker, idEmployer, contractStatus, startDate, endDate, salaryAmt, contractImg, date_created) 
-                VALUES ($idWorker, $idEmployer, 'Pending', '$startDate', '$endDate', $salaryAmt, '$contractImg', '$currentDateTime')";
+                VALUES ('$idWorker', '$idEmployer', '$contractStatus', '$startDate', '$endDate', '$salaryAmt', '$contractImg', '$currentDateTime')";
     
         // Execute the query
         if ($conn->query($sql) === true) {
@@ -911,7 +925,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         return isset($age) ? $age : 0;
     }
 
-    function getAllEmployerPayments($idEmployerPayment = null, $idContract = null) {
+    function getAllEmployerPayments($idEmployerPayment = null, $idContract = null, $sort =null, $filter = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Prepare the base SQL query
@@ -941,6 +955,12 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
         if ($idContract !== null) {
             $sql .= " WHERE ep.idContract = ?";
+        }
+        if ($filter != null) {
+            $sql .= " AND ep.paymentStatus = $filter";
+        }
+        if ($sort === true) {
+            $sql .= " ORDER BY ep.paymentStatus";
         }
     
         // Create a prepared statement
@@ -994,97 +1014,62 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
 
     function updateEmployerPayment($idEmployerPayment, $employerPaymentAmount = null, $employerPaymentStatus = null, $imgReceipt = null, $submitted_at = null) {
         global $conn; // Assuming $conn is your database connection object
-    
-        // Prepare SQL statement to update employer_payment
+
+        // Construct the SQL query for updating employer_payment
         $sql = "UPDATE employer_payment SET ";
         $updates = array();
-    
+        
         // Build SQL query dynamically based on provided parameters
         if ($employerPaymentAmount !== null) {
-            $updates[] = "amount = ?";
+            $employerPaymentAmount = mysqli_real_escape_string($conn, $employerPaymentAmount);
+            $updates[] = "amount = '$employerPaymentAmount'";
         }
         if ($employerPaymentStatus !== null) {
-            $updates[] = "paymentStatus = ?";
+            $employerPaymentStatus = mysqli_real_escape_string($conn, $employerPaymentStatus);
+            $updates[] = "paymentStatus = '$employerPaymentStatus'";
         }
         if ($imgReceipt !== null) {
-            $updates[] = "imgReceipt = ?";
+            $updates[] = "imgReceipt = '$imgReceipt'";
         }
         if ($submitted_at !== null) {
-            $updates[] = "submitted_at = ?";
+            $submitted_at = mysqli_real_escape_string($conn, $submitted_at);
+            $updates[] = "submitted_at = '$submitted_at'";
         }
-    
+        
         // Join the updates into a single string
         $sql .= implode(", ", $updates);
-    
+        
         // Add WHERE clause for specific idEmployerPayment
-        $sql .= " WHERE idEmployerPayment = ?";
-    
-        // Create a prepared statement
-        $stmt = $conn->prepare($sql);
-    
-        // Bind parameters
-        if ($stmt) {
-            $paramTypes = ""; // Parameter types string
-            $paramValues = array(); // Array to store parameter values
-    
-            // Bind parameter values and types dynamically
-            if ($employerPaymentAmount !== null) {
-                $paramTypes .= "d"; // Assuming employerPaymentAmount is a double
-                $paramValues[] = $employerPaymentAmount;
-            }
-            if ($employerPaymentStatus !== null) {
-                $paramTypes .= "s"; // Assuming employerPaymentStatus is a string
-                $paramValues[] = $employerPaymentStatus;
-            }
-            if ($imgReceipt !== null) {
-                $paramTypes .= "s"; // Assuming imgReceipt is a string
-                $paramValues[] = $imgReceipt;
-            }
-            if ($submitted_at !== null) {
-                $paramTypes .= "s"; // Assuming submitted_at is a string
-                $paramValues[] = $submitted_at;
-            }
-    
-            // Bind idEmployerPayment parameter
-            $paramTypes .= "i"; // Assuming idEmployerPayment is an integer
-            $paramValues[] = $idEmployerPayment;
-    
-            // Bind parameters
-            $stmt->bind_param($paramTypes, ...$paramValues);
-        } else {
-            return false; // Return false if prepared statement creation fails
-        }
-    
-        // Execute the prepared statement
-        if ($stmt->execute()) {
+        $sql .= " WHERE idEmployerPayment = $idEmployerPayment";
+        
+        // Execute the query
+        if ($conn->query($sql) === TRUE) {
             return true; // Return true if update is successful
         } else {
             return false; // Return false if update fails
         }
+        
     }
     
     function insertEmployerPayment($idContract, $amount, $method, $imgReceipt, $paymentStatus = 'Pending') {
         global $conn; // Assuming $conn is your database connection object
-    
-        // Prepare SQL statement to insert into employer_payment
-        $sql = "INSERT INTO employer_payment (amount, method, imgReceipt, paymentStatus, idContract) VALUES (?, ?, ?, ?, ?)";
-    
-        // Create a prepared statement
-        $stmt = $conn->prepare($sql);
-    
-        // Bind parameters
-        if ($stmt) {
-            $stmt->bind_param("dsssd", $amount, $method, $imgReceipt, $paymentStatus, $idContract);
-    
-            // Execute the prepared statement
-            if ($stmt->execute()) {
-                // Return the idEmployerPayment of the inserted row
-                return $stmt->insert_id;
-            } else {
-                return false; // Return false if execution fails
-            }
+
+        // Prepare values for insertion
+        $amount = mysqli_real_escape_string($conn, $amount); // Assuming $amount is a variable containing the amount
+        $method = mysqli_real_escape_string($conn, $method); // Assuming $method is a variable containing the method
+        $paymentStatus = mysqli_real_escape_string($conn, $paymentStatus); // Assuming $paymentStatus is a variable containing the payment status
+        $idContract = mysqli_real_escape_string($conn, $idContract); // Assuming $idContract is a variable containing the contract ID
+
+        // Construct the SQL query
+        $sql = "INSERT INTO employer_payment (amount, method, imgReceipt, paymentStatus, idContract) 
+                VALUES ('$amount', '$method', '$imgReceipt', '$paymentStatus', '$idContract')";
+
+        // Execute the query
+        if (mysqli_query($conn, $sql)) {
+            // Return the idEmployerPayment of the inserted row
+            return mysqli_insert_id($conn);
         } else {
-            return false; // Return false if prepared statement creation fails
+            return false; // Return false if execution fails
         }
     }
 

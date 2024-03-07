@@ -1,0 +1,19 @@
+require_once 'User.php';
+
+// Assuming $conn is your database connection object
+
+// Create an instance of the User class
+$userObj = new User($conn);
+
+// Example of calling the createUser method
+$userObj->createUser('John', 'Doe', 'Male', '1990-05-15', '123 Main St', '123456789', 'john@example.com', 'Worker');
+
+// Example of calling the getUserById method
+$user = $userObj->getUserById(1);
+print_r($user);
+
+// Example of calling the updateUser method
+$userObj->updateUser(1, 'Jane', 'Doe', 'Female', '1990-05-15', '123 Main St', '123456789', 'jane@example.com', 'Employer');
+
+// Example of calling the deleteUser method
+$userObj->deleteUser(1);

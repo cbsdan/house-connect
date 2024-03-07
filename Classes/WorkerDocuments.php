@@ -1,5 +1,5 @@
 <?php
-    class WorkerDocumentsCRUD {
+    class WorkerDocuments {
         private $conn;
     
         // Constructor to initialize database connection

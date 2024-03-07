@@ -36,19 +36,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['downloadPDF'])) {
     echo "</div>";
 
     function displayRevenueSummary($conn) {
-        $sql = "SELECT SUM(CASE WHEN paymentStatus = 'Successful' THEN amount * 0.9 ELSE amount END) AS revenue
-                FROM employer_payment";
+        $sql = "SELECT 
+                    SUM(
+                        CASE 
+                            WHEN paymentStatus = 'Successful' AND DATE(submitted_at) = CURDATE() THEN amount * 0.1 
+                            ELSE 0 
+                        END
+                    ) AS revenue_today,
+                    SUM(
+                        CASE 
+                            WHEN paymentStatus = 'Successful' AND YEARWEEK(submitted_at) = YEARWEEK(CURDATE()) THEN amount * 0.1
+                            ELSE 0 
+                        END
+                    ) AS revenue_this_week,
+                    SUM(
+                        CASE 
+                            WHEN paymentStatus = 'Successful' AND YEAR(submitted_at) = YEAR(CURDATE()) AND MONTH(submitted_at) = MONTH(CURDATE()) THEN amount * 0.1 
+                            ELSE 0 
+                        END
+                    ) AS revenue_this_month,
+                    SUM(
+                        CASE 
+                            WHEN paymentStatus = 'Successful' AND YEAR(submitted_at) = YEAR(CURDATE()) THEN amount * 0.1 
+                            ELSE 0 
+                        END
+                    ) AS revenue_this_year
+                FROM 
+                    employer_payment";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
-        $revenue = $row['revenue'];
 
         echo "<div class='details'>";
         echo "<h3 class='title'>Summary Report of Revenue</h3>";
         echo "<hr>";
-        echo "<p>Daily: P" . number_format($revenue / 365, 2) . "</p>";
-        echo "<p>Weekly: P" . number_format($revenue / 52, 2) . "</p>";
-        echo "<p>Monthly: P" . number_format($revenue / 12, 2) . "</p>";
-        echo "<p>Yearly: P" . number_format($revenue, 2) . "</p>";
+        echo "<p>Daily: P" . $row['revenue_today'] . "</p>";
+        echo "<p>Weekly: P" . $row['revenue_this_week'] . "</p>";
+        echo "<p>Monthly: P" . $row['revenue_this_month'] . "</p>";
+        echo "<p>Yearly: P" . $row['revenue_this_year'] . "</p>";
         echo "</div>";
     }
 

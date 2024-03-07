@@ -12,6 +12,12 @@ if ($_SESSION['userType'] == 'Admin') {
     exit();
 }
 
+$userData = fetchEmployerData($_SESSION['idUser']);
+if ($userData['verifyStatus'] == 'Not Verified') {
+    header('Location: ./account_profile.php');
+    exit();
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['idContract']) && isset($_POST['workerIdUser'])) {
         $_SESSION['idContract'] = $_POST['idContract'];

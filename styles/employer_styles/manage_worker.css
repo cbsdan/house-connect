@@ -17,7 +17,7 @@ main.employer .content .info .label, main.employer .content .info .select-worker
     right: 2rem;
     text-align: center;
 }
-.contract.info .title {
+.contract.info .title{
     background-color: var(--main-color);
     padding-bottom: 0;
     padding: 1rem 2rem;
@@ -25,10 +25,11 @@ main.employer .content .info .label, main.employer .content .info .select-worker
     border-bottom: unset !important;
     border-radius: 1rem;
 }
-.contract.info .information .label {
+.contract.info .information .label, .contract-details .label {
     font-size: 1.5rem;
+    font-weight: 600;
 }
-.contract.info .information .value {
+.contract.info .information .value, .contract-details .value {
     font-size: 1.3rem;
     border: 1px solid black;
     padding: 0.5rem 1rem;
@@ -42,4 +43,21 @@ main.employer .content .info .label, main.employer .content .info .select-worker
 }
 .contract .information .left, .contract .information .right {
     flex: 1;
+}
+
+.contract-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.contract-details .title {
+    margin-bottom: 0 !important;
+}
+.contract-details .info .left, .contract-details .info .right {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+#update-contract {
+    margin-top: 1rem;
 }

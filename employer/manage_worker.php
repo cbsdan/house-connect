@@ -11,7 +11,12 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
-
+    $userData = fetchEmployerData($_SESSION['idUser']);
+    if ($userData['verifyStatus'] == 'Not Verified') {
+        header('Location: ./account_profile.php');
+        exit();
+    }
+    
     $myIdUser = $_SESSION['idUser'];
     $myIdEmployer = getEmployerOrWorkerID($myIdUser);
 
@@ -102,6 +107,7 @@
                                     <th>Worker Type</th>
                                     <th>Date Created</th>
                                     <th>Details</th>
+                                    <th>Payments</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -129,6 +135,18 @@
                                                     <input type='hidden' name='contractStatus' value='<?php echo $contract['contractStatus']; ?>'>
                                                     <input type='hidden' name='workerProfilePic' value='../img/user-icon.png'> <!-- Update with actual path -->
                                                     <button type='submit' class='c-yellow details'>[Details]</button>
+                                                </form>
+                                            </td>
+                                            <td class='t-align-center'>
+                                                <!-- Form for passing worker information to contract_info.php -->
+                                                <form action='./salary_payments.php' method='POST' class='open-detail-preview'>
+                                                    <input type='hidden' name='idContract' value='<?php echo $contract['idContract']; ?>'>
+                                                    <input type='hidden' name='workerIdUser' value='<?php echo $contract['workerIdUser']; ?>'>
+                                                    <input type='hidden' name='workerName' value='<?php echo $contract['workerFname'] . " " . $contract['workerLname']; ?>'>
+                                                    <input type='hidden' name='workerType' value='<?php echo $contract['workerType']; ?>'>
+                                                    <input type='hidden' name='contractStatus' value='<?php echo $contract['contractStatus']; ?>'>
+                                                    <input type='hidden' name='workerProfilePic' value='../img/user-icon.png'> <!-- Update with actual path -->
+                                                    <button type='submit' class='c-yellow details'>[View]</button>
                                                 </form>
                                             </td>
                                         </tr>

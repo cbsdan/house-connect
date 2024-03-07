@@ -8,15 +8,16 @@ class Contract {
     }
 
     public function createContract($idWorker, $idEmployer, $contractStatus, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
-        $sql = "INSERT INTO contract (idWorker, idEmployer, contractStatus, startDate, endDate, salaryAmt, contractImg) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("iissdsb", $idWorker, $idEmployer, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
-        if ($stmt->execute()) {
-            // Return the ID of the newly inserted user
-            return $stmt->insert_id;
+        $sql = "INSERT INTO contract (idWorker, idEmployer, contractStatus, startDate, endDate, salaryAmt, contractImg) VALUES ($idWorker, $idEmployer, '$contractStatus', '$startDate', '$endDate', $salaryAmt, '$contractImg')";
+        $result = $this->conn->query($sql);
+        if ($result === true) {
+            // Get the idContract of the inserted contract
+            $idContract = $this->conn->insert_id;
+            return $idContract; // Return the idContract if insertion is successful
         } else {
-            return false;
-        };
+            return false; // Return false if insertion fails
+        }
+        
     }
 
     public function readContractByIdContract($idContract) {
@@ -43,24 +44,33 @@ class Contract {
         return $contracts;
     }
 
-    public function updateContract($idContract, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
+    public function updateContract($idContract, $contractStatus=null, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
         $sql = "UPDATE contract SET ";
-        $params = array();
-        if ($startDate !== null) $params[] = "startDate = ?";
-        if ($endDate !== null) $params[] = "endDate = ?";
-        if ($salaryAmt !== null) $params[] = "salaryAmt = ?";
-        if ($contractImg !== null) $params[] = "contractImg = ?";
-        $sql .= implode(", ", $params) . " WHERE idContract = ?";
+
+        if ($startDate !== null) {
+            $sql .= "startDate = '" . mysqli_real_escape_string($this->conn, $startDate) . "', ";
+        }
+        if ($endDate !== null) {
+            $sql .= "endDate = '" . mysqli_real_escape_string($this->conn, $endDate) . "', ";
+        }
+        if ($salaryAmt !== null) {
+            $sql .= "salaryAmt = " . (float)$salaryAmt . ", ";
+        }
+        if ($contractStatus !== null) {
+            $sql .= "contractStatus = '" . $contractStatus . "', ";
+        }
+        if ($contractImg !== null) {
+            $sql .= "contractImg = '" . $contractImg . "', ";
+        }
+        $sql = rtrim($sql, ", "); // Remove the trailing comma
+        $sql .= " WHERE idContract = ?";
+        
         $stmt = $this->conn->prepare($sql);
         if ($stmt) {
-            if ($startDate !== null) $stmt->bind_param("s", $startDate);
-            if ($endDate !== null) $stmt->bind_param("s", $endDate);
-            if ($salaryAmt !== null) $stmt->bind_param("d", $salaryAmt);
-            if ($contractImg !== null) $stmt->bind_param("s", $contractImg);
             $stmt->bind_param("i", $idContract);
             return $stmt->execute();
         }
-        return false;
+        return false;        
     }
 
     public function deleteContract($idContract) {

@@ -15,6 +15,10 @@
     $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
     $worker = fetchAllWorkerInformation($_SESSION['idUser']);
 
+    if (isset($_POST['filter']) && isset($_POST['idContract'])) {
+        $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser'], $_POST['idContract']);
+    }
+
     if (isset($_POST['idWorker']) && isset($_POST['paypalEmail'])) {
         $sql = "UPDATE worker SET paypalEmail = '".$_POST['paypalEmail']."' WHERE idWorker =". $_POST['idWorker'];
         $conn->query($sql);
@@ -76,11 +80,16 @@
                     <h3>Salary Payment</h3>   
                 </div>
                 <div class='info flex-column'>
-                    <form action='' method='POST' class='flex-row'>
+                    <form action='' method='POST' class='flex-row  m-b-2'>
                         <label class='label fw-bold'>Paypal Email:</label>
                         <input type='email' class='text-box' name='paypalEmail' placeholder="Please set-up your paypal email for your salary" value='<?php echo (isset($worker['paypalEmail']) ? $worker['paypalEmail'] : '');?>'>
                         <input type='hidden' name='idWorker' value='<?php echo $worker['idWorker'];?>'>
                         <button type='submit' name='update' class='green-white-btn'>Update</button>
+                    </form>
+                    <form action='' method='POST' class='flex-row'>
+                        <label class='label fw-bold'>Search Payment:</label>
+                        <input type='number' name='idContract' class='flex-1' placeholder="Search by contract ID">
+                        <button type='submit' name='filter' class='orange-white-btn'>Search</button>
                     </form>
                     <table class='<?php echo (isset($salaryDetails) ? '' : 'hidden');?>'>
                         <thead>

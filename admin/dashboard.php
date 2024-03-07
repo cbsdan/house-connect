@@ -75,33 +75,60 @@
                     <?php
                         function displayRevenueSummary($conn) {
                             
-                            $sql = "SELECT SUM(CASE WHEN paymentStatus = 'Successful' THEN amount * 0.9 ELSE amount END) AS revenue
-                                    FROM employer_payment";
+                            // $sql = "SELECT SUM(CASE WHEN paymentStatus = 'Successful' THEN amount * 0.9 ELSE amount END) AS revenue
+                            //         FROM employer_payment";
+                            $sql = "SELECT 
+                                        SUM(
+                                            CASE 
+                                                WHEN paymentStatus = 'Successful' AND DATE(submitted_at) = CURDATE() THEN amount * 0.1 
+                                                ELSE 0 
+                                            END
+                                        ) AS revenue_today,
+                                        SUM(
+                                            CASE 
+                                                WHEN paymentStatus = 'Successful' AND YEARWEEK(submitted_at) = YEARWEEK(CURDATE()) THEN amount * 0.1
+                                                ELSE 0 
+                                            END
+                                        ) AS revenue_this_week,
+                                        SUM(
+                                            CASE 
+                                                WHEN paymentStatus = 'Successful' AND YEAR(submitted_at) = YEAR(CURDATE()) AND MONTH(submitted_at) = MONTH(CURDATE()) THEN amount * 0.1 
+                                                ELSE 0 
+                                            END
+                                        ) AS revenue_this_month,
+                                        SUM(
+                                            CASE 
+                                                WHEN paymentStatus = 'Successful' AND YEAR(submitted_at) = YEAR(CURDATE()) THEN amount * 0.1 
+                                                ELSE 0 
+                                            END
+                                        ) AS revenue_this_year
+                                    FROM 
+                                        employer_payment
+                                    ";
                             $result = mysqli_query($conn, $sql);
                             $row = mysqli_fetch_assoc($result);
-                            $revenue = $row['revenue'];
                             
                             echo "<div class='details'>";
                             echo "<h3 class='title'>Summary Report of Revenue</h3>";
                             
                             echo "<div class='data'>";
                             echo "<p class='label'>Daily</p>";
-                            echo "<p class='value'>P" . number_format($revenue / 365, 2) . "</p>";
+                            echo "<p class='value'>P" . number_format($row['revenue_today']) . "</p>";
                             echo "</div>";
                             
                             echo "<div class='data'>";
                             echo "<p class='label'>Weekly</p>";
-                            echo "<p class='value'>P" . number_format($revenue / 52, 2) . "</p>";
+                            echo "<p class='value'>P" . number_format($row['revenue_this_week']) . "</p>";
                             echo "</div>";
                             
                             echo "<div class='data'>";
                             echo "<p class='label'>Monthly</p>";
-                            echo "<p class='value'>P" . number_format($revenue / 12, 2) . "</p>";
+                            echo "<p class='value'>P" . number_format($row['revenue_this_month']) . "</p>";
                             echo "</div>";
                             
                             echo "<div class='data'>";
                             echo "<p class='label'>Yearly</p>";
-                            echo "<p class='value'>P" . number_format($revenue, 2) . "</p>";
+                            echo "<p class='value'>P" . number_format($row['revenue_this_year']) . "</p>";
                             echo "</div>";
                             
                             echo "</div>";
@@ -181,7 +208,7 @@
                         function displayContractStatus($conn) {
 
                             $sql = "SELECT COUNT(*) AS totalContracts,
-                                        SUM(CASE WHEN contractStatus = 'Active' THEN 1 ELSE 0 END) AS activeContracts,
+                                        SUM(CASE WHEN contractStatus = 'Hired' THEN 1 ELSE 0 END) AS activeContracts,
                                         SUM(CASE WHEN contractStatus = 'Pending' THEN 1 ELSE 0 END) AS pendingContracts,
                                         SUM(CASE WHEN contractStatus = 'Completed' THEN 1 ELSE 0 END) AS completedContracts,
                                         SUM(CASE WHEN contractStatus = 'Canceled' THEN 1 ELSE 0 END) AS canceledContracts

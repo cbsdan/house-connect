@@ -12,6 +12,12 @@
         exit();
     }
 
+    $userData = fetchEmployerData($_SESSION['idUser']);
+    if ($userData['verifyStatus'] == 'Not Verified') {
+        header('Location: ./account_profile.php');
+        exit();
+    }
+    
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['next-worker'])) {
             array_pop($_POST);
