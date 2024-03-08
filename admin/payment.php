@@ -12,10 +12,18 @@
         exit();
     }
 
-    $payments= getAllEmployerPayments(null, null, true, null);
+    $payments= getAllEmployerPayments(null, null, null);
 
-    if (isset($_POST['idEmployerPayment']) && $_POST['idEmployerPayment'] != '') {
-        $payments= getAllEmployerPayments($_POST['idEmployerPayment'], null, true, null);
+    if (isset($_POST['idEmployerPayment']) || isset($_POST['paymentStatus'])) {
+        $idEmployerPayment = $_POST['idEmployerPayment'] ?? null;
+        $paymentStatus = $_POST['paymentStatus'] ?? null;
+        if ($idEmployerPayment == '') {
+            $idEmployerPayment = null;
+        }
+        if ($paymentStatus == 'All' || $paymentStatus == '') {
+            $paymentStatus = null;
+        }
+        $payments= getAllEmployerPayments($idEmployerPayment, null, $paymentStatus);
     }
 ?>
 
@@ -75,6 +83,12 @@
                 <div class='info'>
                     <form class="search-contract flex-row" action='./payment.php' method='POST'>
                         <input type="number" name='idEmployerPayment' class='text-box' placeholder='Search by Payment ID'>
+                        <select name='paymentStatus'>
+                        <option value='All' selected>All</option>
+                        <option value='Pending'>Pending</option>
+                        <option value='Successful'>Successful</option>
+                        <option value='Failed'>Failed</option>
+                        </select>
                         <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                     </form>
                     <div class='table-result employer-payments <?php echo (isset($payments) ? '' : 'hidden') ?>'>

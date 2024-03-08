@@ -925,7 +925,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         return isset($age) ? $age : 0;
     }
 
-    function getAllEmployerPayments($idEmployerPayment = null, $idContract = null, $sort =null, $filter = null) {
+    function getAllEmployerPayments($idEmployerPayment = null, $idContract = null, $filter = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Prepare the base SQL query
@@ -948,33 +948,24 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                 LEFT JOIN user uw ON uw.idUser = w.idUser
                 LEFT JOIN employer e ON c.idEmployer = e.idEmployer
                 LEFT JOIN user ue ON e.idUser = ue.idUser";
-    
+     
         // If idContract is provided, add WHERE clause to filter by idContract
-        if ($idEmployerPayment !== null) {
-            $sql .= " WHERE ep.idEmployerPayment = ?";
+        if ($idEmployerPayment !== null && $idContract == null) {
+            $sql .= " WHERE ep.idEmployerPayment = $idEmployerPayment";
+            if ($filter != null) {
+                $sql .= " AND ep.paymentStatus = '$filter'";
+            }
         }
-        if ($idContract !== null) {
-            $sql .= " WHERE ep.idContract = ?";
+        if ($filter != null && $idEmployerPayment == null) {
+            $sql .= " WHERE ep.paymentStatus = '$filter'";
         }
-        if ($filter != null) {
-            $sql .= " AND ep.paymentStatus = $filter";
+        if ($idContract !== null && $idEmployerPayment == null) {
+            $sql .= " WHERE ep.idContract = $idContract";
         }
-        if ($sort === true) {
-            $sql .= " ORDER BY ep.paymentStatus";
-        }
-    
+        
         // Create a prepared statement
         $stmt = $conn->prepare($sql);
-    
-        if ($idEmployerPayment !== null) {
-            // Bind idContract parameter
-            $stmt->bind_param("i", $idEmployerPayment);
-        }
-        if ($idContract !== null) {
-            // Bind idContract parameter
-            $stmt->bind_param("i", $idContract);
-        }
-    
+
         // Execute the prepared statement
         $stmt->execute();
     
