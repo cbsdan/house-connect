@@ -133,6 +133,7 @@
                                         <td>$date</td>
                                         <td class='t-align-center'>
                                             <form action='payment_pdf.php' method='post'>
+                                            <input type='hidden' name='idContract' value='".$row['idContract']."'>
                                             <button type='submit' class='c-yellow' name='receipt'>[Receipt]</button>
                                             </form>
                                         </td>

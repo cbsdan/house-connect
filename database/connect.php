@@ -339,6 +339,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         if ($idContract != null) {
             $sql .= " AND c.idContract = $idContract";
         }
+        
         // Execute the query
         $result = $conn->query($sql);
     

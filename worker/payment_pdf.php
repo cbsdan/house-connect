@@ -22,6 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
     $logoBase64 = 'data:image/png;base64,' . base64_encode($logoData);
 
     $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
+    if (isset($_POST['idContract'])) {
+        $idContract = $_POST['idContract'];
+        $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser'], $idContract);
+        $salaryDetails = $salaryDetails[0];
+        $contract = getContractList($idContract);
+        $contract = $contract[0];
+    }
 
     echo "<style>
     @page {
@@ -45,32 +52,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
     
     
     if (isset($salaryDetails)) {
-        foreach ($salaryDetails as $row) {
-            $contractInfo = getContractList($row['idContract']);
-            $contractInfo = $contractInfo[0];
+        $contractInfo = getContractList($salaryDetails['idContract']);
+        $contractInfo = $contractInfo[0];
 
-            $paypalacc = $row['workerPaypalEmail'];
-            $status = $row['workerSalaryStatus'];
-            $amountPaidEmp = $row['employerPaymentAmount'];
-            $endDate = $row['endDate'];
-            $salaryamt = $row['workerSalaryAmount'];
-            $workerName = $contractInfo['workerFname'] . " " . $contractInfo['workerLname'];
+        $paypalacc = $salaryDetails['workerPaypalEmail'];
+        $status = $salaryDetails['workerSalaryStatus'];
+        $amountPaidEmp = $salaryDetails['employerPaymentAmount'];
+        $endDate = $salaryDetails['endDate'];
+        $workerSalaryAmount = $salaryDetails['workerSalaryAmount'];
+        $workerName = $contractInfo['workerFname'] . " " . $contractInfo['workerLname'];
+    
+        echo "<div class='details'>";
+        echo "<p>Contract ID: " .$contract['idContract']. "</p>";
+        echo "<p>Worker Name: ". $contract['workerFname'] . " " . $contract['workerLname'] ."</p>";
+        echo "<p>Employer Name: " .$contract['employerFname']. " ". $contract['employerLname'] ."</p>";
+        echo "<p>Paypal Account: " .$contract['workerPaypalEmail']. "</p>";
+        echo "<p>Status: " . $status . "</p>";
+        echo "<p>Amt Paid by Employer: " . $amountPaidEmp . "</p>";
+        echo "<p>End of Contract: " . $endDate . "</p>";
+        echo "<p>Salary Amount: P" .$workerSalaryAmount. "</p>";
 
-            
-            echo "<div class='details'>";
-            echo "<p>Contract ID: " .$row['idContract']. "</p>";
-            echo "<p>Worker Name: ". $workerName ."</p>";
-            echo "<p>Employer Name: " .$contractInfo['employerFname']. " ". $contractInfo['employerLname'] ."</p>";
-            echo "<p>Paypal Account: " .$paypalacc. "</p>";
-            echo "<p>Status: " . $status . "</p>";
-            echo "<p>Amt Paid by Employer: " . $amountPaidEmp . "</p>";
-            echo "<p>End of Contract: " . $endDate . "</p>";
-            echo "<p>Salary Amount: P" .$salaryamt. "</p>";
-
-            echo "</div>";
+        echo "</div>";
 
             
-        }
+        
     }
     
     echo "</tbody>";
