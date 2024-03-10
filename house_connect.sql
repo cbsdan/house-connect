@@ -36,26 +36,6 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `house_connect`.`admin_message`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `house_connect`.`admin_message` (
-  `idMessage` INT(11) NOT NULL AUTO_INCREMENT,
-  `subject` VARCHAR(100) NOT NULL,
-  `message` VARCHAR(1000) NOT NULL,
-  `isRead` TINYINT(1) NOT NULL,
-  `idUser` INT(11) NOT NULL,
-  PRIMARY KEY (`idMessage`),
-  INDEX `fk_admin_message_user1_idx` (`idUser` ASC) ,
-  CONSTRAINT `fk_admin_message_user1`
-    FOREIGN KEY (`idUser`)
-    REFERENCES `house_connect`.`user` (`idUser`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
 -- Table `house_connect`.`employer`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`employer` (
@@ -82,8 +62,8 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`worker_documents` (
   `idWorkerDocuments` INT(11) NOT NULL AUTO_INCREMENT,
   `curriculumVitae` MEDIUMBLOB NOT NULL,
   `validID` MEDIUMBLOB NOT NULL,
-  `nbi` MEDIUMBLOB NOT NULL,
-  `medical` MEDIUMBLOB NOT NULL,
+  `nbi` MEDIUMBLOB NULL,
+  `medical` MEDIUMBLOB NULL,
   `certificate` MEDIUMBLOB NULL DEFAULT NULL,
   PRIMARY KEY (`idWorkerDocuments`))
 ENGINE = InnoDB
@@ -129,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`contract` (
   `contractStatus` VARCHAR(45) NOT NULL,
   `startDate` DATE NULL DEFAULT NULL,
   `endDate` DATE NULL DEFAULT NULL,
-  `salarytAmt` DECIMAL(8,2) NULL DEFAULT NULL,
+  `salaryAmt` DECIMAL(8,2) NULL DEFAULT NULL,
   `contractImg` MEDIUMBLOB NULL DEFAULT NULL,
   `date_created` TIMESTAMP(1) NOT NULL DEFAULT CURRENT_TIMESTAMP(1) ON UPDATE CURRENT_TIMESTAMP(1),
   `idWorker` INT(11) NOT NULL,
@@ -174,23 +154,31 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `house_connect`.`employerpreference`
+-- Table `house_connect`.`employer_request`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `house_connect`.`employerpreference` (
+CREATE TABLE IF NOT EXISTS `house_connect`.`employer_request` (
   `idEmployerPreference` INT(11) NOT NULL AUTO_INCREMENT,
   `workerType` VARCHAR(45) NOT NULL,
-  `ageMin` INT(11) NULL DEFAULT NULL,
-  `ageMax` VARCHAR(45) NULL DEFAULT NULL,
-  `minHeight` INT(11) NULL DEFAULT NULL,
-  `maxHeight` INT(11) NULL DEFAULT NULL,
+  `age` VARCHAR(45) NULL DEFAULT NULL,
+  `height` INT(11) NULL DEFAULT NULL,
   `yrsOfExperience` INT(11) NULL DEFAULT NULL,
+  `additionalMessage` VARCHAR(250) NULL,
+  `status` VARCHAR(45) NOT NULL,
+  `date_requested` VARCHAR(45) NOT NULL,
   `employer_idEmployer` INT(11) NOT NULL,
+  `contract_idContract` INT(11) NOT NULL,
   PRIMARY KEY (`idEmployerPreference`),
   INDEX `fk_employerPreference_employer1_idx` (`employer_idEmployer` ASC) ,
+  INDEX `fk_employerpreference_contract1_idx` (`contract_idContract` ASC) ,
   CONSTRAINT `fk_employerPreference_employer1`
     FOREIGN KEY (`employer_idEmployer`)
     REFERENCES `house_connect`.`employer` (`idEmployer`)
     ON DELETE CASCADE
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_employerpreference_contract1`
+    FOREIGN KEY (`contract_idContract`)
+    REFERENCES `house_connect`.`contract` (`idContract`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
@@ -202,9 +190,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `house_connect`.`meeting` (
   `idMeeting` INT(11) NOT NULL AUTO_INCREMENT,
   `meetDate` DATETIME NOT NULL,
-  `platform` VARCHAR(45) NOT NULL,
-  `link` VARCHAR(255) NOT NULL,
-  `employerMessage` VARCHAR(150) NOT NULL,
+  `locationAddress` VARCHAR(45) NOT NULL,
   `contract_idContract` INT(11) NOT NULL,
   PRIMARY KEY (`idMeeting`),
   INDEX `fk_meeting_contract1_idx` (`contract_idContract` ASC) ,
@@ -218,31 +204,14 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
--- Table `house_connect`.`rating`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `house_connect`.`rating` (
-  `idRating` INT(11) NOT NULL AUTO_INCREMENT,
-  `rate` INT(11) NULL DEFAULT NULL,
-  `comment` VARCHAR(45) NULL DEFAULT NULL,
-  `idContract` INT(11) NOT NULL,
-  PRIMARY KEY (`idRating`),
-  INDEX `fk_rating_contract1_idx` (`idContract` ASC) ,
-  CONSTRAINT `fk_rating_contract1`
-    FOREIGN KEY (`idContract`)
-    REFERENCES `house_connect`.`contract` (`idContract`)
-    ON DELETE CASCADE
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
-
--- -----------------------------------------------------
 -- Table `house_connect`.`worker_salary`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `house_connect`.`worker_salary` (
   `idWorkerSalary` INT(11) NOT NULL AUTO_INCREMENT,
   `paypalEmail` VARCHAR(45) NOT NULL,
+  `tax_amount` DECIMAL(8,2) NOT NULL,
   `amount` DECIMAL(8,2) NOT NULL,
+  `net_pay` DECIMAL(8,2) NOT NULL,
   `status` VARCHAR(45) NOT NULL,
   `modified_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
   `idEmployerPayment` INT(11) NOT NULL,
