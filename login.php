@@ -42,7 +42,7 @@
                     header("Location: ./worker/application.php");
                 } else if ($user['userType'] == 'Employer') {
                     echo "<script>alert('Successful!');</script>";
-                    header("Location: ./employer/find_a_worker.php");
+                    header("Location: ./employer/request_a_worker.php");
                 } else {
                     echo "<script>alert('Successful!');</script>";
                     header("Location: ./admin/dashboard.php");

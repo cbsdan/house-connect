@@ -109,6 +109,10 @@
                             </div>
                             <div class="right">
                                 <div class='data'>
+                                    <h4 class="label">Worker Deployment Location</h4>
+                                    <p class="value"><?php echo $contractInfo['deploymentLocation']?></p>
+                                </div>
+                                <div class='data'>
                                     <h4 class="label">Start Date</h4>
                                     <p class="value"><?php echo $contractInfo['startDate']?></p>
                                 </div>
@@ -128,31 +132,23 @@
                 </div>
                 <div class="meet-info detail">
                     <div class='title'>
-                        <h3 class='t-align-center w-100'>Interview Info</h3>
+                        <h3 class='t-align-center w-100'>Confirmation of Contract</h3>
                     </div>
                     <div class="information w-100 flex-1">
                         <div class="left">
                             <div class='data'>
-                                <h4 class="label">Interview ID</h4>
-                                <p class="value"><?php echo isset($meetingDetails['idMeeting']) ? $meetingDetails['idMeeting'] : ''; ?></p>
-                            </div>
-                            <div class='data'>
-                                <h4 class="label">Platform</h4>
+                                <h4 class="label">Meet Date</h4>
                                 <p class="value"><?php echo isset($meetingDetails['platform']) ? $meetingDetails['platform'] : ''; ?></p>
                             </div>
                             <div class='data'>
-                                <h4 class="label">Interview Date</h4>
-                                <p class="value"><?php echo isset($meetingDetails['meetDate']) ? $meetingDetails['meetDate'] : ''; ?></p>
+                                <h4 class="label">Meet Location</h4>
+                                <p class="value"><?php echo isset($meetingDetails['meetDate']) ? $meetingDetails['locationAddress'] : ''; ?></p>
                             </div>
                         </div>
                         <div class="right">
                             <div class='data'>
-                                <h4 class="label">Link</h4>
-                                <p class="value"><?php echo isset($meetingDetails['link']) ? $meetingDetails['link'] : ''; ?></p>
-                            </div>
-                            <div class='data'>
-                                <h4 class="label">Employer Message</h4>
-                                <p class="value"><?php echo isset($meetingDetails['employerMessage']) ? $meetingDetails['employerMessage'] : ''; ?></p>
+                                <h4 class="label">Message from agency</h4>
+                                <p class="value"><?php echo isset($meetingDetails['employerMessage']) ? $meetingDetails['message'] : ''; ?></p>
                             </div>
                         </div>
                     </div>

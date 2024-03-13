@@ -419,7 +419,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
     function getMeetingDetailsByIdContract($idContract) {
         global $conn;
         
-        $sql = "SELECT meeting.idMeeting, meeting.meetDate, meeting.platform, meeting.link, meeting.employerMessage, user.fname, user.lname
+        $sql = "SELECT meeting.idMeeting, meeting.meetDate, meeting.locationAddress, meeting.message, user.fname, user.lname
                 FROM meeting
                 JOIN contract ON meeting.contract_idContract = contract.idContract
                 JOIN employer ON contract.idEmployer = employer.idEmployer
