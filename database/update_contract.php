@@ -53,6 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $workerStatus = $contractStatus;
     }
     updateWorkerStatus($idWorker, $workerStatus);
+    $_SESSION['idContract'] = $idContract;
+    header('Location: ../admin/contract_info.php');
+    exit();
+
+
 }
 
 // Redirect to the appropriate page

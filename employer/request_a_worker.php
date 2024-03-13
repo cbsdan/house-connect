@@ -29,12 +29,16 @@
     if (isset($_POST['confirm'])) {
         // Get preferences from the form
         $workerType = $_POST['workerType-preferred'];
-        $preferredSex = $_POST['sex-preferred'] ?? null;
-        $preferredAge = $_POST['age-preferred'] ?? null;
-        $preferredHeight = $_POST['height-preferred'] ?? null;
-        $preferredExperience = $_POST['yearsOfExperience-preferred'] ?? null;
-        $additionalMessage = $_POST['additionalMessage'] ?? null;
-
+        $preferredAge = $_POST['age-preferred'] !== '' ? $_POST['age-preferred'] : null;
+        $preferredHeight = $_POST['height-preferred'] !== '' ? $_POST['height-preferred'] : null;
+        $preferredExperience = $_POST['yearsOfExperience-preferred'] !== '' ? $_POST['yearsOfExperience-preferred'] : null;
+        $additionalMessage = $_POST['additionalMessage'] !== '' ? $_POST['additionalMessage'] : null;        
+        $preferredSex = $_POST['sex-preferred'] !== '' ? $_POST['sex-preferred'] : null;
+        
+        if ($preferredSex != null && $preferredSex == 'unset') {
+            $preferredSex = null;
+        }
+        
         $employerRequestsObj->createEmployerRequest($workerType, 'Pending', date('Y-m-d'), $employer['idEmployer'], null, $preferredAge, $preferredSex, $preferredHeight, $preferredExperience, $additionalMessage);
         header('Location: ./request_a_worker.php');
         exit();

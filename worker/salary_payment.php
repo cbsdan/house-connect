@@ -18,11 +18,6 @@
     }
     
     $workerSalaries = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
-    
-    if (isset($_POST['filter']) && isset($_POST['idContract'])) {
-        $employerPayment = $employerPaymentObj -> getEmployerPaymentByConditions(["idContract" => $_POST['idContract']]);
-        
-    }
 
     if (isset($_POST['idWorker']) && isset($_POST['paypalEmail'])) {
         $workerObj -> updateWorker($_POST['idWorker'], null, null, null, null, null, null, $_POST['paypalEmail'], null, null);

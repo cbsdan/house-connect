@@ -1,6 +1,5 @@
 <?php
     include_once('./connect.php'); 
-    session_start();
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $userId = $_POST['userId'];
         $userType = $_POST['usertype'];
@@ -89,6 +88,10 @@
                 // Execute the SQL query if $sql is not empty
                 if ($sql != "") {
                     $conn->multi_query($sql);
+                }
+
+                if (isset($_POST['idInterview'])) {
+                    $interviewObj -> updateInterview($_POST['idInterview'], ["interviewDate" => $_POST['interviewDate'], "interviewLocation" => $_POST['interviewLocation'], "message" => $_POST['message']]);
                 }
                 
             } else {

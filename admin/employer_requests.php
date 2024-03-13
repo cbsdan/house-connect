@@ -11,8 +11,26 @@
         exit();
     }
 
-    
     $employerRequests = $employerRequestsObj -> getAllEmployerRequests();
+
+    if (isset($_POST['submit'])) {
+        $idEmployerPreference = ($_POST['idEmployerPreference'] != '' ? $_POST['idEmployerPreference'] : null );
+        $status = $_POST['status'] ?? null;
+    
+        if ($status == 'All') {
+            $status = null;
+        }
+    
+        $conditions = [];
+        if ($idEmployerPreference !== null) {
+            $conditions['idEmployerPreference'] = $idEmployerPreference;
+        }
+        if ($status !== null) {
+            $conditions['status'] = $status;
+        }
+    
+        $employerRequests = $employerRequestsObj->getEmployerRequestByConditions($conditions);
+    }
 
 ?>
 
@@ -71,6 +89,16 @@
                     <h3 class='w-100 fs-large'>Employer Requests</h3>
                 </div>
                 <div class="info flex-wrap">
+                    <form class="search-contract flex-row" action='./employer_requests.php' method='POST'>
+                        <input type="number" name='idEmployerPreference' class='text-box' placeholder='Search by Request ID'>
+                        <select name='status'>
+                            <option value='All' selected>All</option>
+                            <option value='Pending'>Pending</option>
+                            <option value='Successful'>Successful</option>
+                            <option value='Canceled'>Canceled</option>
+                        </select>
+                        <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
+                    </form>
                     <table>
                         <thead>
                             <tr>

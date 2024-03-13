@@ -8,7 +8,7 @@
         }
     
         public function createEmployerRequest($workerType, $status, $dateRequested, $employerIdEmployer, $contractIdContract = null, $age = null, $sex = null, $height = null, $yrsOfExperience = null, $additionalMessage = null) {
-            $sql = "INSERT INTO employer_request (workerType, age, height, yrsOfExperience, additionalMessage, status, date_requested, employer_idEmployer";
+            $sql = "INSERT INTO employer_request (workerType, age, sex, height, yrsOfExperience, additionalMessage, status, date_requested, employer_idEmployer";
             if ($contractIdContract !== null) {
                 $sql .= ", contract_idContract";
             }
@@ -72,6 +72,7 @@
                 }
                 $sql .= implode(" AND ", $conditions_arr);
             }
+
             $result = $this->conn->query($sql);
             return ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : false;
         }

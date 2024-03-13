@@ -11,7 +11,7 @@ class Worker {
     // Create a new worker
     public function createWorker($workerType, $workerStatus, $verifyStatus, $qualification_status, $yearsOfExperience, $height, $paypalEmail = null, $idWorkerDocuments = null, $idUser) {
         $sql = "INSERT INTO worker (workerType, workerStatus, verifyStatus, qualification_status, yearsOfExperience, height, paypalEmail, idWorkerDocuments, idUser) 
-                VALUES ('$workerType', '$workerStatus', '$qualification_status', '$verifyStatus', $yearsOfExperience, $height, ";
+                VALUES ('$workerType', '$workerStatus', '$verifyStatus', '$qualification_status', $yearsOfExperience, $height, ";
         if ($paypalEmail !== null) {
             $sql .= "'$paypalEmail', ";
         } else {

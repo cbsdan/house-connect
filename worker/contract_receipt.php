@@ -12,12 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['contractId'])) {
 
     // Fetch HTML content of the section
     ob_start();
-
-    $userData = fetchEmployerData($_SESSION['idUser']);
-    if ($userData['verifyStatus'] == 'Not Verified') {
-        header('Location: ./account_profile.php');
-        exit();
-    }
     
     $myIdUser = $_SESSION['idUser'];
     $myIdEmployer = getEmployerOrWorkerID($myIdUser);
@@ -129,6 +123,8 @@ echo "<style>
                 echo "<hr>";
                 echo "<p>Contract ID: ". $contract['idContract'] . "</p>";
                 echo "<p>Contract Status: ". $contract['contractStatus'] . "</p>";
+                echo "<p>Salary Amount: ". $contract['salaryAmt'] . "</p>";
+                echo "<p>Date of Salary Payment: Every Month on Day ". getDayFromDate($contract['startDate']) . "</p>";
                 echo "<p>Start Date: ". $contract['startDate'] . "</p>";
                 echo "<p>End Date: ". $contract['endDate'] . "</p>";
                 echo "<p>Date Created: ". $contract['date_created'] . "</p>";

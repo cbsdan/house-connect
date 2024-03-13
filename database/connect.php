@@ -408,9 +408,9 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                        c.endDate, c.idContract, c.startDate,
                        ws.status as workerSalaryStatus
                 FROM worker w
-                LEFT JOIN contract c ON c.idWorker = w.idWorker
-                LEFT JOIN employer_payment ep ON ep.idContract = c.idContract
-                LEFT JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
+                INNER JOIN contract c ON c.idWorker = w.idWorker
+                INNER JOIN employer_payment ep ON ep.idContract = c.idContract
+                INNER JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
                 WHERE w.idUser = $idUser";
 
         if ($idContract != null) {
@@ -580,7 +580,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         if ($yearsOfExperience !== null) {
             $sql .= " AND w.yearsOfExperience >= '$yearsOfExperience'";
         }
-        $sql .= " AND w.workerStatus = 'Available'";
+        $sql .= " AND w.workerStatus = 'Available' AND w.qualification_status = 'Qualified' AND w.verifyStatus = 'Verified'";
 
         // Execute the query
         $result = $conn->query($sql);
@@ -738,6 +738,20 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
 
+    function calculatePassedMonths($startDate) {
+        // Create DateTime objects for the start date and current date
+        $startDateObj = new DateTime($startDate);
+        $currentDateObj = new DateTime();
+    
+        // Calculate the difference between the two dates
+        $interval = $currentDateObj->diff($startDateObj);
+    
+        // Calculate the total number of months passed
+        $totalMonths = $interval->y * 12 + $interval->m;
+    
+        return $totalMonths;
+    }
+    
     function getContractListByEmployerID($idEmployer) {
         global $conn; // Assuming $conn is your database connection object
     

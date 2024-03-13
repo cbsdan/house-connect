@@ -17,7 +17,7 @@ if (isset($_POST['idEmployerPreference'])) {
     $employerPreference = $employerRequestsObj -> getEmployerRequestById($_POST['idEmployerPreference']);
     $employer = $employerObj -> getEmployerById($employerPreference['employer_idEmployer']);
     $employerDetails = $userObj -> getUserById($employer['idUser']);
-    $allWorkerResult = $workerObj -> getWorkersByConditions(null, 'Available', 'Qualified', 'Verified', null, null, null, null, null);
+    $allWorkerResult = $workerObj -> getWorkersByConditions(null, 'Available', 'Verified', 'Qualified', null, null, null, null, null);
 
     $workerType = ($employerPreference['workerType'] != '' ? $employerPreference['workerType'] : null); 
     $sex = ($employerPreference['sex'] != '' ? $employerPreference['sex'] : null); 
@@ -26,6 +26,7 @@ if (isset($_POST['idEmployerPreference'])) {
     $yearsOfExperience = ($employerPreference['yrsOfExperience'] != '' ? $employerPreference['yrsOfExperience'] : null); 
 
     $candidateWorkers = searchCandidateWorkersIdUser($workerType, $sex, $age, $height, $yearsOfExperience);
+
 
 } else {
     header('Location: ./employer_requests.php');
@@ -123,6 +124,7 @@ if (isset($_POST['deploy-worker'])) {
                             <th>ID Worker</th>
                             <th>Profile</th>
                             <th>Name</th>
+                            <th>Worker Type</th>
                             <th>Age</th>
                             <th>Sex</th>
                             <th>Years of Experience</th>
@@ -140,8 +142,9 @@ if (isset($_POST['deploy-worker'])) {
 
                                 echo "<tr>
                                         <td class='t-align-center'>". $worker['idWorker'] ."</td>
-                                        <td class='t-align-center image-preview'><img src='". getImageSrc($worker['profilePic']) ."'></td>
+                                        <td class='t-align-center image-preview'><img src='". ($worker['profilePic'] != '' ?  getImageSrc($worker['profilePic']) : '../img/user-icon.png') ."'></td>
                                         <td>". $workerDetails['fname'] . " " . $workerDetails['lname']  . "</td>
+                                        <td>". $worker['workerType'] . "</td>
                                         <td>". calculateAge($workerDetails['birthdate']) ."</td>
                                         <td>". $workerDetails['sex'] . "</td>
                                         <td>". $worker['yearsOfExperience'] . "</td>
@@ -163,8 +166,9 @@ if (isset($_POST['deploy-worker'])) {
 
                                 echo "<tr>
                                         <td class='t-align-center'>". $worker['idWorker'] ."</td>
-                                        <td class='t-align-center image-preview'><img src='". getImageSrc($worker['profilePic']) ."'></td>
+                                        <td class='t-align-center image-preview'><img src='". ($worker['profilePic'] != '' ?  getImageSrc($worker['profilePic']) : '../img/user-icon.png') ."'></td>
                                         <td>". $workerDetails['fname'] . " " . $workerDetails['lname']  . "</td>
+                                        <td>". $worker['workerType'] . "</td>
                                         <td>". calculateAge($workerDetails['birthdate']) ."</td>
                                         <td>". $workerDetails['sex'] . "</td>
                                         <td>". $worker['yearsOfExperience'] . "</td>

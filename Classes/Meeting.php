@@ -17,7 +17,7 @@ class Meeting {
             return false; // idContract is required, so return false if it's null
         }
         if ($message !== null) {
-            $sql .= "'$message')";
+            $sql .= "\"$message\")";
         } else {
             $sql .= "NULL)";
         }

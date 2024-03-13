@@ -16,7 +16,12 @@
         $idUser = $_POST['idUser'];
 
         $user = fetchAllUserInformation($idUser, $userType);
+        
+        if ($userType == 'Worker') {
+            $worker = $workerObj -> getWorkersByConditions(null, null, null, null, null, null, null, null, $_POST['idUser']);
+            $interview = $interviewObj -> getInterviewByConditions(["worker_idWorker" => $worker[0]['idWorker']]);
 
+        }
     } else {
         header('Location: ../admin/user_accounts.php');
         exit();
@@ -44,6 +49,11 @@
     <script src='../scripts/worker.js' defer></script>
     <script src='../scripts/jquery-3.7.1.min.js' defer></script>
 
+    <style>
+        .bottom {
+            align-items: start;
+        }
+    </style>
 </head>
 <body>
     <header class='logged-in'>
@@ -220,10 +230,33 @@
                                 <h4 class="label">Update Certification</h4>
                                 <input class="text-box " type='file' name='certificate' accept="image/jpeg, image/png, image/jpg" >
                             </div>
-
+                            
                         </div>
                     </div>
                 </div>
+                <div class="title <?php echo ($interview == false ? 'hidden' : '')?>">
+                    <h3>Interview Information</h3>
+                </div>
+                <div class="info d-flex <?php echo ($interview == false ? 'hidden' : '')?>">
+                    <div class="left">
+                        <input type="hidden" name='idInterview' value='<?php echo $interview[0]['idInterview'] ?>'>
+                        <div class='data'>
+                            <h4 class="label">Interview Date</h4>
+                            <input class="text-box " type='datetime-local' name='interviewDate' value='<?php echo $interview[0]['interviewDate'] ?>' required>
+                        </div>
+                        <div class='data'>
+                            <h4 class="label">Interview Location</h4>
+                            <input class="text-box " type='text' name='interviewLocation' value="<?php echo $interview[0]['interviewLocation'] ?>" required>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class='data'>
+                            <h4 class="label">Message from Agency</h4>
+                            <input class="text-box " type='text' name='message' value="<?php echo $interview[0]['message'] ?>" >
+                        </div>
+                    </div>
+                </div>
+
                 <div class="info <?php echo ($user['userType'] == 'Employer' ? '' : 'hidden')?>">
                     <div class="left">
                         <div class="data">

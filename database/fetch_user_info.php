@@ -1,6 +1,5 @@
 <?php
     include_once('./connect.php');
-    session_start();
 
     $idUser = $_POST['idUser'];
     $userType = $_POST['userType'];

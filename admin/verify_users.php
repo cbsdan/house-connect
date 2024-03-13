@@ -174,7 +174,7 @@
                                                     </form>
                                                 </td>
                                                 <td class='t-align-center'>
-                                                    <form action='./interview_info.php' method='POST'>
+                                                    <form action='".($user['userType'] == 'Worker' ? './interview_info.php' : "../database/update_verify_status.php" )."' method='GET'>
                                                         <input type='hidden' name='idUser' value='".$user['idUser']."'>".
                                                         ($user['userType'] == 'Worker' ? "<input type='hidden' name='idWorker' value = '".$user['idWorker']."'>" : '')
                                                         . "<input type='hidden' name='userType' value='".$user['userType']."'>

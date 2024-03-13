@@ -1,6 +1,5 @@
 <?php 
     include_once('./connect.php'); 
-    session_start();
     if ($_SERVER["REQUEST_METHOD"] == "GET") {
         $userId = $_GET['idUser'];
         $userType = $_GET['userType'];

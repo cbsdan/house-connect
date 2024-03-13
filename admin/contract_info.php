@@ -11,10 +11,15 @@
         exit();
     }
     
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST" || isset($_SESSION['idContract'])) {
         if (isset($_POST['idContract'])) {
             $idContract = $_POST['idContract'];
         }
+        if (isset($_SESSION['idContract'])) {
+            $idContract = $_SESSION['idContract'];
+            $_SESSION['idContract'] = null;
+        } 
+
         if (isset($_POST['update-meet-info'])) {
             $meetingObj -> updateMeeting($_POST['idMeeting'], $_POST['meetDate'], $_POST['locationAddress'], $_POST['message'], null);
             header ('Location: ./contract_manager.php');
@@ -58,6 +63,11 @@
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
 
+    <style>
+        .information {
+            align-items: start;
+        }
+    </style>
 </head>
 <body>
     <header class='logged-in'>

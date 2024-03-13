@@ -27,7 +27,10 @@
                 header('Location: ./current_employer.php');
                 exit();  
             } else if ($worker['qualification_status'] != 'Qualified') {
-                $interview = $interviewObj -> getInterviewById($worker['idWorker']);
+                $interview = $interviewObj -> getInterviewByConditions(['worker_idWorker' => $worker['idWorker']]);
+                if ($interview != false) {
+                    $interview = $interview[0];
+                }
                 $stepNumber = 4;
             }
             else {
@@ -221,11 +224,11 @@
                             <div class="left">
                                 <div class='input-container'>
                                     <label class='label m-b-2'>Interview Location</label>
-                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value='<?php echo $interview['interviewLocation'];?>'>
+                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value="<?php echo $interview['interviewLocation'];?>">
                                 </div>  
                                 <div class='input-container'>
                                     <label class='label m-b-2'>Message from Agency</label>
-                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value='<?php echo $interview['message'];?>'>
+                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value="<?php echo $interview['message'];?>">
                                 </div>  
                             </div>
                         </div>

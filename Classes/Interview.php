@@ -10,9 +10,9 @@ class Interview {
     // Function to create a new interview and return the inserted ID
     public function createInterview($interviewDate, $interviewLocation, $message = null, $worker_idWorker) {
         $sql = "INSERT INTO interview (interviewDate, interviewLocation, message, worker_idWorker) 
-                VALUES ('$interviewDate', '$interviewLocation', ";
+                VALUES ('$interviewDate', \"$interviewLocation\", ";
         if ($message !== null) {
-            $sql .= "'$message', ";
+            $sql .= "\"$message\", ";
         } else {
             $sql .= "NULL, ";
         }
@@ -64,10 +64,11 @@ class Interview {
         $sql = "UPDATE interview SET ";
         $updates_arr = array();
         foreach ($updates as $key => $value) {
-            $updates_arr[] = "$key = '$value'";
+            $updates_arr[] = "$key = \"$value\"";
         }
         $sql .= implode(", ", $updates_arr);
         $sql .= " WHERE idInterview = $idInterview";
+
         return $this->conn->query($sql);
     }
 

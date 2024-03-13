@@ -110,9 +110,9 @@
                                         <td>$date_created</td>
                                         <td class='t-align-center'>
                                             <form action='contract_receipt.php' method='POST' target='_blank'>
-                                                " . (isset($row['idContract']) ? "<input type='hidden' name='contractId' value='".$row['idContract']."'>" : "") . "
-                                                " . (isset($row['idContract']) ? "<button type='submit' name='submit' class='orange-white-btn'>Contract</button>" : "") . "
-                                                " . (!isset($row['idContract']) ? "N/A" : "") . "
+                                                " . (isset($row['idContract']) && ($row['contractStatus'] == 'Hired') ? "<input type='hidden' name='contractId' value='".$row['idContract']."'>" : "") . "
+                                                " . (isset($row['idContract']) && ($row['contractStatus'] == 'Hired') ? "<button type='submit' name='submit' class='orange-white-btn'>Contract</button>" : "") . "
+                                                " . (!isset($row['idContract']) || ($row['contractStatus'] != 'Hired') ? "N/A" : "") . "
                                             </form>
                                         </td>
                                     </tr>";
