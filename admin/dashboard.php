@@ -64,7 +64,7 @@
                 <div class='title'>
                     <img class='user-profile' src='../img/dashboard-icon.png' placeholder='dashboard-icon'>
                     <h3>Dashboard</h3>  
-                    <form action="download_pdf.php" method="post" class='m-l-auto'>
+                    <form action="download_pdf.php" method="post" class='m-l-auto' target="_blank">
                         <button type="submit" class='generate-receipt-btn c-blue fw-bold' name="downloadPDF">
                            Generate Receipt
                         </button>

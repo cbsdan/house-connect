@@ -52,8 +52,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $idEmployerPayment = insertEmployerPayment($contractId, $amount, $method, $imageReceipt);
 
-        insertWorkerSalary($paypalEmail, $amount * 0.9, $idEmployerPayment);
+        $taxAmount = calculateTax($amount * 0.9);
+        $salaryAmt = $amount * 0.9;
+        $netPay = $salaryAmt - $taxAmount;
 
+        $workerSalaryObj -> createWorkerSalary($paypalEmail, $taxAmount, $salaryAmt, $netPay, 'Pending', $idEmployerPayment);
+        
         header('Location: ./manage_worker.php');
         exit();
     }

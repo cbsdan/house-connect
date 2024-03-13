@@ -19,13 +19,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['downloadPDF'])) {
 
     echo "<style>
     @page {
-                margin: 50px; /* Adjust the margin size as needed */
-            }
-            .pdf-container {
-                border: 1px solid black; /* Add border */
-                padding: 20px; /* Add padding */
-            }
-        </style>";
+        margin: 50px; /* Adjust the margin size as needed */
+    }
+    .pdf-container {
+        border: 1px solid #ba4b2f; /* Add border with theme color */
+        padding: 20px; /* Add padding */
+        background-color: #f2f2f2; /* Add background color */
+    }
+    .pdf-container h1,
+    .pdf-container h2,
+    .pdf-container h3 {
+        color: #ba4b2f; /* Set header color to theme color */
+    }
+    .pdf-container hr {
+        border-color: #ba4b2f; /* Set HR color to theme color */
+    }
+    .pdf-container .details {
+        color: #333; /* Set detail text color */
+    }
+</style>";
 
     
     echo "<div class='pdf-container'>";
@@ -65,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['downloadPDF'])) {
                     employer_payment";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
-                        
+
         echo "<div class='details'>";
         echo "<h3 class='title'>Summary Report of Revenue</h3>";
         echo "<hr>";

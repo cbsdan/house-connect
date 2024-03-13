@@ -52,6 +52,12 @@
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
 
+    <style>
+        main.employer .content .title {
+            justify-content: start;
+        } 
+
+    </style>
 </head>
 <body>
     <header class='logged-in'>
@@ -65,7 +71,7 @@
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
                     <nav >
-                        <a href='./request_a_worker.php' class='c-light fw-bold'>REQUEST A WORKER</a>
+                        <a href='./request_a_worker.php' class='c-light'>REQUEST A WORKER</a>
                         <a href='./worker_requests.php' class='c-light fw-bold'>WORKER REQUESTS</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
@@ -77,10 +83,14 @@
             </div>
         </div>
     </header>
-
+    
     <main class='employer'>
         <div class='container application'>
             <div class='content'>
+            <div class='title'>
+                <img class='user-profile' src='../img/documents-icon.png' placeholder='profile'>
+                <h3>My Requests</h3>   
+            </div>
             <div class="info flex-wrap">
                 <table>
                     <thead>
@@ -99,25 +109,39 @@
                         <?php 
                         if ($employerRequests != false) {
                             foreach($employerRequests as $employerRequest) {
+                                if (isset($employerRequest['contract_idContract'])) {
+                                    $contract = $contractObj -> getContractById($employerRequest['contract_idContract']);
+                                    $workerDetails = $workerObj -> getWorkerById($contract['idWorker']);
+                                } else {
+                                    $contract = null;
+                                }
                                 echo "<tr>
-                                        <td class='t-align-center'>". $employerRequest['idEmployerPreference'] ."</td>
-                                        <td>". $employerRequest['workerType'] ."</td>
-                                        <td>". ($employerRequest['age'] != '' ? '<p>Preferred Age: ' . $employerRequest['age'] . '</p>': '<p>No preferred Age</p>').
-                                                ($employerRequest['sex'] != '' ? '<p>Preferred Sex: ' . $employerRequest['sex'] . '</p>': '<p>No preferred Sex</p>').
-                                                ($employerRequest['height'] != '' ? '<p>Preferred Height: ' . $employerRequest['height'] . '</p>': '<p>No preferred Height</p>').
-                                                ($employerRequest['yrsOfExperience'] != '' ? '<p>Preferred Years of Experience: ' . $employerRequest['yrsOfExperience'] . '</p>': '<p>No preferred Years of Experience</p>')."</td>
-                                        <td>". ($employerRequest['additionalMessage'] != '' ? $employerRequest['additionalMessage'] : 'No additional message requests') ."</td>
-                                        <td>". $employerRequest['status'] ."</td>
-                                        <td>". $employerRequest['date_requested'] ."</td>
-                                        <td class='t-align-center'>". (isset($employerRequest['contract_idContract']) ? $employerRequest['contract_idContract'] : 'N/A') ."</td>
-                                        <td class='t-align-center'>
-                                            <form action='' method='POST' class='". ($employerRequest['status'] != 'Pending' ? 'hidden' : '') . "'>
-                                                <input type='hidden' name='idEmployerPreference' value='".$employerRequest['idEmployerPreference']."'>
-                                                <button class='red-white-btn' name='cancel-request' value='1'>Cancel</button>
-                                            </form>
-                                            <p class='".($employerRequest['status'] == 'Pending' ? 'hidden' : '')."'>N/A</p>
-                                        </td>
-                                    </tr>";
+                                    <td class='t-align-center'>" . $employerRequest['idEmployerPreference'] . "</td>
+                                    <td>" . $employerRequest['workerType'] . "</td>
+                                    <td>" . ($employerRequest['age'] != '' ? '<p>Preferred Age: ' . $employerRequest['age'] . '</p>' : '<p>No preferred Age</p>') .
+                                            ($employerRequest['sex'] != '' ? '<p>Preferred Sex: ' . $employerRequest['sex'] . '</p>' : '<p>No preferred Sex</p>') .
+                                            ($employerRequest['height'] != '' ? '<p>Preferred Height: ' . $employerRequest['height'] . '</p>' : '<p>No preferred Height</p>') .
+                                            ($employerRequest['yrsOfExperience'] != '' ? '<p>Preferred Years of Experience: ' . $employerRequest['yrsOfExperience'] . '</p>' : '<p>No preferred Years of Experience</p>') . "</td>
+                                    <td>" . ($employerRequest['additionalMessage'] != '' ? $employerRequest['additionalMessage'] : 'No additional message requests') . "</td>
+                                    <td>" . $employerRequest['status'] . "</td>
+                                    <td>" . $employerRequest['date_requested'] . "</td>
+                                    <td class='t-align-center'>
+                                        <form action='./contract_info.php' method='POST' class='" . ($employerRequest['status'] == 'Pending' ? 'hidden' : '') . "'>
+                                            <input type='hidden' name='idContract' value='" . ($contract['idContract'] ?? '') . "'>
+                                            <input type='hidden' name='workerIdUser' value='" . ($workerDetails['idUser'] ?? '') . "'>
+                                            <button class='c-blue t-underline' name='submit' value='1'>" . ($contract['idContract'] ?? '') . "</button>
+                                        </form>
+                                        <p class='" . ($employerRequest['status'] != 'Pending' ? 'hidden' : '') . "'>N/A</p>
+                                    </td>
+                                    <td class='t-align-center'>
+                                        <form action='' method='POST' class='" . ($employerRequest['status'] != 'Pending' ? 'hidden' : '') . "'>
+                                            <input type='hidden' name='idEmployerPreference' value='" . $employerRequest['idEmployerPreference'] . "'>
+                                            <button class='red-white-btn' name='cancel-request' value='1'>Cancel</button>
+                                        </form>
+                                        <p class='" . ($employerRequest['status'] != 'Pending' ? '' : 'hidden') . "'>N/A</p>
+                                    </td>
+                                </tr>";
+
                             }
                         }
                         ?>

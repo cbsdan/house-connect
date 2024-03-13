@@ -86,6 +86,7 @@
                                 <th>End of Contract</th>
                                 <th>Salary Amount</th>
                                 <th>Date Created</th>
+                                <th>Print</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -97,7 +98,7 @@
                                     $salaryAmt = $row['salaryAmt'];
                                     $employerName = $row['employer_fname'] . " " . $row['employer_lname'];
                                     $date_created = $row['date_created'];
-                                
+                        
                                     echo 
                                     "<tr>
                                         <td class='t-align-center'>".$row['idContract']."</td>
@@ -107,7 +108,15 @@
                                         <td>" . (isset($endDate) ? $endDate : 'N/A') . "</td>
                                         <td>" . (isset($salaryAmt) ? "₱$salaryAmt" : 'N/A') . "</td>
                                         <td>$date_created</td>
+                                        <td class='t-align-center'>
+                                            <form action='contract_receipt.php' method='POST' target='_blank'>
+                                                " . (isset($row['idContract']) ? "<input type='hidden' name='contractId' value='".$row['idContract']."'>" : "") . "
+                                                " . (isset($row['idContract']) ? "<button type='submit' name='submit' class='orange-white-btn'>Contract</button>" : "") . "
+                                                " . (!isset($row['idContract']) ? "N/A" : "") . "
+                                            </form>
+                                        </td>
                                     </tr>";
+
                                 }
                             ?>
                         </tbody>

@@ -201,6 +201,25 @@ function calculateAge($dob) {
     return $age->y;
 }
 
+function calculateTax($salary) {
+    $taxRate = 0.15; // 15% tax rate
+    $taxThreshold = 20833; // Tax threshold
+
+    // Check if salary exceeds the tax threshold
+    if ($salary > $taxThreshold) {
+        // Calculate the amount exceeding the tax threshold
+        $excessAmount = $salary - $taxThreshold;
+        
+        // Calculate tax based on the exceeding amount
+        $tax = $excessAmount * $taxRate;
+        
+        return $tax;
+    } else {
+        // No tax if salary is below or equal to the threshold
+        return 0;
+    }
+}
+
 // Function to fetch employer data based on user ID
 function fetchEmployerData($idUser) {
     global $conn;
@@ -378,23 +397,27 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         }
     }
 
-    function getWorkerSalaryAndPaymentDetails($idUser, $idContract = null) {
+    function getWorkerSalaryAndPaymentDetails($idUser, $idContract = null, $idWorkerSalary = null) {
         global $conn;
         
-        $sql = "SELECT ws.paypalEmail as workerPaypalEmail,
-                       ws.amount as workerSalaryAmount,
+        $sql = "SELECT ws.paypalEmail as workerPaypalEmail, ws.modified_at,
+                       ws.amount as workerSalaryAmount, ws.idWorkerSalary,
+                       ws.tax_amount,
                        ep.idEmployerPayment,
                        ep.amount as employerPaymentAmount,
                        c.endDate, c.idContract, c.startDate,
                        ws.status as workerSalaryStatus
                 FROM worker w
-                INNER JOIN contract c ON c.idWorker = w.idWorker
-                INNER JOIN employer_payment ep ON ep.idContract = c.idContract
-                INNER JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
+                LEFT JOIN contract c ON c.idWorker = w.idWorker
+                LEFT JOIN employer_payment ep ON ep.idContract = c.idContract
+                LEFT JOIN worker_salary ws ON ws.idEmployerPayment = ep.idEmployerPayment
                 WHERE w.idUser = $idUser";
 
         if ($idContract != null) {
             $sql .= " AND c.idContract = $idContract";
+        }
+        if ($idWorkerSalary != null) {
+            $sql .= " AND ws.idWorkerSalary = $idWorkerSalary";
         }
         
         // Execute the query
@@ -985,7 +1008,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         // Prepare the base SQL query
         $sql = "SELECT 
                     ep.idEmployerPayment, ep.amount as employerPaymentAmount, ep.method as employerPaymentMethod, ep.imgReceipt, ep.paymentStatus as employerPaymentStatus, ep.submitted_at,
-                    ws.idWorkerSalary, ws.paypalEmail, ws.amount as workerSalaryAmount, ws.status as workerSalaryStatus, ws.modified_at,
+                    ws.idWorkerSalary, ws.paypalEmail, ws.amount as workerSalaryAmount, ws.status as workerSalaryStatus, ws.tax_amount, ws.modified_at,
                     c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
                     m.idMeeting, m.meetDate, m.locationAddress, m.message,
                     uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,

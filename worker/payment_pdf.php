@@ -23,10 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
     $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
     if (isset($_POST['idContract'])) {
         $idContract = $_POST['idContract'];
-        $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser'], $idContract);
+        $idWorkerSalary = $_POST['idWorkerSalary'];
+
+        $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser'], $idContract, $idWorkerSalary);
         $salaryDetails = $salaryDetails[0];
         $contract = getContractList($idContract);
         $contract = $contract[0];
+    } else{
+        header('Location: ./salary_payment.php');
     }
 
     echo "<style>
@@ -37,6 +41,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
                 border: 1px solid black; /* Add border */
                 padding: 20px; /* Add padding */
             }
+            .fw-bold {
+                font-weight: 600;
+            }
         </style>";
 
     
@@ -44,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
     echo "<div style='text-align:center;'>";
     echo "<img src='$logoBase64' alt='Logo' style='width: 100px; height: 100px;'>";
     echo "<h1>House Connect</h1>";
-    echo "<h2>Official Receipt</h2>";
+    echo "<h2>Worker Payslip</h2>";
     echo "<hr>";
     echo "</div>";
 
@@ -60,16 +67,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {
         $endDate = $salaryDetails['endDate'];
         $workerSalaryAmount = $salaryDetails['workerSalaryAmount'];
         $workerName = $contractInfo['workerFname'] . " " . $contractInfo['workerLname'];
-    
+        $taxAmt = $salaryDetails['tax_amount'];
+        $netPay = $workerSalaryAmount - $taxAmt;
+
         echo "<div class='details'>";
-        echo "<p>Contract ID: " .$contract['idContract']. "</p>";
-        echo "<p>Worker Name: ". $contract['workerFname'] . " " . $contract['workerLname'] ."</p>";
-        echo "<p>Employer Name: " .$contract['employerFname']. " ". $contract['employerLname'] ."</p>";
-        echo "<p>Paypal Account: " .$contract['workerPaypalEmail']. "</p>";
-        echo "<p>Status: " . $status . "</p>";
-        echo "<p>Amt Paid by Employer: " . $amountPaidEmp . "</p>";
-        echo "<p>End of Contract: " . $endDate . "</p>";
-        echo "<p>Salary Amount: P" .$workerSalaryAmount. "</p>";
+        echo "<p><span class='fw-bold'>Contract ID: </span>" .$contract['idContract']. "</p>";
+        echo "<p><span class='fw-bold'>Worker Name: </span>". $contract['workerFname'] . " " . $contract['workerLname'] ."</p>";
+        echo "<p><span class='fw-bold'>Employer Name: </span>" .$contract['employerFname']. " ". $contract['employerLname'] ."</p>";
+        echo "<p><span class='fw-bold'>Paypal Account: </span>" .$contract['workerPaypalEmail']. "</p>";
+        echo "<p><span class='fw-bold'>Status: </span>" . $status . "</p>";
+        echo "<p><span class='fw-bold'>Amt Paid by Employer: </span>" . $amountPaidEmp . "</p>";
+        echo "<p><span class='fw-bold'>End of Contract: </span>" . $endDate . "</p>";
+        echo "<p><span class='fw-bold'>Salary Amount: </span>P" .$workerSalaryAmount. "</p>";
+        echo "<p><span class='fw-bold'>Tax Amount: </span>P" .$taxAmt. "</p>";
+        echo "<p><span class='fw-bold'>Net Pay: </span>P" .$netPay. "</p>";
 
         echo "</div>";
 

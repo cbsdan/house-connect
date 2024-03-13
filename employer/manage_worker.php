@@ -66,9 +66,9 @@
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
                     <nav >
-                        <a href='./request_a_worker.php' class='c-light fw-bold'>REQUEST A WORKER</a>
-                        <a href='./worker_requests.php' class='c-light fw-bold'>WORKER REQUESTS</a>
-                        <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
+                        <a href='./request_a_worker.php' class='c-light'>REQUEST A WORKER</a>
+                        <a href='./worker_requests.php' class='c-light'>WORKER REQUESTS</a>
+                        <a href='./manage_worker.php' class='c-light fw-bold'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
                     </nav>
                     <nav>

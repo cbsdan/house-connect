@@ -9,6 +9,7 @@
     <!-- Stylesheets -->
     <link rel="stylesheet" href="./styles/variables.css">
     <link rel="stylesheet" href="./styles/home.css">
+    <link rel="stylesheet" href="./styles/aboutus.css">
     <link rel="stylesheet" href="./styles/registration-login.css">
     <link rel="stylesheet" href="./styles/includes.css">
     <link rel="stylesheet" href="./styles/media_query.css">
@@ -27,7 +28,7 @@
             <div class='navigation-container'>
                 <nav>
                     <a href='./aboutus.php'>ABOUT US</a>
-                    <a href='#'>HOW TO HIRE</a>
+                    <a href=''>HOW TO HIRE</a>
                     <a href='./login.php'>LOG IN</a>
                 </nav>
             </div>

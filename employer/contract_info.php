@@ -67,6 +67,11 @@
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
 
+    <style>
+        .information {
+            align-items: start;
+        }
+    </style>
 </head>
 <body>
     <header class='logged-in'>
@@ -124,6 +129,10 @@
                                     <h4 class="label">Salary Amount</h4>
                                     <p class="value"><?php echo $contractInfo['salaryAmt']?></p>
                                 </div>
+                                <div class='data'>
+                                    <h4 class="label">Salary Payment Date</h4>
+                                    <p class='value'>Every month of day <?php echo getDayFromDate($contractInfo['startDate'])?></p>
+                                </div>
                             </div>
                         </div>
                     <?php
@@ -137,18 +146,18 @@
                     <div class="information w-100 flex-1">
                         <div class="left">
                             <div class='data'>
-                                <h4 class="label">Meet Date</h4>
-                                <p class="value"><?php echo isset($meetingDetails['platform']) ? $meetingDetails['platform'] : ''; ?></p>
+                                <h4 class="label">Confirmation Date</h4>
+                                <p class="value"><?php echo isset($meetingDetails['meetDate']) ? $meetingDetails['meetDate'] : ''; ?></p>
                             </div>
                             <div class='data'>
-                                <h4 class="label">Meet Location</h4>
-                                <p class="value"><?php echo isset($meetingDetails['meetDate']) ? $meetingDetails['locationAddress'] : ''; ?></p>
+                                <h4 class="label">Confirmation Location</h4>
+                                <p class="value"><?php echo isset($meetingDetails['locationAddress']) ? $meetingDetails['locationAddress'] : ''; ?></p>
                             </div>
                         </div>
                         <div class="right">
                             <div class='data'>
                                 <h4 class="label">Message from agency</h4>
-                                <p class="value"><?php echo isset($meetingDetails['employerMessage']) ? $meetingDetails['message'] : ''; ?></p>
+                                <p class="value"><?php echo isset($meetingDetails['message']) ? $meetingDetails['message'] : ''; ?></p>
                             </div>
                         </div>
                     </div>
@@ -165,8 +174,12 @@
                                 <p class="value"><?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?></p>
                             </div>
                             <div class='data'>
-                                <h4 class="label">Age</h4>
-                                <p class="value"><?php echo calculateAge($allUserInfo['birthdate']); ?></p>
+                                <h4 class="label">Email</h4>
+                                <p class="value"><?php echo $allUserInfo['email']; ?></p>
+                            </div>
+                            <div class='data <?php echo (isset($allUserInfo['contactNo']) ? '' : 'hidden')?>'>
+                                <h4 class="label">Contact Number</h4>
+                                <p class="value"><?php echo $allUserInfo['contactNo']; ?></p>
                             </div>
                             <div class='data'>
                                 <h4 class="label">Profile</h4>
@@ -179,6 +192,10 @@
                             <div class='data'>
                                 <h4 class="label">Worker Type</h4>
                                 <p class="value"><?php echo $allUserInfo['workerType']; ?></p>
+                            </div>
+                            <div class='data'>
+                                <h4 class="label">Age</h4>
+                                <p class="value"><?php echo calculateAge($allUserInfo['birthdate']); ?></p>
                             </div>
                             <div class='data'>
                                 <h4 class="label">Years of Experience</h4>
@@ -203,18 +220,13 @@
                         <input type='hidden' name='workerName' value='<?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?>'>
                         <button type='submit' class='pay-worker-btn green-white-btn '>Pay Worker Salary</button>
                     </form>
-                    <form action='../database/update_contract_status.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
-                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
-                        <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
-                        <input type='hidden' name='contractStatus' value='Canceled'>
-                        <button type='submit' class='pay-worker-btn red-white-btn '>Not Qualified</button>
-                    </form>
-                    <form action='./contract_details.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Pending' ? 'hidden' : '')?>'>
-                        <input type='hidden' name='idContract' value='<?php echo $idContract?>'>
+                    <form action='./contract_receipt.php' method='POST' class='<?php echo ($contractInfo['contractStatus'] != 'Hired' ? 'hidden' : '')?>' target="_blank">
+                        <input type='hidden' name='idEmployer' value='<?php echo $idEmployer?>'>
                         <input type='hidden' name='idWorker' value='<?php echo $allUserInfo['idWorker'] ?>'>
                         <input type='hidden' name='workerIdUser' value='<?php echo $workerIdUser ?>'>
-                        <input type='hidden' name='contractStatus' value='Hired'>
-                        <button type='submit' name='input-contract-details' value='true' class='pay-worker-btn green-white-btn '>Hire Worker</button>
+                        <input type='hidden' name='contractId' value='<?php echo $idContract?>'>
+                        <input type='hidden' name='workerName' value='<?php echo $allUserInfo['fname'] . " " . $allUserInfo['lname']; ?>'>
+                        <button type='submit' class='pay-worker-btn orange-white-btn '>Print Contract Details</button>
                     </form>
                     <form action='../database/update_contract_status.php' method='POST' class='<?php echo ((strtotime($contractInfo['endDate']) <= strtotime(date('Y-m-d'))) && ($contractInfo['contractStatus'] == 'Hired') ? '' : 'hidden') ?>'>
                         <input type='hidden' name='idContract' value='<?php echo $idContract?>'>

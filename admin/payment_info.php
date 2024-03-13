@@ -110,15 +110,23 @@
                             <input class="text-box" type='number' name='idWorkerSalary' value='<?php echo $paymentInfo['idWorkerSalary'];?>' readonly >
                         </div>
                         <div class="data">
-                            <h4 class="label">PayPal Email</h4>
-                            <input class="text-box" type='email' name='paypalEmail' value='<?php echo $paymentInfo['paypalEmail'];?>'>
-                        </div>
-                        <div class="data">
                             <h4 class="label">Amount</h4>
                             <input class="text-box" type='text' name='workerSalaryAmount' value='<?php echo $paymentInfo['workerSalaryAmount'];?>'>
                         </div>
+                        <div class="data">
+                            <h4 class="label">Tax Amount</h4>
+                            <input class="text-box" type='text' name='tax_amount' value='<?php echo $paymentInfo['tax_amount'];?>' readonly>
+                        </div>
+                        <div class="data">
+                            <h4 class="label">Net Pay</h4>
+                            <input class="text-box" type='text' name='tax_amount' value='<?php echo $paymentInfo['workerSalaryAmount'] - $paymentInfo['tax_amount'];?>' readonly>
+                        </div>
                     </div>
                     <div class='right'>
+                        <div class="data">
+                            <h4 class="label">PayPal Email</h4>
+                            <input class="text-box" type='email' name='paypalEmail' value='<?php echo $paymentInfo['paypalEmail'];?>'>
+                        </div>
                         <div class="data">
                             <h4 class="label">Status</h4>
                             <select class='text-box' name='workerSalaryStatus'>

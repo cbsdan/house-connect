@@ -258,6 +258,10 @@
                             <input type='hidden' name='idContract' value='<?php echo $contract['idContract'] ?>'>
                             <button class='green-white-btn' type='submit' name='submit' value='submit'>Salary Payments</button>
                         </form>
+                        <form action='./contract_receipt.php' method='POST' class='<?php echo ($contract['contractStatus'] != 'Hired' ? 'hidden' : '')?>' target="_blank">
+                            <input type='hidden' name='contractId' value='<?php echo $contract['idContract']?>'>
+                        <button type='submit' class='pay-worker-btn orange-white-btn '>Print Contract Details</button>
+                    </form>
                     </div>
                 </div>
             </div>

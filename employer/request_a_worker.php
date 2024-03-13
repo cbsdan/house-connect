@@ -76,7 +76,7 @@
                 <div class='navigation-container'>
                     <nav >
                         <a href='./request_a_worker.php' class='c-light fw-bold'>REQUEST A WORKER</a>
-                        <a href='./worker_requests.php' class='c-light fw-bold'>WORKER REQUESTS</a>
+                        <a href='./worker_requests.php' class='c-light'>WORKER REQUESTS</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
                     </nav>
@@ -92,12 +92,12 @@
         <div class='container application'>
             <div class='content'>
                 <div class='request-label'>
-                    <p>You have <span class='c-yellow'><?php echo ($employerRequests != false ? count($employerRequests) : 0); ?> pending </span> requests. See more <a href='./worker_request.php' class='t-underline c-light'>here</a></p>
+                    <p class='fs-large'>You have <span class='c-yellow'><?php echo ($employerRequests != false ? count($employerRequests) : 0); ?> pending </span> requests. See more <a href='./worker_requests.php' class='t-underline c-light'>here</a></p>
                 </div>
                 <div class='title'>
                     <div class="left">
                         <img class='user-profile' src='../img/search-icon.png' placeholder='profile'>
-                        <h3>Find a Worker</h3>  
+                        <h3>Request a Worker</h3>  
                     </div>
                     <div class='right'>
                         <button class='find-worker-btn'>CONFIRM</button>

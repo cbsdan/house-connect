@@ -15,7 +15,11 @@
     $worker = $workerObj -> getWorkersByConditions(null, null, null, null, null, null, null, null, $idUser);
     $worker = $worker[0];
 
-    $contracts = $contractObj -> getContractByConditions(["contractStatus" => 'Pending', "idWorker" => $worker['idWorker']]);
+    if ($worker['workerStatus'] == 'Pending') {
+        $contracts = $contractObj -> getContractByConditions(["contractStatus" => 'Pending', "idWorker" => $worker['idWorker']]);   
+    } else if ($worker['workerStatus'] == 'Hired') {
+        $contracts = $contractObj -> getContractByConditions(["contractStatus" => 'Hired', "idWorker" => $worker['idWorker']]);   
+    }
     
     if (isset($contracts) && is_array($contracts)) {
         $contract = $contracts[0];
@@ -37,9 +41,6 @@
         header('Location: '.$_SERVER['PHP_SELF']);
         exit();
     }
-
-    $contractPending = getLatestContractInfo($_SESSION['idUser']);
-    $contract = getLatestContractByUserID($_SESSION['idUser']);
 
 ?>
 

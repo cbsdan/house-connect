@@ -16,16 +16,8 @@
     if ($worker != false) {
         $worker = $worker[0];
     }
-
-    $contract = $contractObj -> getContractByConditions(["idWorker" => $worker['idWorker']]);
-
-    if ($contract != false) {
-        $employerPayment = $employerPaymentObj -> getEmployerPaymentByConditions(["idContract" => $contract['idContract']]);
-
-        if ($salaryDetails != false ) {
-            $workerSalary = $workerSalaryObj -> getWorkerSalaryByConditions(["idEmployerPayment" => $salaryDetails['idEmployerPayment']]);
-        }
-    }
+    
+    $workerSalaries = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
     
     if (isset($_POST['filter']) && isset($_POST['idContract'])) {
         $employerPayment = $employerPaymentObj -> getEmployerPaymentByConditions(["idContract" => $_POST['idContract']]);
@@ -103,7 +95,7 @@
                         <input type='number' name='idContract' class='flex-1' placeholder="Search by contract ID">
                         <button type='submit' name='filter' class='orange-white-btn'>Search</button>
                     </form>
-                    <table class='<?php echo ($employerPayment != false ? '' : 'hidden');?>'>
+                    <table class='<?php echo (isset($workerSalaries) ? '' : 'hidden');?>'>
                         <thead>
                             <tr>
                                 <th>Contract ID</th>
@@ -113,40 +105,46 @@
                                 <th>Amt. Paid by Employer</th>
                                 <th>End of Contract</th>
                                 <th>Salary Amount</th>
+                                <th>Tax Amount</th>
+                                <th>Net Pay</th>
                                 <th>Date</th>
                                 <th>Print</th>
                             </tr>
                         </thead>
                         <tbody>
                         <?php
-                            if (isset($employerPayment) && $employerPayment != false) {
-                                foreach ($employerPayment as $row) {
-                                    $contractInfo = getContractList($row['idContract']);
+                            if (isset($workerSalaries)) {
+                                foreach ($workerSalaries as $workerSalary) {
+                                    $contractInfo = getContractList($workerSalary['idContract']);
                                     $contractInfo = $contractInfo[0];
 
-                                    $paypalacc = $row['workerPaypalEmail'];
-                                    $status = $row['workerSalaryStatus'];
-                                    $amountPaidEmp = $row['employerPaymentAmount'];
-                                    $endDate = $row['endDate'];
-                                    $salaryamt = $row['workerSalaryAmount'];
+                                    $paypalacc = $workerSalary['workerPaypalEmail'];
+                                    $status = $workerSalary['workerSalaryStatus'];
+                                    $amountPaidEmp = $workerSalary['employerPaymentAmount'];
+                                    $endDate = $workerSalary['endDate'];
+                                    $salaryamt = $workerSalary['workerSalaryAmount'];
+                                    $taxAmt = $workerSalary['tax_amount'];
+                                    $netPay = $salaryamt - $taxAmt;
 
-                                    $workerSalary = getWorkerSalaryInformation($row['idContract']);
                                     $date = $workerSalary['modified_at'];
 
                                     echo 
                                     "<tr>
-                                        <td class='t-align-center'>".$row['idContract']."</td>
+                                        <td class='t-align-center'>".$workerSalary['idContract']."</td>
                                         <td>".$contractInfo['employerFname']. " ". $contractInfo['employerLname'] ."</td>
                                         <td>$paypalacc</td>
                                         <td>$status</td>
                                         <td>₱ $amountPaidEmp</td>
                                         <td>$endDate</td>
                                         <td>₱ $salaryamt</td>
+                                        <td>₱ $taxAmt</td>
+                                        <td>₱ $netPay</td>
                                         <td>$date</td>
                                         <td class='t-align-center'>
-                                            <form action='payment_pdf.php' method='post'>
-                                            <input type='hidden' name='idContract' value='".$row['idContract']."'>
-                                            <button type='submit' class='c-yellow' name='receipt'>[Receipt]</button>
+                                            <form action='payment_pdf.php' method='post' target='_blank'>
+                                                <input type='hidden' name='idContract' value='".$workerSalary['idContract']."'>
+                                                <input type='hidden' name='idWorkerSalary' value='".$workerSalary['idWorkerSalary']."'>
+                                                <button type='submit' class='c-yellow' name='receipt'>[Receipt]</button>
                                             </form>
                                         </td>
                                     </tr>";
@@ -157,7 +155,7 @@
                     </table>
 
                     <!-- If there is no previous work -->
-                    <div class='no-record-label <?php echo (isset($salaryDetails) ? 'hidden' : '');?>'>
+                    <div class='no-record-label <?php echo (isset($workerSalaries) ? 'hidden' : '');?>'>
                         <p>You have no previous salary payment in the system!</p>
                     </div>
                 </div>

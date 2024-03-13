@@ -76,8 +76,13 @@
                         <img class='user-profile' src='../img/documents-icon.png' placeholder='contract-icon'>
                         <h3>Contract Manager</h3>  
                     </div>
-                    <div class="right">
+                    <div class="right d-flex">
                         <button class='orange-white-btn fw-bold fs-medium m-r-2'><a class='c-light' href='./create-new-contract.php'>Add new contract</a></button>
+                        <form method="POST" action="./contract_reports.php" target="_blank">
+                            <button type="submit" class="orange-white-btn fw-bold fs-medium m-r-2" name="print">
+                                Print Contract
+                            </button>
+                        </form>
                     </div>
                 </div>
                 <div class='info'>
