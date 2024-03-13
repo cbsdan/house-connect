@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
     
     if ($_SESSION['userType'] == 'Worker') {
@@ -117,7 +116,7 @@
                             <h4 class="label">Worker Type</h4>
                             <input class="text-box" type='text' name='workerType' value='<?php echo $user['workerType']; ?>' readonly>
                         </div>
-                        <div class="data">
+                        <div class="data <?php echo (isset($user['paypalEmail']) ? '' : 'hidden' )?>">
                             <h4 class="label">Paypal Email Address</h4>
                             <input class="text-box userTypeEl" type='email' name='paypalEmail' value='<?php echo (isset($user['paypalEmail']) ? $user['paypalEmail'] : '');?>' readonly>
                         </div>
@@ -150,11 +149,11 @@
                             <img src='<?php echo $user['validID'];?>'>
                             <h4>Valid ID</h4>
                         </div>
-                        <div class="image-preview flex-center flex-column flex-1">
+                        <div class="image-preview flex-center flex-column flex-1 <?php echo (isset($user['medical']) ? '' : 'hidden' )?>">
                             <img src='<?php echo $user['medical'];?>'>
                             <h4>Medical</h4>
                         </div>
-                        <div class="image-preview flex-center flex-column flex-1">
+                        <div class="image-preview flex-center flex-column flex-1 <?php echo (isset($user['nbi']) ? '' : 'hidden' )?>">
                             <img src='<?php echo $user['nbi'];?>'>
                             <h4>NBI</h4>
                         </div>
@@ -180,8 +179,9 @@
                         <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
                         <button type='submit' name='decline' value='decline' class='red-white-btn'>Decline</button>
                     </form>
-                    <form action='../database/update_verify_status.php' method='GET'>
+                    <form action='./interview_info.php' method='POST'>
                         <input type='hidden' name='idUser' value="<?php echo $user['idUser']; ?>">
+                        <?php echo ($user['userType'] == 'Worker' ? "<input type='hidden' name='idWorker' value = '".$user['idWorker']."'>" : '') ?>
                         <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
                         <button type='submit' name='approve' value='approve' class='green-white-btn'>Approve</button>
                     </form>

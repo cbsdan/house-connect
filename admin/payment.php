@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
@@ -61,6 +60,7 @@
                 <div class='navigation-container'>
                     <nav>
                         <a href='./dashboard.php' class='c-light'>DASHBOARD</a>
+                        <a href='./employer_requests.php' class='c-light'>EMPLOYER REQUESTS</a>
                         <a href='./contract_manager.php' class='c-light'>CONTRACT MANAGER</a>
                         <a href='./payment.php' class='c-light fw-bold'>PAYMENT</a>
                         <a href='./user_accounts.php' class='c-light'>USER ACCOUNTS</a>

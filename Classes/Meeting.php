@@ -1,67 +1,91 @@
 <?php
-
 class Meeting {
     private $conn;
 
-    // Constructor to initialize database connection
+    // Constructor to initialize the database connection
     public function __construct($conn) {
         $this->conn = $conn;
     }
 
-    // Create a new meeting
-    public function createMeeting($contractId, $meetDate, $platform, $link, $employerMessage) {
-        $sql = "INSERT INTO meeting (contract_idContract, meetDate, platform, link, employerMessage) VALUES (?, ?, ?, ?, ?)";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("issss", $contractId, $meetDate, $platform, $link, $employerMessage);
-        if ($stmt->execute()) {
-            // Return the ID of the newly inserted user
-            return $stmt->insert_id;
+    // Function to create a new meeting and return the inserted ID
+    public function createMeeting($meetDate, $locationAddress, $message = null, $idContract) {
+        $sql = "INSERT INTO meeting (meetDate, locationAddress, contract_idContract, message) 
+                VALUES ('$meetDate', '$locationAddress', ";
+        if ($idContract !== null) {
+            $sql .= "$idContract, ";
         } else {
-            return false;
-        };
-    }
-
-    // Read meeting details by idMeeting
-    public function getMeetingById($idMeeting) {
-        $sql = "SELECT * FROM meeting WHERE idMeeting = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $idMeeting);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
-    }
-    // Read all meeting details 
-    public function getMeetings() {
-        $sql = "SELECT * FROM meeting";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-            
-        // Initialize an array to store all employers
-        $meetings = array();
-        
-        // Fetch each row and add it to the array
-        while ($row = $result->fetch_assoc()) {
-            $meetings[] = $row;
+            return false; // idContract is required, so return false if it's null
+        }
+        if ($message !== null) {
+            $sql .= "'$message')";
+        } else {
+            $sql .= "NULL)";
         }
     
-        return $meetings;
+        if ($this->conn->query($sql)) {
+            return $this->conn->insert_id;
+        } else {
+            return false;
+        }
+    }
+    
+
+    // Function to get a meeting by its ID
+    public function getMeetingById($idMeeting) {
+        $sql = "SELECT * FROM meeting WHERE idMeeting = $idMeeting";
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_assoc() : false;
     }
 
-    // Update meeting details
-    public function updateMeeting($idMeeting, $meetDate, $platform, $link, $employerMessage) {
-        $sql = "UPDATE meeting SET meetDate = ?, platform = ?, link = ?, employerMessage = ? WHERE idMeeting = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ssssi", $meetDate, $platform, $link, $employerMessage, $idMeeting);
-        return $stmt->execute();
+    // Function to get meetings based on conditions
+    public function getMeetingByConditions($conditions = array()) {
+        $sql = "SELECT * FROM meeting";
+        if (!empty($conditions)) {
+            $sql .= " WHERE ";
+            $conditions_arr = array();
+            foreach ($conditions as $key => $value) {
+                $conditions_arr[] = "$key = '$value'";
+            }
+            $sql .= implode(" AND ", $conditions_arr);
+        }
+
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : false;
     }
 
-    // Delete a meeting
+    // Function to update a meeting
+    public function updateMeeting($idMeeting, $meetDate = null, $locationAddress = null, $message = null, $idContract = null) {
+        $sql = "UPDATE meeting SET ";
+        $updates = array();
+        if ($meetDate !== null) {
+            $updates[] = "meetDate = '$meetDate'";
+        }
+        if ($locationAddress !== null) {
+            $updates[] = "locationAddress = '$locationAddress'";
+        }
+        if ($message !== null) {
+            $updates[] = "message = \"$message\"";
+        }
+        if ($idContract !== null) {
+            $updates[] = "idContract = $idContract";
+        }
+        $sql .= implode(", ", $updates);
+        $sql .= " WHERE idMeeting = $idMeeting";
+
+        return $this->conn->query($sql);
+    }
+
+    // Function to delete a meeting
     public function deleteMeeting($idMeeting) {
-        $sql = "DELETE FROM meeting WHERE idMeeting = ?";
-        $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("i", $idMeeting);
-        return $stmt->execute();
+        $sql = "DELETE FROM meeting WHERE idMeeting = $idMeeting";
+        return $this->conn->query($sql);
+    }
+
+    // Function to get all meetings
+    public function getAllMeetings() {
+        $sql = "SELECT * FROM meeting";
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : false;
     }
 }
 

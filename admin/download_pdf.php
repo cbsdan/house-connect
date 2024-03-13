@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['downloadPDF'])) {
                     employer_payment";
         $result = mysqli_query($conn, $sql);
         $row = mysqli_fetch_assoc($result);
-
+                        
         echo "<div class='details'>";
         echo "<h3 class='title'>Summary Report of Revenue</h3>";
         echo "<hr>";

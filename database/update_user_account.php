@@ -12,30 +12,6 @@
         $birthdate = $_POST['birthdate'];
         $address = $_POST['address'];
         $contactNo = $_POST['contactNo'];
-
-        // if ($userType == 'Worker') {
-        //     //check if a user have an account on worker table
-        //     $sql = "SELECT idWorker FROM worker WHERE idUser = $idUser";
-
-        //     // Execute the SQL query
-        //     $result = $conn->query($sql);
-
-        //     // Check if any rows are returned (indicating the user exists in the worker table)
-        //     if ($result->num_rows == 1) {
-        //         $isWorkerExists = true;
-        //     } else {
-        //         $isWorkerExists = false;
-        //     }
-        // }
-
-        // if (isset($_FILES['profilePic'])) {
-        //     $profilePic = addslashes(file_get_contents($_FILES['profilePic']['tmp_name']));
-        // } 
-
-        // Construct the SQL query
-        // if (isset($profilePic)) {
-            //     $sql .= "profilePic = '$profilePic', ";
-            // }
             
         $sql = "UPDATE user SET ";
         $sql .= "fname = '$fname', ";
@@ -84,6 +60,7 @@
             if ($result->num_rows == 1) {
                 $workerStatus = $_POST['workerStatus'];
                 $workerType = $_POST['workerType'];
+                $qualification_status = $_POST['qualification_status'];
                 $workerVerifyStatus = $_POST['workerVerifyStatus'];
                 $paypalEmail = $_POST['paypalEmail'];
                 $yearsOfExperience = $_POST['yearsOfExperience'];
@@ -92,6 +69,7 @@
                             
                 $sql = "UPDATE worker SET ";
                 $sql .= "workerStatus = '$workerStatus', ";
+                $sql .= "qualification_status = '$qualification_status', ";
                 $sql .= "workerType = '$workerType', ";
                 $sql .= "paypalEmail = '$paypalEmail', ";
                 $sql .= "yearsOfExperience = '$yearsOfExperience', ";

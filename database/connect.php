@@ -1,6 +1,28 @@
 <?php
-    //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
+session_start();
+// Function to require a file based on its relative path
+function requireFile($relativePath) {
+    if (file_exists('../' . $relativePath)) {
+        require_once('../' . $relativePath);
+    } else if (file_exists('./' . $relativePath)) {
+        require_once('./' . $relativePath);
+    }
+}
+
+requireFile('Classes/Worker.php');
+requireFile('Classes/WorkerDocuments.php');
+requireFile('Classes/Meeting.php');
+requireFile('Classes/Contract.php');
+requireFile('Classes/User.php');
+requireFile('Classes/Employer.php');
+requireFile('Classes/WorkerSalary.php');
+requireFile('Classes/EmployerPayment.php');
+requireFile('Classes/EmployerRequests.php');
+requireFile('Classes/Interview.php');
+
+if (file_exists('../functions/user_authenticate.php')) {
+    require_once('../functions/user_authenticate.php');
+}
 
 $servername = "localhost"; 
 $username = "root"; 
@@ -14,6 +36,17 @@ $conn = new mysqli($servername, $username, $password, $database);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 } 
+
+$workerObj = new Worker($conn);
+$workerDocumentsObj = new WorkerDocuments($conn);
+$meetingObj = new Meeting($conn);
+$contractObj = new Contract($conn);
+$employerObj = new Employer($conn);
+$userObj = new User($conn);
+$workerSalaryObj = new WorkerSalary($conn);
+$employerPaymentObj = new EmployerPayment($conn);
+$employerRequestsObj = new EmployerRequest($conn);
+$interviewObj = new Interview($conn);
 
 function query($query) {
     global $conn; 
@@ -48,6 +81,22 @@ function getImageType($blobData) {
     }
 
     return null; // Unknown image type
+}
+
+function getDayFromDate($date) {
+    // Convert the date string to a UNIX timestamp
+    $timestamp = strtotime($date);
+    
+    // Use date() to extract the day from the timestamp
+    $day = date('d', $timestamp); // 'd' format represents the day of the month
+    
+    return $day;
+}
+
+
+
+function getFileContents($file) {
+    return addslashes(file_get_contents($file));
 }
 
 //FOR WORKER FUNCTIONS
@@ -145,6 +194,13 @@ function getImageSrc($profile) {
     return $dataUri;
 }
 
+function calculateAge($dob) {
+    $dobObject = new DateTime($dob);
+    $now = new DateTime();
+    $age = $now->diff($dobObject);
+    return $age->y;
+}
+
 // Function to fetch employer data based on user ID
 function fetchEmployerData($idUser) {
     global $conn;
@@ -192,7 +248,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                        w.idWorker, w.workerType, w.workerStatus, w.profilePic as workerProfilePic, w.yearsOfExperience, w.height, w.paypalEmail, w.idWorkerDocuments,
                        c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
                        e.idEmployer, e.profilePic as employerProfilePic, e.verifyStatus,
-                       m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage 
+                       m.idMeeting, m.meetDate, m.locationAddress, m.message 
                 FROM user u 
                 LEFT JOIN worker w ON u.idUser = w.idWorker 
                 LEFT JOIN contract c ON c.idWorker = w.idWorker 
@@ -327,6 +383,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         
         $sql = "SELECT ws.paypalEmail as workerPaypalEmail,
                        ws.amount as workerSalaryAmount,
+                       ep.idEmployerPayment,
                        ep.amount as employerPaymentAmount,
                        c.endDate, c.idContract, c.startDate,
                        ws.status as workerSalaryStatus
@@ -697,8 +754,8 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
     
         // Prepare SQL statement to fetch contract lists
         $sql = "SELECT 
-                    c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
-                    m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
+                    c.idContract, c.contractStatus, c.deploymentLocation, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
+                    m.idMeeting, m.meetDate, m.locationAddress, m.message,
                     uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,
                     w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
                     wd.curriculumVitae,
@@ -735,15 +792,8 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
             }
         }
     }
-    
-    function calculateAge($dob) {
-        $dobObject = new DateTime($dob);
-        $now = new DateTime();
-        $age = $now->diff($dobObject);
-        return $age->y;
-    }
 
-    function updateContract($idContract, $contractStatus = null, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
+    function updateContract($idContract, $contractStatus = null, $deploymentLocation = null, $startDate = null, $endDate = null, $salaryAmt = null, $contractImg = null) {
         global $conn; // Assuming $conn is your database connection object
     
         // Prepare SQL statement to update contract
@@ -753,6 +803,9 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         // Build SQL query dynamically based on provided parameters
         if ($contractStatus !== null) {
             $updates[] = "contractStatus = '$contractStatus'";
+        }
+        if ($deploymentLocation !== null) {
+            $updates[] = "deploymentLocation = \"$deploymentLocation\"";
         }
         if ($startDate !== null) {
             $updates[] = "startDate = '$startDate'";
@@ -934,7 +987,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
                     ep.idEmployerPayment, ep.amount as employerPaymentAmount, ep.method as employerPaymentMethod, ep.imgReceipt, ep.paymentStatus as employerPaymentStatus, ep.submitted_at,
                     ws.idWorkerSalary, ws.paypalEmail, ws.amount as workerSalaryAmount, ws.status as workerSalaryStatus, ws.modified_at,
                     c.idContract, c.contractStatus, c.startDate, c.endDate, c.salaryAmt, c.contractImg, c.date_created,
-                    m.idMeeting, m.meetDate, m.platform, m.link, m.employerMessage,
+                    m.idMeeting, m.meetDate, m.locationAddress, m.message,
                     uw.idUser as workerIdUser, uw.fname as workerFname, uw.lname as workerLname, uw.sex as workerSex, uw.birthdate as workerBirthdate, uw.address as workerAddress, uw.contactNo as workerContactNo, uw.email as workerEmail,
                     w.idWorker, w.workerType, w.profilePic as workerProfilePic, w.verifyStatus as workerVerifyStatus, w.workerStatus, w.paypalEmail as workerPaypalEmail, w.idWorkerDocuments, w.yearsOfExperience, w.height,
                     wd.curriculumVitae,

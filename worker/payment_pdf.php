@@ -1,7 +1,6 @@
 <?php
 // Include necessary files and establish a database connection
 require_once('../database/connect.php');
-include_once('../functions/user_authenticate.php');
 
 // Check if the form is submitted and the button for downloading PDF is clicked
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['receipt'])) {

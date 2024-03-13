@@ -1,113 +1,82 @@
 <?php
-    class EmployerPayment {
-        private $conn;
+class EmployerPayment {
+    private $conn;
 
-        // Constructor to initialize the database connection
-        public function __construct($db_conn) {
-            $this->conn = $db_conn;
-        }
+    // Constructor to initialize the database connection
+    public function __construct($conn) {
+        $this->conn = $conn;
+    }
 
-        // Function to create a new employer payment record
-        public function createEmployerPayment($idContract, $amount, $method, $imgReceipt, $paymentStatus = 'Pending') {
-            $sql = "INSERT INTO employer_payment (idContract, amount, method, imgReceipt, paymentStatus, submitted_at) VALUES (?, ?, ?, ?, ?, NOW())";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("idsbs", $idContract, $amount, $method, $imgReceipt, $paymentStatus);
-            if ($stmt->execute()) {
-                // Return the ID of the newly inserted user
-                return $stmt->insert_id;
-            } else {
-                return false;
-            };
-        }
-
-        // Function to read an employer payment record
-        public function readEmployerPaymentByIdEmployer($idEmployerPayment) {
-            $sql = "SELECT * FROM employer_payment WHERE idEmployerPayment = ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i", $idEmployerPayment);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_assoc();
-        }
-        // Function to read all employer payment 
-        public function readEmployerPayments() {
-            $sql = "SELECT * FROM employer_payment";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            
-            // Initialize an array to store all employers
-            $employerPayments = array();
-            
-            // Fetch each row and add it to the array
-            while ($row = $result->fetch_assoc()) {
-                $employerPayments[] = $row;
-            }
+    // Function to create a new employer payment and return the inserted ID
+    public function createEmployerPayment($amount, $method, $imgReceipt, $paymentStatus, $idContract) {
+        $sql = "INSERT INTO employer_payment (amount, method, imgReceipt, paymentStatus, idContract) 
+                VALUES ($amount, '$method', '$imgReceipt', '$paymentStatus', $idContract)";
         
-            return $employerPayments;
-        }
-
-        // Function to update an employer payment record
-        public function updateEmployerPayment($idEmployerPayment, $amount = null, $method = null, $imgReceipt = null, $paymentStatus = null) {
-            $sql = "UPDATE employer_payment SET ";
-            $updates = array();
-            if ($amount !== null) {
-                $updates[] = "amount = ?";
-            }
-            if ($method !== null) {
-                $updates[] = "method = ?";
-            }
-            if ($imgReceipt !== null) {
-                $updates[] = "imgReceipt = ?";
-            }
-            if ($paymentStatus !== null) {
-                $updates[] = "paymentStatus = ?";
-            }
-            $sql .= implode(", ", $updates);
-            $sql .= " WHERE idEmployerPayment = ?";
-            $stmt = $this->conn->prepare($sql);
-            if ($stmt) {
-                $paramTypes = "";
-                $paramValues = array();
-                if ($amount !== null) {
-                    $paramTypes .= "d";
-                    $paramValues[] = $amount;
-                }
-                if ($method !== null) {
-                    $paramTypes .= "s";
-                    $paramValues[] = $method;
-                }
-                if ($imgReceipt !== null) {
-                    $paramTypes .= "s";
-                    $paramValues[] = $imgReceipt;
-                }
-                if ($paymentStatus !== null) {
-                    $paramTypes .= "s";
-                    $paramValues[] = $paymentStatus;
-                }
-                $paramTypes .= "i";
-                $paramValues[] = $idEmployerPayment;
-                $stmt->bind_param($paramTypes, ...$paramValues);
-            } else {
-                return false;
-            }
-            if ($stmt->execute()) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        // Function to delete an employer payment record
-        public function deleteEmployerPayment($idEmployerPayment) {
-            $sql = "DELETE FROM employer_payment WHERE idEmployerPayment = ?";
-            $stmt = $this->conn->prepare($sql);
-            $stmt->bind_param("i", $idEmployerPayment);
-            if ($stmt->execute()) {
-                return true;
-            } else {
-                return false;
-            }
+        if ($this->conn->query($sql)) {
+            return $this->conn->insert_id;
+        } else {
+            return false;
         }
     }
+
+    // Function to get an employer payment by its ID
+    public function getEmployerPaymentById($idEmployerPayment) {
+        $sql = "SELECT * FROM employer_payment WHERE idEmployerPayment = $idEmployerPayment";
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_assoc() : false;
+    }
+
+    // Function to get employer payments based on conditions
+    public function getEmployerPaymentByConditions($conditions = array()) {
+        $sql = "SELECT * FROM employer_payment";
+        if (!empty($conditions)) {
+            $sql .= " WHERE ";
+            $conditions_arr = array();
+            foreach ($conditions as $key => $value) {
+                $conditions_arr[] = "$key = '$value'";
+            }
+            $sql .= implode(" AND ", $conditions_arr);
+        }
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : false;
+    }
+
+    // Function to update an employer payment
+    public function updateEmployerPayment($idEmployerPayment, $amount = null, $method = null, $imgReceipt = null, $paymentStatus = null, $idContract = null) {
+        $sql = "UPDATE employer_payment SET ";
+        $updates = array();
+        if ($amount !== null) {
+            $updates[] = "amount = $amount";
+        }
+        if ($method !== null) {
+            $updates[] = "method = '$method'";
+        }
+        if ($imgReceipt !== null) {
+            $updates[] = "imgReceipt = '$imgReceipt'";
+        }
+        if ($paymentStatus !== null) {
+            $updates[] = "paymentStatus = '$paymentStatus'";
+        }
+        if ($idContract !== null) {
+            $updates[] = "idContract = $idContract";
+        }
+        $sql .= implode(", ", $updates);
+        $sql .= " WHERE idEmployerPayment = $idEmployerPayment";
+        return $this->conn->query($sql);
+    }
+
+    // Function to delete an employer payment
+    public function deleteEmployerPayment($idEmployerPayment) {
+        $sql = "DELETE FROM employer_payment WHERE idEmployerPayment = $idEmployerPayment";
+        return $this->conn->query($sql);
+    }
+
+    // Function to get all employer payments
+    public function getAllEmployerPayments() {
+        $sql = "SELECT * FROM employer_payment";
+        $result = $this->conn->query($sql);
+        return ($result->num_rows > 0) ? $result->fetch_all(MYSQLI_ASSOC) : false;
+    }
+}
+
 ?>

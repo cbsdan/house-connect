@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
@@ -11,27 +10,38 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
-    $sql = "SELECT idWorker FROM worker WHERE idUser = " . $_SESSION['idUser'] . " AND verifyStatus = 'Verified'";
-    $result = $conn->query($sql);
 
-    if ($result->num_rows == 1) {
-        header('Location: ./current_employer.php');
-        exit();
-    } 
+    $userId = $_SESSION['idUser'];
+    
+    $worker = $workerObj-> getWorkersByConditions(null, null, null, null, null, null, null, null, $userId);
 
-    if (isset($_POST['workType']) == true && isset($_POST['yearsOfExperience']) == true && isset($_POST['height']) == true) {
-        $stepNumber = 2; 
+    if (isset ($worker) && $worker != false) {
+        $worker = $worker[0];
+
+        $workerDocuments = $workerDocumentsObj -> getWorkerDocumentById($worker['idWorkerDocuments']);
+
+        if ($worker['verifyStatus'] == 'Not Verified') {
+            $stepNumber = 3; 
+        } else {
+            if (isset($workerDocuments['medical']) && isset($workerDocuments['nbi']) && $worker['qualification_status'] == 'Qualified') {
+                header('Location: ./current_employer.php');
+                exit();  
+            } else if ($worker['qualification_status'] != 'Qualified') {
+                $interview = $interviewObj -> getInterviewById($worker['idWorker']);
+                $stepNumber = 4;
+            }
+            else {
+                $stepNumber = 5;
+            }
+        }
     } else {
-        $stepNumber = 1; 
-    }
-
-    $sql = "SELECT idWorker, verifyStatus FROM worker WHERE idUser = " . $_SESSION['idUser'] . " AND verifyStatus = 'Not Verified'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows == 1) {
-        $stepNumber = 3;
-        $user = $result->fetch_assoc();
+        if (isset($_POST['step1done'])) {
+            $stepNumber = 2; 
+        } else {
+            $stepNumber = 1; 
+        }
     } 
+
 ?>
 
 <!DOCTYPE html>
@@ -54,7 +64,11 @@
 
     <!-- JavaScript -->
     <script src='../scripts/worker.js' defer></script>
-
+    <style>
+        .bottom {
+            gap: 1rem;
+        }
+    </style>
 </head>
 <body>
     <header class='logged-in'>
@@ -93,6 +107,14 @@
                             <p>Step 3</p>
                             <span class='label'>Documents Verification</span>
                         </div>
+                        <div class="step 4 <?php echo (($stepNumber == 4) ? 'active' : '')?>">
+                            <p>Step 4</p>
+                            <span class='label'>Interview with Agency</span>
+                        </div>
+                        <div class="step 5 <?php echo (($stepNumber == 5) ? 'active' : '')?>">
+                            <p>Step 5</p>
+                            <span class='label'>Additional Documents</span>
+                        </div>
                     </div>
                 </div>
                 <div class='form-container step1 <?php echo (($stepNumber == 1) ? '' : 'hidden')?>'>
@@ -121,7 +143,7 @@
                                 <input id='inputHeight' name='height' type="number" min=0 max=1000 required>
                             </div>  
                         </div>
-                        <button type='submit' class='right next1' name='step1done'>NEXT</button>
+                        <button type='submit' class='right next1' name='step1done' value='1'>NEXT</button>
                     </form>
                 </div>
                 
@@ -149,20 +171,12 @@
                                 <input type="file" id="uploadValidID" name="validID" accept="image/jpeg, image/png, image/jpg" required>
                             </div>  
                             <div class='input-container'>
-                                <label for="uploadNBI">NBI Clearance</label>
-                                <input type="file" id="uploadNBI" name="nbi" accept="image/jpeg, image/png, image/jpg" required>
-                            </div>  
-                            <div class='input-container'>
-                                <label for="uploadMedical">Medical</label>
-                                <input type="file" id="uploadMedical" name="medical" accept="image/jpeg, image/png, image/jpg" required>
-                            </div>  
-                            <div class='input-container'>
                                 <label for="uploadCertifications">Certifications [optional]</label>
                                 <input type="file" id="uploadCertifications" name="certifications" accept="image/jpeg, image/png, image/jpg" >
                             </div>  
                         </div>
 
-                        <button type='submit' class='right next2' name='step2done'>NEXT</button>
+                        <button type='submit' class='right next2' name='step2done' value='1'>NEXT</button>
                     </form>
                 </div>
 
@@ -175,13 +189,74 @@
                         <div class='left'>
                             <div class='input-container'>
                                 <label for="documentStatus" class='label m-b-2'>Status</label>
-                                <input type="text" id="documentStatus" name="documentStatus" class='text-box c-red' value='<?php echo $user['verifyStatus'];?>'>
+                                <input type="text" id="documentStatus" name="documentStatus" class='text-box c-red' value='<?php echo $worker['verifyStatus'];?>'>
                             </div>  
                             <span class='f-italic '>Approval might take more than 24 hours or more. Thank you for your patience!</span>
                         </div>
+                    </div>
+                </div>
+                
+                <div class='form-container step4 <?php echo (($stepNumber == 4) ? '' : 'hidden')?>'>
+                    <div class='title'>
+                        <img src='../img/documents-icon.png'>
+                        <h3>Interview with Agency</h3>
+                    </div>
+                    <div class='info d-flex flex-column'>
+                        <div class="top">
+                            <span class='f-italic fs-large fw-bold m-b-2 <?php echo ($worker['qualification_status'] == 'Pending' ? 'c-blue' : 'c-red'); ?>'>
+                                <?php echo ($worker['qualification_status'] == 'Pending' ? 'You need to come to Interview with agency' : 'Sorry you are not qualified based on your interview with agency')?>
+                            </span>
+                        </div>
+                        <div class="bottom d-flex">
+                            <div class='left'>
+                                <div class='input-container'>
+                                    <label for="documentStatus" class='label m-b-2'>Status</label>
+                                    <input type="text" id="documentStatus" name="documentStatus" class='text-box' value='<?php echo $worker['qualification_status'];?>'>
+                                </div>  
+                                <div class='input-container'>
+                                    <label class='label m-b-2'>Interview Date</label>
+                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value='<?php echo $interview['interviewDate'];?>'>
+                                </div>  
+                            </div>
+                            <div class="left">
+                                <div class='input-container'>
+                                    <label class='label m-b-2'>Interview Location</label>
+                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value='<?php echo $interview['interviewLocation'];?>'>
+                                </div>  
+                                <div class='input-container'>
+                                    <label class='label m-b-2'>Message from Agency</label>
+                                    <input type="text" id="documentStatus" name="interviewDate" class='text-box' value='<?php echo $interview['message'];?>'>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='form-container step4 <?php echo (($stepNumber == 5) ? '' : 'hidden')?>'>
+                    <div class='title'>
+                        <img src='../img/documents-icon.png'>
+                        <h3>Additional Documents</h3>
+                    </div>
+                    <form action="../database/submit_application.php" method="POST" enctype="multipart/form-data">
+                        <div class='left'> 
+                            <div class='input-container'>
+                                <label for="uploadNBI">NBI Clearance</label>
+                                <input type="file" id="uploadNBI" name="nbi" accept="image/jpeg, image/png, image/jpg" required>
+                            </div>  
+                            <div class='input-container'>
+                                <label for="uploadMedical">Medical</label>
+                                <input type="file" id="uploadMedical" name="medical" accept="image/jpeg, image/png, image/jpg" required>
+                            </div>  
+                            <div class='input-container'>
+                                <label for="paypalEmail">Paypal Email</label>
+                                <input id='paypalEmail' name='paypalEmail' type="gmail" required>
+                            </div>  
+                        </div>
+                        <button type='submit' class='right' name='step4done' value='1'>SUBMIT</button>
                     </form>
                 </div>
             </div>
+
         </div>
     </main>
 </body>

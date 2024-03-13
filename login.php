@@ -1,6 +1,10 @@
 <?php 
+    include_once('./includes/header.php');
+    include_once('./php_files/login.php');
+    include_once('./includes/footer.php');
+    include_once('./database/connect.php');
+
     //Check first if the user is logged in
-    session_start();
     if (isset($_SESSION['userType'])) {
         if ($_SESSION['userType'] == 'Worker') {
             header('Location: ./worker/application.php');
@@ -13,20 +17,15 @@
         exit();
     }
     
-    include_once('./includes/header.php');
-    include_once('./php_files/login.php');
-    include_once('./includes/footer.php');
-    include_once('./database/connect.php');
-
     if(isset($_POST['submit'])) {
         $email = $_POST['email'];
         $password = $_POST['password'];
     
-        $sql = "SELECT * FROM user WHERE email = '$email'";
-        $result = $conn->query($sql);
-    
-        if ($result->num_rows == 1) {
-            $user = $result->fetch_assoc();
+        $user = $userObj -> getUserByConditions(['email' => $email]);
+
+        if ($user != false) {
+            $user = $user[0];
+
             if ($password === $user['password']) {
                 $_SESSION['idUser'] = $user['idUser'];
                 $_SESSION['userType'] = $user['userType'];
@@ -39,10 +38,13 @@
                 $_SESSION['contactNo'] = $user['contactNo'];
 
                 if($user['userType'] == "Worker") {
+                    echo "<script>alert('Successful!');</script>";
                     header("Location: ./worker/application.php");
                 } else if ($user['userType'] == 'Employer') {
+                    echo "<script>alert('Successful!');</script>";
                     header("Location: ./employer/find_a_worker.php");
                 } else {
+                    echo "<script>alert('Successful!');</script>";
                     header("Location: ./admin/dashboard.php");
                 }
                 exit();

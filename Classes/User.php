@@ -29,6 +29,29 @@ class User {
         return $stmt->get_result()->fetch_assoc();
     }
 
+    public function getUserByConditions($conditions = array()) {
+        $sql = "SELECT * FROM user";
+        if (!empty($conditions)) {
+            $sql .= " WHERE ";
+            $conditions_arr = array();
+            foreach ($conditions as $key => $value) {
+                $conditions_arr[] = "$key = '$value'";
+            }
+            $sql .= implode(" AND ", $conditions_arr);
+        }
+        $result = $this->conn->query($sql);
+        if ($result && $result->num_rows > 0) {
+            $users = array();
+            while ($row = $result->fetch_assoc()) {
+                $users[] = $row;
+            }
+            return $users;
+        } else {
+            return false;
+        }
+    }
+
+    
     // Function to retrieve user by idUser
     public function getUsers() {
         $sql = "SELECT * FROM user";

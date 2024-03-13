@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
@@ -18,37 +17,27 @@
         exit();
     }
     
+    $employer = $employerObj -> getEmployerByConditions(["idUser" => $_SESSION['idUser']]);
+    // var_dump($employer);
+    // exit();
+    if ($employer != false) {
+        $employer = $employer[0];
+        $employerRequests = $employerRequestsObj -> getEmployerRequestByConditions(['employer_idEmployer' => $employer['idEmployer'], "status" => "Pending"]);
+    }
+
     // Check if the confirm button is clicked
     if (isset($_POST['confirm'])) {
         // Get preferences from the form
-        $interviewPlatform = $_POST['interview_platform'];
-        $preferredSex = $_POST['sex_preferred'];
-        $preferredAge = $_POST['preferred_age'];
-        $preferredHeight = $_POST['preferred_height'];
-        $preferredExperience = $_POST['preferred_experience'];
+        $workerType = $_POST['workerType-preferred'];
+        $preferredSex = $_POST['sex-preferred'] ?? null;
+        $preferredAge = $_POST['age-preferred'] ?? null;
+        $preferredHeight = $_POST['height-preferred'] ?? null;
+        $preferredExperience = $_POST['yearsOfExperience-preferred'] ?? null;
+        $additionalMessage = $_POST['additionalMessage'] ?? null;
 
-        // Build the SQL query to fetch a random worker based on preferences
-        $query = "SELECT user.fname, user.sex, worker.workerType, worker.height, worker.yearsOfExperience
-                FROM user
-                JOIN worker ON user.idUser = worker.idUser
-                ORDER BY RAND()
-                LIMIT 1";
-
-        // Use prepared statement to prevent SQL injection
-        $stmt = $your_db_connection->prepare($query);
-        $stmt->bind_param("ssisiiii", $interviewPlatform, $preferredSex, $preferredSex, $preferredAge, $preferredAge, $preferredHeight, $preferredHeight, $preferredExperience, $preferredExperience);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        // Fetch the result as an associative array
-        $workerData = $result->fetch_assoc();
-
-        // Close the statement
-        $stmt->close();
-        
-        // Display the fetched worker information
-        // You can use the displayWorker() JavaScript function from the previous example
-        echo "<script>displayWorker(" . json_encode($workerData) . ");</script>";
+        $employerRequestsObj->createEmployerRequest($workerType, 'Pending', date('Y-m-d'), $employer['idEmployer'], null, $preferredAge, $preferredSex, $preferredHeight, $preferredExperience, $additionalMessage);
+        header('Location: ./request_a_worker.php');
+        exit();
     }
 
 ?>
@@ -86,7 +75,8 @@
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
                     <nav >
-                        <a href='./find_a_worker.php' class='c-light fw-bold'>FIND A WORKER</a>
+                        <a href='./request_a_worker.php' class='c-light fw-bold'>REQUEST A WORKER</a>
+                        <a href='./worker_requests.php' class='c-light fw-bold'>WORKER REQUESTS</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
                         <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
                     </nav>
@@ -101,6 +91,9 @@
     <main class='employer'>
         <div class='container application'>
             <div class='content'>
+                <div class='request-label'>
+                    <p>You have <span class='c-yellow'><?php echo ($employerRequests != false ? count($employerRequests) : 0); ?> pending </span> requests. See more <a href='./worker_request.php' class='t-underline c-light'>here</a></p>
+                </div>
                 <div class='title'>
                     <div class="left">
                         <img class='user-profile' src='../img/search-icon.png' placeholder='profile'>
@@ -110,15 +103,16 @@
                         <button class='find-worker-btn'>CONFIRM</button>
                     </div> 
                 </div>
-                <form class='find-worker-form info' action='./found_a_worker.php' method='POST'>
+                <form class='find-worker-form info' action='' method='POST'>
+                    <input class='hidden' name='confirm' value='1'>
                      <div class='left'>
                         <label class='label'>Worker Type</label>
                         <select class='text-box' name='workerType-preferred'>
-                            <option value='nanny'>Nanny</option>
-                            <option value='maid'>Maid</option>
-                            <option value='gardener'>Gardener</option>
-                            <option value='cook'>Cook</option>
-                            <option value='driver'>Driver</option>
+                            <option value='Nanny'>Nanny</option>
+                            <option value='Maid'>Maid</option>
+                            <option value='Gardener'>Gardener</option>
+                            <option value='Cook'>Cook</option>
+                            <option value='Driver'>Driver</option>
                         </select>
                         <label class='label'>Preferred Sex (Optional)</label>
                         <select class='text-box' name='sex-preferred'>
@@ -135,9 +129,11 @@
                          <input class='text-box' name='height-preferred' type='number' placeholder="(cm)" min=0 max=1000>
                          <label class='label'>Preferred Years of Experience (Optional)</label>
                          <input class='text-box' name='yearsOfExperience-preferred' type='number' min=0 max=100>
+                         <label class='label'>Message Request (Optional)</label>
+                         <textarea class='text-box' name='additionalMessage' placeholder="type your message here"></textarea>
                     </div>
                 </form>
-
+                
             </div>
         </div>
     </main>

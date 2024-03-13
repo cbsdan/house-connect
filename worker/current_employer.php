@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
@@ -11,14 +10,28 @@
         header('Location: ../admin/dashboard.php');
         exit();
     }
+    
+    $idUser = $_SESSION['idUser'];
+    $worker = $workerObj -> getWorkersByConditions(null, null, null, null, null, null, null, null, $idUser);
+    $worker = $worker[0];
+
+    $contracts = $contractObj -> getContractByConditions(["contractStatus" => 'Pending', "idWorker" => $worker['idWorker']]);
+    
+    if (isset($contracts) && is_array($contracts)) {
+        $contract = $contracts[0];
+        $meetDetails = $meetingObj -> getMeetingByConditions(["contract_idContract" => $contract['idContract']]);
+        $meetDetails = $meetDetails[0];
+
+        $employer = $employerObj -> getEmployerById($contract['idEmployer']);
+        $employerDetails = $userObj->getUserById($employer['idUser']);
+    }
 
     // Handle switch status action
     if(isset($_POST['switch-status-btn'])) { // changed button name to switch-status-btn
         $newStatus = ($_POST['switch-status'] === 'available') ? 'Unavailable' : 'Available';
         
         // Update worker status in the database
-        $updateStatusQuery = "UPDATE worker SET workerStatus = '$newStatus' WHERE idUser = " . $_SESSION['idUser'];
-        $conn->query($updateStatusQuery);
+        $workerObj -> updateWorker($worker['idWorker'], null, $newStatus, null, null, null, null, null, null, null);
         
         // Redirect back to the same page after status update
         header('Location: '.$_SERVER['PHP_SELF']);
@@ -28,10 +41,6 @@
     $contractPending = getLatestContractInfo($_SESSION['idUser']);
     $contract = getLatestContractByUserID($_SESSION['idUser']);
 
-    if (isset($contract)) {
-        $meetDetails = getMeetingDetailsByIdContract($contract['idContract']);
-        $employer = getEmployerInformationByContractID($contract['idContract']);
-    }
 ?>
 
 <!DOCTYPE html>
@@ -89,9 +98,7 @@
                 </div>
                 
                 <?php
-                    $workerStatusQuery = "SELECT workerStatus FROM worker WHERE idUser = " . $_SESSION['idUser'];
-                    $workerStatusResult = $conn->query($workerStatusQuery);
-                    $workerStatus = $workerStatusResult->fetch_assoc()['workerStatus'];
+                    $workerStatus = $worker['workerStatus'];
                 ?>
                 
                 <!-- Available -->
@@ -115,22 +122,20 @@
                 </div>
 
                 <!-- Pending -->
-                <div class='info <?php echo ($workerStatus != 'Pending' ? 'hidden' : ''); ?>'>
+                <div class='info align-start <?php echo ($workerStatus != 'Pending' ? 'hidden' : ''); ?>'>
+     
                     <div class='left'>
                         <p class='label'>Status</p>
                         <p class='text-box c-yellow'>Pending</p>
-                        <p class='label'>Interview Platform</p>
-                        <p class='text-box'><?php echo $meetDetails['platform']?></p>
-                        <p class='label'>Interview Link</p>
-                        <p class='text-box'><?php echo $meetDetails['link']?></p>
+                        <p class='label'>Date</p>
+                        <p class='text-box'><?php echo $meetDetails['meetDate']?></p>
+                        <p class='label'>Location</p>
+                        <p class='text-box'><?php echo $meetDetails['locationAddress']?></p>
+                        <p class='label <?php echo (isset($meetDetails['message']) ? '' : 'hidden')?>'>Message </p>
+                        <p class='text-box <?php echo (isset($meetDetails['message']) ? '' : 'hidden')?>'><?php echo $meetDetails['message']?></p>
                     </div>
                     <div class='right'>
-                        <p class='label'>Interview Date and Time</p>
-                        <p class='text-box'><?php echo $meetDetails['meetDate']?></p>
-                        <p class='label'>Employer</p>
-                        <p class='text-box'><?php echo $meetDetails['fname'] . " " . $meetDetails['lname']?></p>
-                        <p class='label'>Employer Message</p>
-                        <p class='text-box'><?php echo $meetDetails['employerMessage']?></p>
+                        <p class='c-green f-italic'>(Please go to this location for the confirmation of contract from employer)</p>
                     </div>
                 </div>
 
@@ -140,24 +145,24 @@
                         <p class='label'>Status</p>
                         <p class='text-box c-red'>Hired</p>
                         <p class='label'>Employer</p>
-                        <p class='text-box'><?php echo $employer['employerFname'] . " " . $employer['employerLname']  ; ?></p>
+                        <p class='text-box'><?php echo $employerDetails['fname'] . " " . $employerDetails['lname']  ; ?></p>
                         <p class='label'>Salary Amount</p>
                         <p class='text-box'><?php echo $contract['salaryAmt']; ?></p>
-                        <!-- <p class='label'>Date of Payment</p>
-                        <p class='text-box'><?php //echo $contract['salaryAmt']; ?></p> -->
+                        <p class='label'>Date of Payment</p>
+                        <p class='text-box'>Every month of day <?php echo getDayFromDate($contract['startDate'])?></p>
                         <p class='label'>Starting Date</p>
                         <p class='text-box'><?php echo $contract['startDate']; ?></p>
                         <p class='label'>End of Contract</p>
                         <p class='text-box'><?php echo $contract['endDate']; ?></p>
                     </div>
                     <div class='right flex-row flex-center'>
-                        <div class='contract-container image-preview flex-center flex-column <?php echo (isset($employer['employerProfilePic']) ? '' : 'hidden')?>'>
-                            <img src='<?php echo $employer['employerProfilePic'] ?>' alt='contract-img'>
-                            <P class='f-italic fs-small t-align-center'>Employer Profile</P>
+                        <div class='contract-container image-preview flex-center flex-column <?php echo (isset($employer['profilePic']) ? '' : 'hidden')?>'>
+                            <img src='<?php echo getImageSrc($employer['profilePic']) ?>' alt='profile-img'>
+                            <p class='f-italic fs-small t-align-center'>Employer Profile</p>
                         </div>
                         <div class='contract-container image-preview flex-center flex-column'>
-                            <img src='<?php echo $contract['contractImg'] ?>' alt='contract-img'>
-                            <P class='f-italic fs-small t-align-center'>Contract image</P>
+                            <img src='<?php echo getImageSrc($contract['contractImg']) ?>' alt='contract-img'>
+                            <p class='f-italic fs-small t-align-center'>Contract image</p>
                         </div>
                     </div>
                 </div>

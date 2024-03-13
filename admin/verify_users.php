@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
@@ -15,7 +14,7 @@
     function fetchUserSqlCommand ($idUser = null) {
         $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
                     TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
-                    u.email, u.userType,
+                    u.email, u.userType, w.idWorker,
                     CASE 
                         WHEN u.userType = 'Worker' THEN w.profilePic
                         WHEN u.userType = 'Employer' THEN e.profilePic
@@ -96,6 +95,7 @@
                 <div class='navigation-container'>
                     <nav>
                         <a href='./dashboard.php' class='c-light'>DASHBOARD</a>
+                        <a href='./employer_requests.php' class='c-light'>EMPLOYER REQUESTS</a>
                         <a href='./contract_manager.php' class='c-light'>CONTRACT MANAGER</a>
                         <a href='./payment.php' class='c-light'>PAYMENT</a>
                         <a href='./user_accounts.php' class='c-light fw-bold'>USER ACCOUNTS</a>
@@ -122,6 +122,9 @@
                         </a>
                         <a class='nav verify-users fw-bold' href='./verify_users.php'>
                             Verify Users
+                        </a>
+                        <a class='nav qualify-users' href='./qualify_workers.php'>
+                            Qualify Workers
                         </a>
                     </div>
                 </div>
@@ -171,9 +174,10 @@
                                                     </form>
                                                 </td>
                                                 <td class='t-align-center'>
-                                                    <form action='../database/update_verify_status.php' method='GET'>
-                                                        <input type='hidden' name='idUser' value=" .$user['idUser'] .">
-                                                        <input type='hidden' name='userType' value=" .$user['userType'] .">
+                                                    <form action='./interview_info.php' method='POST'>
+                                                        <input type='hidden' name='idUser' value='".$user['idUser']."'>".
+                                                        ($user['userType'] == 'Worker' ? "<input type='hidden' name='idWorker' value = '".$user['idWorker']."'>" : '')
+                                                        . "<input type='hidden' name='userType' value='".$user['userType']."'>
                                                         <button type='submit' name='approve' value='approve' class='green-white-btn'>Approve</button>
                                                     </form>
                                                 </td>

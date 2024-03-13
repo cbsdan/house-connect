@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`worker` (
   `workerStatus` VARCHAR(45) NOT NULL,
   `profilePic` MEDIUMBLOB NULL DEFAULT NULL,
   `verifyStatus` VARCHAR(45) NOT NULL,
+  `qualification_status` VARCHAR(45) NULL,
   `yearsOfExperience` INT(11) NOT NULL,
   `height` INT(11) NOT NULL,
   `paypalEmail` VARCHAR(45) NULL DEFAULT NULL,
@@ -107,6 +108,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE TABLE IF NOT EXISTS `house_connect`.`contract` (
   `idContract` INT(11) NOT NULL AUTO_INCREMENT,
   `contractStatus` VARCHAR(45) NOT NULL,
+  `deploymentLocation` VARCHAR(250) NULL,
   `startDate` DATE NULL DEFAULT NULL,
   `endDate` DATE NULL DEFAULT NULL,
   `salaryAmt` DECIMAL(8,2) NULL DEFAULT NULL,
@@ -164,9 +166,9 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`employer_request` (
   `yrsOfExperience` INT(11) NULL DEFAULT NULL,
   `additionalMessage` VARCHAR(250) NULL,
   `status` VARCHAR(45) NOT NULL,
-  `date_requested` VARCHAR(45) NOT NULL,
+  `date_requested` DATE NOT NULL,
   `employer_idEmployer` INT(11) NOT NULL,
-  `contract_idContract` INT(11) NOT NULL,
+  `contract_idContract` INT(11) NULL,
   PRIMARY KEY (`idEmployerPreference`),
   INDEX `fk_employerPreference_employer1_idx` (`employer_idEmployer` ASC) ,
   INDEX `fk_employerpreference_contract1_idx` (`contract_idContract` ASC) ,
@@ -191,6 +193,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`meeting` (
   `idMeeting` INT(11) NOT NULL AUTO_INCREMENT,
   `meetDate` DATETIME NOT NULL,
   `locationAddress` VARCHAR(45) NOT NULL,
+  `message` VARCHAR(250) NULL,
   `contract_idContract` INT(11) NOT NULL,
   PRIMARY KEY (`idMeeting`),
   INDEX `fk_meeting_contract1_idx` (`contract_idContract` ASC) ,
@@ -224,6 +227,25 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`worker_salary` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `house_connect`.`interview`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `house_connect`.`interview` (
+  `idInterview` INT NOT NULL AUTO_INCREMENT,
+  `interviewDate` DATETIME NOT NULL,
+  `interviewLocation` VARCHAR(100) NOT NULL,
+  `message` VARCHAR(100) NULL,
+  `worker_idWorker` INT(11) NOT NULL,
+  PRIMARY KEY (`idInterview`),
+  INDEX `fk_interview_worker1_idx` (`worker_idWorker` ASC) ,
+  CONSTRAINT `fk_interview_worker1`
+    FOREIGN KEY (`worker_idWorker`)
+    REFERENCES `house_connect`.`worker` (`idWorker`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
 
 INSERT INTO user (userType, email, password, fname, lname, sex, birthdate, contactNo) 
 VALUES ('Admin', 'houseconnect@gmail.com', '12345678', 'Administrator', '', 'Male', CURDATE(), '09999999999');

@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
     
     if ($_SESSION['userType'] == 'Worker') {
@@ -160,6 +159,14 @@
                                 <option value="Not Verified" <?php if ($user['verifyStatus'] == 'Not Verified') echo 'selected'?>>Not Verified</option>
                             </select>
                         </div>
+                        <div class="data">
+                            <h4 class="label">Qualification Status</h4>
+                            <select class="text-box" name='qualification_status' required>
+                                <option value="Not Qualified" <?php if ($user['qualification_status'] == 'Not Qualified') echo 'selected'?>>Not Qualified</option>
+                                <option value="Pending" <?php if ($user['qualification_status'] == 'Pending') echo 'selected'?>>Pending</option>
+                                <option value="Qualified" <?php if ($user['qualification_status'] == 'Qualified') echo 'selected'?>>Qualified</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="title <?php echo (isset($user['idWorkerDocuments']) ? '' : 'hidden')?>">
@@ -175,11 +182,11 @@
                             <img src='<?php echo $user['validID'];?>'>
                             <h4>Valid ID</h4>
                         </div>
-                        <div class="image-preview flex-center flex-column flex-1">
+                        <div class="image-preview flex-center flex-column flex-1 <?php echo (isset($user['medical']) ? '' : 'hidden' )?>">
                             <img src='<?php echo $user['medical'];?>'>
                             <h4>Medical</h4>
                         </div>
-                        <div class="image-preview flex-center flex-column flex-1">
+                        <div class="image-preview flex-center flex-column flex-1 <?php echo (isset($user['nbi']) ? '' : 'hidden' )?>">
                             <img src='<?php echo $user['nbi'];?>'>
                             <h4>NBI</h4>
                         </div>

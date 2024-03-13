@@ -1,6 +1,5 @@
 <?php
 include_once('../database/connect.php');
-include_once('../functions/user_authenticate.php');
 
 // Check if the user is logged in
 if ($_SESSION['userType'] == 'Admin') {
@@ -61,9 +60,10 @@ if ($userData['profilePic']) {
             <div class='bottom' id='nav-worker'>
                 <div class='navigation-container'>
                     <nav>
-                        <a href='./find_a_worker.php' class='c-light'>FIND A WORKER</a>
+                        <a href='./request_a_worker.php' class='c-light fw-bold'>REQUEST A WORKER</a>
+                        <a href='./worker_requests.php' class='c-light fw-bold'>WORKER REQUESTS</a>
                         <a href='./manage_worker.php' class='c-light'>MANAGE WORKER</a>
-                        <a href='./account_profile.php' class='c-light fw-bold'>ACCOUNT PROFILE</a>
+                        <a href='./account_profile.php' class='c-light'>ACCOUNT PROFILE</a>
                     </nav>
                     <nav>
                         <a href='../logout.php' class='c-light'>LOG OUT</a>

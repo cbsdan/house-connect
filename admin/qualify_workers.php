@@ -12,52 +12,25 @@
     }
 
     //Fetch all the users except for an admin account
-    function fetchUserSqlCommand($idUser = null) {
-        $sql = "SELECT u.idUser, u.fname, u.lname, u.sex, 
-                    TIMESTAMPDIFF(YEAR, u.birthdate, CURDATE()) AS age, 
-                    u.email, u.userType, w.workerType, w.workerStatus, w.qualification_status,
-                    CASE 
-                        WHEN u.userType = 'Worker' THEN w.profilePic
-                        WHEN u.userType = 'Employer' THEN e.profilePic
-                        ELSE NULL
-                    END AS profilePic,
-                    CASE 
-                        WHEN u.userType = 'Worker' THEN w.verifyStatus
-                        WHEN u.userType = 'Employer' THEN e.verifyStatus
-                        ELSE NULL
-                    END AS verifyStatus
-                FROM user AS u
-                LEFT JOIN worker AS w ON u.idUser = w.idUser
-                LEFT JOIN employer AS e ON u.idUser = e.idUser
-                WHERE (u.userType = 'Worker' OR u.userType = 'Employer')";
-
-        if ($idUser != null) {
-            $sql .= " AND u.idUser = '$idUser' ORDER BY u.idUser;";
-        } else {
-            $sql .= " ORDER BY u.userType DESC";
-        }
-        return $sql;
-    }
-
-    $sql = fetchUserSqlCommand();
+    $workers = $workerObj -> getWorkersByConditions(null, null, 'Verified', 'Pending', null, null, null, null, null);
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['idUser'])) {
-            $sql = fetchUserSqlCommand($_POST['idUser']);
+            $workers = $workerObj -> getWorkersByConditions(null, null, 'Verified', 'Pending', null, null, null, null, $_POST['idUser']);
         } 
+        if (isset($_POST['qualified-btn'])) {
+            $workerObj -> updateWorker($_POST['idWorker'], null, null, null, 'Qualified', null, null, null, null, null, null);
+            header('Location: ./qualify_workers.php');
+            exit();
+        }
+        if (isset($_POST['not-qualified-btn'])) {
+            $workerObj -> updateWorker($_POST['idWorker'], null, null, null, 'Not Qualified', null, null, null, null, null, null);
+            header('Location: ./qualify_workers.php');
+            exit();
+        }
     } 
 
 
-    $result = $conn -> query($sql);
-    
-    if ($result) {
-        if ($result->num_rows > 0) {
-            $users = array(); // Initialize an array to store fetched rows
-            while ($row = $result->fetch_assoc()) {
-                $users[] = $row; // Append each row to the array
-            }
-        } 
-    }
 ?>
 
 <!DOCTYPE html>
@@ -117,99 +90,96 @@
                         <h3>User Accounts</h3>  
                     </div>
                     <div class="right">
-                        <a class='nav display-users fw-bold' href='./user_accounts.php'>
+                        <a class='nav display-users' href='./user_accounts.php'>
                             Display Users
                         </a>
                         <a class='nav verify-users' href='./verify_users.php'>
                             Verify Users
                         </a>
-                        <a class='nav verify-users' href='./qualify_workers.php'>
+                        <a class='nav verify-users fw-bold' href='./qualify_workers.php'>
                             Qualify Workers
                         </a>
                     </div> 
                 </div>
                 
                 <div class='info'>
-                    <form class="search-contract flex-row" action='./user_accounts.php' method='POST'>
+                    <form class="search-contract flex-row" action='./qualify_workers.php' method='POST'>
                         <input type="number" name='idUser' class='text-box' placeholder='Search by User ID'>
                         <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                     </form>
-                    <div class='table-result user-accounts <?php echo (isset($users) ? '' : 'hidden') ?>'>
+                    <div class='table-result user-accounts <?php echo ($workers != false ? '' : 'hidden') ?>'>
                         <table>
                             <thead>
                                 <tr>
                                     <th>User ID</th>
                                     <th>Profile</th>
                                     <th>Name</th>
-                                    <th>Age</th>
                                     <th>Sex</th>
                                     <th>Email</th>
                                     <th>Verification Status</th>
                                     <th>Qualification Status</th>
-                                    <th>User Type</th>
-                                    <th>Worker Type</th>
-                                    <th>Worker Status</th>
-                                    <th>Edit</th>
-                                    <th>Delete</th>
+                                    <th>Approve</th>
+                                    <th>Decline</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
-                                    foreach($users as $user) {
-                                        if (isset($user['profilePic'])) {
-                                            $profile = getImageSrc($user['profilePic']);
+                                if ($workers != false) {
+                                    foreach($workers as $worker) {
+                                        if (isset($worker['profilePic'])) {
+                                            $profile = getImageSrc($worker['profilePic']);
                                         } else {
                                             $profile = '../img/user-icon.png';
                                         }
                                         
-                                        if (isset($user['verifyStatus'])) {
-                                            $verifyStaus = $user['verifyStatus'];
+                                        if (isset($worker['verifyStatus'])) {
+                                            $verifyStaus = $worker['verifyStatus'];
                                         } else {
                                             $verifyStaus = 'Not Verified';
                                         }
 
-                                        if (isset($user['qualification_status'])) {
-                                            $qualification_status = $user['qualification_status'];
+                                        if (isset($worker['qualification_status'])) {
+                                            $qualification_status = $worker['qualification_status'];
                                         } else {
                                             $qualification_status = 'Pending';
-                                            if ($user['userType'] == 'Employer') {
+                                            if ($worker['userType'] == 'Employer') {
                                                 $qualification_status = 'N/A';
                                             }
                                         }
 
+                                        $workerDetails = $userObj -> getUserById($worker['idUser']);
+
                                         echo "<tr>
-                                                <td class='t-align-center'>". $user['idUser']."</td>
+                                                <td class='t-align-center'>". $workerDetails['idUser']."</td>
                                                 <td class='t-align-center image-preview' ><img src='". $profile ."' alt='profile'></td>
-                                                <td>".$user['fname'] . " " . $user['lname']."</td>
-                                                <td class='t-align-center'>".$user['age']."</td>
-                                                <td>".$user['sex']."</td>
-                                                <td>".$user['email']."</td>
+                                                <td>".$workerDetails['fname'] . " " . $workerDetails['lname']."</td>
+                                                <td>".$workerDetails['sex']."</td>
+                                                <td>".$workerDetails['email']."</td>
                                                 <td>".$verifyStaus."</td>
                                                 <td>".$qualification_status."</td>
-                                                <td class='t-align-center'>".$user['userType']."</td>
-                                                <td class='t-align-center'>". (isset($user['workerType']) ? $user['workerType'] : "N/A") ."</td>
-                                                <td class='t-align-center'>". (isset($user['workerStatus']) ? $user['workerStatus'] : "N/A") ."</td>
                                                 <td class='t-align-center view-btn'>
-                                                    <form action='./edit-user-account.php' method='POST'>
-                                                        <input type='hidden' name='idUser' value=" .$user['idUser'] .">
-                                                        <input type='hidden' name='userType' value=" .$user['userType'] .">
-                                                        <button type='submit' class='c-yellow'>[Edit]</button>
+                                                    <form action='' method='POST'>
+                                                        <input type='hidden' name='idUser' value=" .$workerDetails['idUser'] .">
+                                                        <input type='hidden' name='idWorker' value=" .$worker['idWorker'] .">
+                                                        <button type='submit' name='qualified-btn' class='green-white-btn'>Qualified</button>
                                                     </form>
                                                 </td>
                                                 <td class='t-align-center'>
-                                                    <form action='../database/delete_user_account.php' method='POST' id='deleteForm' onsubmit='return confirmDelete()'>
-                                                        <input type='hidden' name='idUser' value=" .$user['idUser'] .">
-                                                        <button type='submit' class='c-red'>[Delete]</button>
+                                                    <form action='' method='POST' id='deleteForm'>
+                                                        <input type='hidden' name='idUser' value=" .$workerDetails['idUser'] .">
+                                                        <input type='hidden' name='idWorker' value=" .$worker['idWorker'] .">
+                                                        <button type='submit' name='not-qualified-btn' class='red-white-btn'>Not Qualified</button>
                                                     </form>
                                                 </td>
                                             </tr>";
                                     }
+                                }
                                 ?>
                             </tbody>
                         </table>
                     </div>
 
-                    <div class='no-record-label <?php echo (isset($users) ? 'hidden' : '') ?>'>
+                    <div class='no-record-label <?php echo ($workers != false ? 'hidden' : '') ?>'>
                         <p>There are no found record!</p>
                     </div>
                 </div>

@@ -28,6 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $salaryAmt = null;
     }
+    if ($_POST['deploymentLocation'] != '' && $_POST['deploymentLocation'] != null) {
+        $deploymentLocation = $_POST['deploymentLocation'];
+    } else {
+        $deploymentLocation = null;
+    }
     
     if ($_POST['idWorker'] != '' && $_POST['idWorker'] != null) {
         $idWorker = $_POST['idWorker'];
@@ -41,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $contractImg = null;
     }
     
-    updateContract($idContract, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
+    updateContract($idContract, $contractStatus, $deploymentLocation, $startDate, $endDate, $salaryAmt, $contractImg);
     if ($contractStatus == 'Completed' || $contractStatus == 'Canceled') {
         $workerStatus = 'Available';
     } else {

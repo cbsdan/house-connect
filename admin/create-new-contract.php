@@ -1,6 +1,5 @@
 <?php
 // Check first if the user is logged in
-include_once('../functions/user_authenticate.php');
 include_once('../database/connect.php');
 require_once('../Classes/Contract.php');
 require_once('../Classes/Meeting.php');
@@ -74,7 +73,7 @@ if (isset($_POST['idWorker']) && isset($_POST['idEmployer'])) {
     $contractObj = new Contract($conn);
     $meetingObj = new Meeting($conn);
 
-    $idContract = $contractObj->createContract($idWorker, $idEmployer, $contractStatus, $startDate, $endDate, $salaryAmt, $contractImg);
+    $idContract = $contractObj->createContract($contractStatus, $deploymentLocation, $startDate, $endDate, $salaryAmt, $contractImg, $idWorker, $idEmployer);
     
     if ($idContract != false) {
         updateWorkerStatus($idWorker, $contractStatus);

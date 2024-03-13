@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Worker') {
@@ -13,7 +12,14 @@
     }
     
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $idContract = $_POST['idContract'];
+        if (isset($_POST['idContract'])) {
+            $idContract = $_POST['idContract'];
+        }
+        if (isset($_POST['update-meet-info'])) {
+            $meetingObj -> updateMeeting($_POST['idMeeting'], $_POST['meetDate'], $_POST['locationAddress'], $_POST['message'], null);
+            header ('Location: ./contract_manager.php');
+            exit();
+        }
     } else {
         header('Location: ./contract_manager.php');
         exit();
@@ -21,6 +27,12 @@
     
     $contract = getContractList($idContract);
     $contract = $contract[0];
+
+    $meetDetails = $meetingObj -> getMeetingByConditions(["contract_idContract" => $contract['idContract']]);
+
+    if($meetDetails != false){
+        $meetDetails = $meetDetails[0];
+    }
 
 ?>
 
@@ -109,6 +121,14 @@
                                         : "<p class='value'>N/A</p>");
                                         ?>                                
                                 </div>
+                                <div class='data'>
+                                    <h4 class="label">Worker Deployment Location (Editable)</h4>
+                                    <?php echo ($contract['contractStatus'] == 'Hired' || $contract['contractStatus'] == 'Completed' 
+                                        ? "<input class='value' type='text' name='deploymentLocation' value=\"" . $contract['deploymentLocation'] . "\">" 
+                                        : "<p class='value'>N/A</p>");
+                                    ?>
+                              
+                                </div>
                                 <div class='data <?php echo ($contract['contractStatus'] == 'Hired' || $contract['contractStatus'] == 'Completed' ? '' : 'hidden')?>' >
                                     <h4 class="label">Change Contract Image</h4>
                                     <input class="value" type='file' name='contractImg' accept="image/jpeg, image/png, image/jpg"></p>
@@ -120,35 +140,31 @@
                         </div>
                     </form>
 
-                    <form class="meet-info detail" action='../database/update_meet_info.php' method='POST'>
+                    <form class="meet-info detail" action='' method='POST'>
                         <div class='title'>
-                            <h3 class='t-align-center w-100'>Interview Info</h3>
+                            <h3 class='t-align-center w-100'>Confirmation of Contracts</h3>
                         </div>
                         <div class="information w-100 flex-1">
-                            <input type='hidden' name='idMeeting' value='<?php echo $contract['idMeeting']?>'>
+                            <input type='hidden' name='idMeeting' value='<?php echo $meetDetails['idMeeting']?>'>
                             <div class="left">
                                 <div class='data'>
-                                    <h4 class="label">Interview Date</h4>
-                                    <input class="value" type='datetime-local' name='meetDate' value='<?php echo $contract['meetDate'] ?>'>
+                                    <h4 class="label">Date</h4>
+                                    <input class="value" type='datetime-local' name='meetDate' value='<?php echo $meetDetails['meetDate'] ?>'>
                                 </div>
                                 <div class='data'>
-                                    <h4 class="label">Platform</h4>
-                                    <input class="value" type='text' name='platform' value='<?php echo $contract['platform'] ?>'>
+                                    <h4 class="label">Location</h4>
+                                    <input class="value" type='text' name='locationAddress' value='<?php echo $meetDetails['locationAddress'] ?>'>
                                 </div>
                             </div>
                             <div class="right">
                                 <div class='data'>
-                                    <h4 class="label">Link</h4>
-                                    <input class="value" type='text' name='link' value='<?php echo $contract['link'] ?>'>
-                                </div>
-                                <div class='data'>
-                                    <h4 class="label">Employer Message</h4>
-                                    <input class="value" type='text' name='employerMessage' value="<?php echo $contract['employerMessage'] ?>">
+                                    <h4 class="label">Message</h4>
+                                    <input class="value" type='text' name='message' value="<?php echo $meetDetails['message'] ?>">
                                 </div>
                             </div>
                         </div>
                         <div class='m-l-auto'>
-                            <button type='submit' name='submit' value='submit' class='green-white-btn '>Save Changes</button>
+                            <button type='submit' name='update-meet-info' value='1' class='green-white-btn '>Save Changes</button>
                         </div>
                     </form>
 

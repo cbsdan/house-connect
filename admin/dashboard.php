@@ -1,6 +1,5 @@
 <?php
     require_once ('../database/connect.php');
-    include_once('../functions/user_authenticate.php');
 
     if ($_SESSION['userType'] == 'Worker') {
         header('Location: ../worker/application.php');
@@ -46,6 +45,7 @@
                 <div class='navigation-container'>
                     <nav>
                         <a href='./dashboard.php' class='c-light fw-bold'>DASHBOARD</a>
+                        <a href='./employer_requests.php' class='c-light'>EMPLOYER REQUESTS</a>
                         <a href='./contract_manager.php' class='c-light'>CONTRACT MANAGER</a>
                         <a href='./payment.php' class='c-light'>PAYMENT</a>
                         <a href='./user_accounts.php' class='c-light'>USER ACCOUNTS</a>

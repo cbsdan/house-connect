@@ -1,6 +1,5 @@
 <?php
     //Check first if the user is logged in
-    include_once('../functions/user_authenticate.php');
     include_once('../database/connect.php');
 
     if ($_SESSION['userType'] == 'Employer') {
@@ -12,16 +11,29 @@
         exit();
     }
 
-    $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser']);
-    $worker = fetchAllWorkerInformation($_SESSION['idUser']);
 
+    $worker = $workerObj -> getWorkersByConditions(null, null, null, null, null, null, null, null, $_SESSION['idUser']);
+    if ($worker != false) {
+        $worker = $worker[0];
+    }
+
+    $contract = $contractObj -> getContractByConditions(["idWorker" => $worker['idWorker']]);
+
+    if ($contract != false) {
+        $employerPayment = $employerPaymentObj -> getEmployerPaymentByConditions(["idContract" => $contract['idContract']]);
+
+        if ($salaryDetails != false ) {
+            $workerSalary = $workerSalaryObj -> getWorkerSalaryByConditions(["idEmployerPayment" => $salaryDetails['idEmployerPayment']]);
+        }
+    }
+    
     if (isset($_POST['filter']) && isset($_POST['idContract'])) {
-        $salaryDetails = getWorkerSalaryAndPaymentDetails($_SESSION['idUser'], $_POST['idContract']);
+        $employerPayment = $employerPaymentObj -> getEmployerPaymentByConditions(["idContract" => $_POST['idContract']]);
+        
     }
 
     if (isset($_POST['idWorker']) && isset($_POST['paypalEmail'])) {
-        $sql = "UPDATE worker SET paypalEmail = '".$_POST['paypalEmail']."' WHERE idWorker =". $_POST['idWorker'];
-        $conn->query($sql);
+        $workerObj -> updateWorker($_POST['idWorker'], null, null, null, null, null, null, $_POST['paypalEmail'], null, null);
         header('Location: ./salary_payment.php');
         exit();
     }   
@@ -91,7 +103,7 @@
                         <input type='number' name='idContract' class='flex-1' placeholder="Search by contract ID">
                         <button type='submit' name='filter' class='orange-white-btn'>Search</button>
                     </form>
-                    <table class='<?php echo (isset($salaryDetails) ? '' : 'hidden');?>'>
+                    <table class='<?php echo ($employerPayment != false ? '' : 'hidden');?>'>
                         <thead>
                             <tr>
                                 <th>Contract ID</th>
@@ -107,8 +119,8 @@
                         </thead>
                         <tbody>
                         <?php
-                            if (isset($salaryDetails)) {
-                                foreach ($salaryDetails as $row) {
+                            if (isset($employerPayment) && $employerPayment != false) {
+                                foreach ($employerPayment as $row) {
                                     $contractInfo = getContractList($row['idContract']);
                                     $contractInfo = $contractInfo[0];
 

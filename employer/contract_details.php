@@ -1,6 +1,5 @@
 <?php
 include_once('../database/connect.php');
-include_once('../functions/user_authenticate.php');
 
 if ($_SESSION['userType'] == 'Worker') {
     header('Location: ../worker/application.php');
