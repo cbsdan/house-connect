@@ -174,7 +174,7 @@
                                                     </form>
                                                 </td>
                                                 <td class='t-align-center'>
-                                                    <form action='".($user['userType'] == 'Worker' ? './interview_info.php' : "../database/update_verify_status.php" )."' method='GET'>
+                                                    <form action='".($user['userType'] == 'Worker' ? './interview_info.php' : "../database/update_verify_status.php" )."' method='".($user['userType'] == 'Worker' ? 'POST' : "GET" )."'>
                                                         <input type='hidden' name='idUser' value='".$user['idUser']."'>".
                                                         ($user['userType'] == 'Worker' ? "<input type='hidden' name='idWorker' value = '".$user['idWorker']."'>" : '')
                                                         . "<input type='hidden' name='userType' value='".$user['userType']."'>
@@ -182,7 +182,7 @@
                                                     </form>
                                                 </td>
                                                 <td class='t-align-center'>
-                                                    <form action='../database/update_verify_status.php' method='GET'>
+                                                    <form action='../database/update_verify_status.php' method='".($user['userType'] == 'Worker' ? 'POST' : "GET" )."'>
                                                         <input type='hidden' name='idUser' value=" .$user['idUser'] .">
                                                         <input type='hidden' name='userType' value=" .$user['userType'] .">
                                                         <button type='submit' name='decline' value='decline' class='red-white-btn'>Decline</button>

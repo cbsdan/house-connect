@@ -179,7 +179,7 @@
                         <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
                         <button type='submit' name='decline' value='decline' class='red-white-btn'>Decline</button>
                     </form>
-                    <form action='<?php echo ($user['userType'] == 'Worker' ? './interview_info.php' : "../database/update_verify_status.php" ) ?>' method='GET'>
+                    <form action='<?php echo ($user['userType'] == 'Worker' ? './interview_info.php' : "../database/update_verify_status.php" ) ?>' method='<?php echo ($user['userType'] == 'Worker' ? 'POST' : "GET" ) ?>'>
                         <input type='hidden' name='idUser' value="<?php echo $user['idUser']; ?>">
                         <?php echo ($user['userType'] == 'Worker' ? "<input type='hidden' name='idWorker' value = '".$user['idWorker']."'>" : '') ?>
                         <input type='hidden' name='userType' value="<?php echo $user['userType']; ?>">
