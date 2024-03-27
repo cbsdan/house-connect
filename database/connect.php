@@ -560,7 +560,7 @@ function getLatestContractInfo($idUser = null, $idContract = null, $contractStat
         global $conn; // Assuming you have a database connection
     
         // Start building the SQL query
-        $sql = "SELECT uw.idUser FROM user uw
+        $sql = "SELECT uw.idUser, w.idWorker FROM user uw
                 JOIN worker w ON w.idUser = uw.idUser
                 LEFT JOIN worker_documents wd ON wd.idWorkerDocuments = w.idWorkerDocuments
                 WHERE w.workerType = '$workerType'";

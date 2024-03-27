@@ -103,14 +103,16 @@ if (isset($_POST['deploy-worker'])) {
                     </div>
                     <div class="bottom d-flex">
                         <div class='left flex-1'>
+                            <p class='label'>Worker Type</p>
+                            <p class='text-box'><?php echo ($employerPreference['workerType'] != '' ? $employerPreference['workerType'] : 'Not Set') ?></p>
                             <p class='label'>Age</p>
                             <p class='text-box'><?php echo ($employerPreference['age'] != '' ? $employerPreference['age'] : 'Not Set') ?></p>
                             <p class='label'>Sex</p>
                             <p class='text-box'><?php echo ($employerPreference['sex'] != '' ? $employerPreference['sex'] : 'Not Set') ?></p>
-                            <p class='label'>Height</p>
-                            <p class='text-box'><?php echo ($employerPreference['height'] != '' ? $employerPreference['height'] : 'Not Set') ?></p>
                         </div>
                         <div class="right flex-1">
+                            <p class='label'>Height</p>
+                            <p class='text-box'><?php echo ($employerPreference['height'] != '' ? $employerPreference['height'] : 'Not Set') ?></p>
                             <p class='label'>Years of Experience</p>
                             <p class='text-box'><?php echo ($employerPreference['yrsOfExperience'] != '' ? $employerPreference['yrsOfExperience'] : 'Not Set') ?></p>
                             <p class='label'>Request Note</p>

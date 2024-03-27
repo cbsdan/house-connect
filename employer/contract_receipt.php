@@ -129,6 +129,8 @@ echo "<style>
                 echo "<hr>";
                 echo "<p>Contract ID: ". $contract['idContract'] . "</p>";
                 echo "<p>Contract Status: ". $contract['contractStatus'] . "</p>";
+                echo "<p>Salary Amount: ". $contract['salaryAmt'] . "</p>";
+                echo "<p>Date of Salary Payment: Every Month on Day ". getDayFromDate($contract['startDate']) . "</p>";
                 echo "<p>Start Date: ". $contract['startDate'] . "</p>";
                 echo "<p>End Date: ". $contract['endDate'] . "</p>";
                 echo "<p>Date Created: ". $contract['date_created'] . "</p>";

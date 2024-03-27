@@ -9,8 +9,8 @@ class Worker {
     }
 
     // Create a new worker
-    public function createWorker($workerType, $workerStatus, $verifyStatus, $qualification_status, $yearsOfExperience, $height, $paypalEmail = null, $idWorkerDocuments = null, $idUser) {
-        $sql = "INSERT INTO worker (workerType, workerStatus, verifyStatus, qualification_status, yearsOfExperience, height, paypalEmail, idWorkerDocuments, idUser) 
+    public function createWorker($workerType, $workerStatus, $verifyStatus, $qualification_status, $yearsOfExperience, $height, $paypalEmail = null, $idWorkerDocuments = null, $profilePic= null, $idUser) {
+        $sql = "INSERT INTO worker (workerType, workerStatus, verifyStatus, qualification_status, yearsOfExperience, height, paypalEmail, idWorkerDocuments, profilePic, idUser) 
                 VALUES ('$workerType', '$workerStatus', '$verifyStatus', '$qualification_status', $yearsOfExperience, $height, ";
         if ($paypalEmail !== null) {
             $sql .= "'$paypalEmail', ";
@@ -19,6 +19,11 @@ class Worker {
         }
         if ($idWorkerDocuments !== null) {
             $sql .= "$idWorkerDocuments, ";
+        } else {
+            $sql .= "NULL, ";
+        }
+        if ($profilePic !== null) {
+            $sql .= "'$profilePic', ";
         } else {
             $sql .= "NULL, ";
         }

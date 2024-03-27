@@ -51,7 +51,7 @@
         // Insert data into the database
         $newIdUser = $userObj->createUser($fname, $lname, $sex, $birthdate, $email, $password, $userType, $address, $contactNo);
 
-        if ($newIdUser != false ) {
+        if ($newIdUser != false && $userType != 'Worker') {
             $employerObj->createEmployer(null, null, 'Not Verified', $newIdUser); 
 
             if ($employerObj != true) {

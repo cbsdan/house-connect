@@ -79,7 +79,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <input class="text-box" name='interviewLocation' type='text'>
                     
                     <label class="label">Additional Message (optional)</label>
-                    <textarea class="text-box" name='message' placeholder="Enter here" required></textarea>
+                    <textarea class="text-box" name='message' placeholder="Enter here"></textarea>
                     
                     <button class="orange-white-btn" type="submit" name="submitInterviewInfo">Submit</button>
                 </form>

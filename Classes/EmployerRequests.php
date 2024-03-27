@@ -43,7 +43,7 @@
                 $sql .= ", $contractIdContract";
             }
             $sql .= ")";
-
+            
             if ($this->conn->query($sql)) {
                 return $this->conn->insert_id;
             } else {

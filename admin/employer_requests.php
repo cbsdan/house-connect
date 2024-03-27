@@ -99,7 +99,10 @@
                         </select>
                         <button type='submit' class='label' name='submit' value='submit'><img class='search-icon' src='../img/search-icon.png' alt='Search'></button>
                     </form>
-                    <table>
+                    <div class='no-record-label <?php echo ($employerRequests != false ? 'hidden' : '');?>'>
+                        <p>There are no found record!</p>
+                    </div>
+                    <table <?php echo ($employerRequests == false ? 'hidden' : '');?>>
                         <thead>
                             <tr>
                                 <th>Request ID</th>

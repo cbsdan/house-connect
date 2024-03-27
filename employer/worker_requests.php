@@ -92,7 +92,10 @@
                 <h3>My Requests</h3>   
             </div>
             <div class="info flex-wrap">
-                <table>
+                <div class='no-record-label flex-1 <?php echo ($employerRequests != false ? 'hidden' : '');?>'>
+                    <p>There are no found records!</p>
+                </div>
+                <table <?php echo ($employerRequests == false ? 'hidden' : '');?>>
                     <thead>
                         <tr>
                             <th>Request ID</th>

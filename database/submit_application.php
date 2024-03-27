@@ -27,7 +27,7 @@
 
             $idWorkerDocuments = $workerDocumentsObj -> createWorkerDocument($curriculumVitae, $validID, null, null, $certifications);
 
-            $idWorker = $workerObj -> createWorker($workType, 'Unavailable', 'Not Verified', 'Pending', $yearsOfExperience, $height, null, $idWorkerDocuments, $userId);
+            $idWorker = $workerObj -> createWorker($workType, 'Unavailable', 'Not Verified', 'Pending', $yearsOfExperience, $height, null, $idWorkerDocuments, $profilePic, $userId);
         }
 
         if (isset($_POST['step4done'])) {

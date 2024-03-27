@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS `house_connect`.`employer_request` (
   `idEmployerPreference` INT(11) NOT NULL AUTO_INCREMENT,
   `workerType` VARCHAR(45) NOT NULL,
   `age` VARCHAR(45) NULL DEFAULT NULL,
+  `sex` VARCHAR(45) NULL DEFAULT NULL,
   `height` INT(11) NULL DEFAULT NULL,
   `yrsOfExperience` INT(11) NULL DEFAULT NULL,
   `additionalMessage` VARCHAR(250) NULL,
