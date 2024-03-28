@@ -63,8 +63,10 @@
             echo "<script>window.location.href = 'login.php';</script>";
             exit(); // Exit PHP to prevent further execution
         } else {
-            echo "<script>alert('Error occurred while inserting user record!');</script>";
-            exit(); // Exit PHP to prevent further execution
+            if ($newIdUser == false) {
+                echo "<script>alert('Error occurred while inserting user record!');</script>";
+                exit(); // Exit PHP to prevent further execution
+            }
         }
     }
     
